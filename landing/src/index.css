@@ -1,0 +1,95 @@
+/**
+ * landing/src/index.css
+ *
+ * Global reset + theme variables. Light by default, dark via the
+ * `data-theme="dark"` attribute on <html> (set by the user toggle,
+ * or by `prefers-color-scheme: dark` when no override is set).
+ */
+
+:root {
+  --paper: #e2dbc8;
+  --ticket: #f1ecdd;
+  --gold: #d0c096;
+  --gold-deep: #a8935a;
+  --ink: #000000;
+  --tie: #14120e;
+  --desk: #efe9d9;
+  --desk-line: #14120e;
+  --desk-ink: #14120e;
+  --desk-soft: #5d5744;
+  --display: 'Barlow', 'Arial Narrow', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --body: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+:root[data-theme='dark'] {
+  --desk: #17150f;
+  --desk-ink: #e2dbc8;
+  --desk-line: #e2dbc8;
+  --desk-soft: #b3ab94;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --desk: #17150f;
+    --desk-ink: #e2dbc8;
+    --desk-line: #e2dbc8;
+    --desk-soft: #b3ab94;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px));
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--desk-ink);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gold-deep);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
