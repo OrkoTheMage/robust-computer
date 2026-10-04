@@ -33,6 +33,7 @@ yarn-error.log*
 # at the repo root. Whitelist the one .txt the app actually ships.
 *.txt
 !landing/public/robots.txt
+PROJECT-CONVENTIONS.md
 
 # ── downloaded Mailpit binary (used by `yarn mail`) ────────────────────
 scripts/.mailpit/
