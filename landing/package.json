@@ -1,7 +1,6 @@
 {
   "name": "landing",
   "private": true,
-  "version": "1.0.0",
   "description": "Robust Computer — public marketing site.",
   "type": "module",
   "scripts": {

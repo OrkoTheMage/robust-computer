@@ -7,12 +7,13 @@
 
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { Button } from '../ui'
+import { Button, Zer0Text } from '../ui'
 
 const Band = styled.section`
   background: #000;
   color: var(--paper);
   padding: 64px 56px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,14 +45,14 @@ const Band = styled.section`
 const CTABand = () => (
   <Band>
     <div>
-      <h2>Work with the team</h2>
+      <h2><Zer0Text>Work with the team</Zer0Text></h2>
       <p>
         Tell us what you are building and who it is for. We will reply within
         one business day.
       </p>
     </div>
     <Button as={Link} to="/contact" variant="gold">
-      Start a pr0ject
+      <Zer0Text>Start a project</Zer0Text>
     </Button>
   </Band>
 )

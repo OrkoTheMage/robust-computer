@@ -3,15 +3,16 @@
  *
  * "What we build" — four square-ish cards arranged in a 12-col grid
  * with alternating black/gold/paper backgrounds. Each card has an
- * icon, a title, a one-liner, and a "see examples" pseudo-link.
+ * icon, a title, and a one-liner.
  */
 
 import styled from '@emotion/styled'
 import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
-import { Container } from '../ui'
+import { Container, Zer0Text } from '../ui'
 
 const Section = styled.section`
   padding: 84px 56px 72px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   border-bottom: 3px solid #000;
 
   @media (max-width: 980px) {
@@ -21,10 +22,10 @@ const Section = styled.section`
 
 const Head = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 34px;
-  gap: 40px;
+  gap: 16px;
   color: #000;
 
   h2 {
@@ -38,14 +39,9 @@ const Head = styled.div`
   }
 
   p {
-    max-width: 30em;
+    max-width: 38em;
     margin: 0;
     font-size: 18px;
-  }
-
-  @media (max-width: 760px) {
-    flex-direction: column;
-    align-items: flex-start;
   }
 `
 
@@ -84,19 +80,6 @@ const Card = styled.article`
     margin: 0;
     max-width: 27em;
   }
-
-  .more {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    margin-top: auto;
-    padding-top: 10px;
-    text-decoration: underline;
-    text-underline-offset: 5px;
-    text-decoration-thickness: 3px;
-    text-transform: uppercase;
-  }
 `
 
 const items = [
@@ -108,7 +91,6 @@ const items = [
     title: 'Landing pages and sites',
     body:
       'Fast, clear marketing sites that explain what you do and get people to act.',
-    moreColor: 'var(--gold)',
   },
   {
     span: 5,
@@ -143,7 +125,7 @@ const Services = () => (
   <Section>
     <Container>
       <Head>
-        <h2>What we build</h2>
+        <h2><Zer0Text>What we build</Zer0Text></h2>
         <p>
           Every project is designed around the client&apos;s business, not a
           template. Small or large, it gets the same care.
@@ -160,11 +142,8 @@ const Services = () => (
               fg={it.fg}
             >
               <Icon size={64} strokeWidth={2.4} />
-              <h3>{it.title}</h3>
+              <h3><Zer0Text>{it.title}</Zer0Text></h3>
               <p>{it.body}</p>
-              <span className="more" style={{ color: it.moreColor }}>
-                See examples
-              </span>
             </Card>
           )
         })}

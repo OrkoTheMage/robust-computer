@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+
+  <channel>
+    <title>Robust Computer — Field Notes</title>
+    <link>https://robustcomputer.example/</link>
+    <description>One short email a month on building software that lasts. Practical, no spam, unsubscribe any time.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Oct 2026 12:00:00 GMT</lastBuildDate>
+    <atom:link href="https://robustcomputer.example/rss.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>Issue 000 - Title</title>
+      <link>https://robustcomputer.example/field-notes/issue-000</link>
+      <description>A short note on the topic.</description>
+      <pubDate>Sun, 04 Oct 2026 12:00:00 GMT</pubDate>
+      <guid isPermaLink="false">field-notes/issue-000</guid>
+    </item>
+
+    <!--
+      Add one <item> per published post. Use the structure below.
+      Keep the <guid> stable (it uniquely identifies the post for
+      feed readers) and the <pubDate> in RFC 822 format.
+
+      <item>
+        <title>Post title goes here</title>
+        <link>https://robustcomputer.example/field-notes/post-slug</link>
+        <description>Plain-text excerpt (a paragraph or two). No HTML.</description>
+        <pubDate>Mon, 06 Oct 2025 12:00:00 GMT</pubDate>
+        <guid isPermaLink="false">field-notes/post-slug</guid>
+      </item>
+    -->
+  </channel>
+
+</rss>

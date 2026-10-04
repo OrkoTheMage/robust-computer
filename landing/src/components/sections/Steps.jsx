@@ -6,7 +6,7 @@
  */
 
 import styled from '@emotion/styled'
-import { Container } from '../ui'
+import { Container, Zer0Text } from '../ui'
 import { steps } from '../../data/copy'
 
 const Section = styled.section`
@@ -14,6 +14,7 @@ const Section = styled.section`
   border-top: 3px solid #000;
   border-bottom: 3px solid #000;
   padding: 72px 56px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   color: #000;
 
   @media (max-width: 980px) {
@@ -86,12 +87,12 @@ const Step = styled.div`
 const Steps = () => (
   <Section>
     <Container>
-      <h2>How a project runs</h2>
+      <h2><Zer0Text>How a project runs</Zer0Text></h2>
       <Row>
         {steps.map((s, i) => (
           <Step key={s.title}>
             <span className="n">{i + 1}</span>
-            <h3>{s.title}</h3>
+            <h3><Zer0Text>{s.title}</Zer0Text></h3>
             <p>{s.body}</p>
           </Step>
         ))}

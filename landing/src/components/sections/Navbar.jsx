@@ -1,42 +1,78 @@
 /**
  * Navbar
  *
- * Sticky, brand-led nav. Active link gets the underline. The CTA
- * button on the right is the "start a project" call.
+ * Sticky, brand-led nav. Clicking the brand icon opens a "site menu"
+ * modal with the page list and external social links — useful as a
+ * quick-jump surface and a place to put GitHub/LinkedIn/RSS without
+ * crowding the top bar. That modal stays available at every width.
+ *
+ * At the mobile breakpoint the inline links collapse into a hamburger.
+ * The panel drops out of the bar (it does not replace the icon modal),
+ * dims the page, and leaves document scroll unlocked. It only lists
+ * pages plus the start-a-project CTA.
+ *
+ * Active link gets the ink underline. The CTA button on the right
+ * is the "start a project" call.
  */
 
 import styled from '@emotion/styled'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
-import { Button, Logo } from '../ui'
+import {
+  Github,
+  Linkedin,
+  Facebook,
+  Instagram,
+  Twitter,
+  Rss,
+  Mail,
+  Home,
+  Users,
+  Send,
+  Menu,
+  X,
+} from 'lucide-react'
+import { Button, Logo, Modal, Zer0Text } from '../ui'
+import config from '../../config'
+
+const Sticky = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 40;
+`
 
 const Bar = styled.nav`
-  background: var(--desk);
+  background: var(--paper);
   border-bottom: 3px solid #000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 56px;
-  position: sticky;
-  top: 0;
-  z-index: 30;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
 
   @media (max-width: 980px) {
     padding: 14px 24px;
   }
 `
 
-const Brand = styled(Link)`
+const Brand = styled.button`
   display: flex;
   align-items: center;
   gap: 14px;
-  text-decoration: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
 `
 
 const BrandWord = styled.span`
-  font-family: var(--display);
+  font-family: var(--mono);
   font-weight: 800;
-  font-size: 22px;
-  letter-spacing: -0.005em;
+  font-size: 32px;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 1;
   color: #000;
@@ -52,7 +88,66 @@ const Links = styled.div`
   align-items: center;
 
   @media (max-width: 760px) {
-    gap: 18px;
+    display: none;
+  }
+`
+
+const MenuBtn = styled.button`
+  display: none;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #000;
+  background: var(--ticket);
+  color: #000;
+  padding: 0;
+
+  @media (max-width: 760px) {
+    display: flex;
+  }
+`
+
+const Panel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 4px 18px 18px;
+  background: var(--paper);
+  border-bottom: 3px solid #000;
+
+  @media (min-width: 761px) {
+    display: none;
+  }
+`
+
+const PanelLink = styled(NavLink)`
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #000;
+  text-decoration: none;
+  padding: 14px 8px;
+  border-bottom: 3px solid #000;
+
+  &.active {
+    background: var(--gold);
+  }
+`
+
+const Scrim = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 25;
+  /* Visual only. Pointers pass through so the page underneath
+     keeps its native scroll (including touch momentum). */
+  pointer-events: none;
+
+  @media (min-width: 761px) {
+    display: none;
   }
 `
 
@@ -67,7 +162,7 @@ const NavA = styled(NavLink)`
   color: #000;
 
   &.active {
-    border-bottom-color: #000;
+    border-bottom-color: var(--ink);
   }
 `
 
@@ -77,20 +172,392 @@ const CTA = styled(Button)`
   box-shadow: 4px 4px 0 var(--gold);
 `
 
-const Navbar = () => (
-  <Bar>
-    <Brand to="/">
-      <Logo variant="icon" h={58} />
-      <BrandWord>ROBUST COMPUTER</BrandWord>
-    </Brand>
-    <Links>
-      <NavA to="/about">AB0UT</NavA>
-      <NavA to="/contact">C0NTACT</NavA>
-      <CTA as={Link} to="/contact">
-        START A PR0JECT
-      </CTA>
-    </Links>
-  </Bar>
-)
+const PanelCTA = styled(CTA)`
+  width: 100%;
+  margin-top: 14px;
+`
+
+// ── Modal content ───────────────────────────────────────────────────────
+//
+// OS-style list: one row per item, icon + label + hint + meta. No
+// boxed groups, no two-column grids. Sections become a thin
+// horizontal divider with a centered caps label. Hover tints the
+// row, active tints it gold.
+
+const MenuBody = styled.div`
+  padding: 28px 8px 22px;
+`
+
+const MenuHeader = styled.h2`
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 0 22px 6px;
+  letter-spacing: -0.005em;
+  color: #000;
+  padding-right: 50px;
+`
+
+const MenuSub = styled.p`
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5d5744;
+  margin: 0 22px 4px;
+`
+
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+`
+
+const ListDivider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 22px 4px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: #000;
+  }
+
+  span {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+  }
+`
+
+// Polymorphic row: renders as <Link> for internal pages or <a>
+// for external links, via Emotion's `as` prop.
+const Row = styled.a`
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 10px 22px;
+  text-align: left;
+  cursor: pointer;
+  color: #000;
+  font: inherit;
+  text-decoration: none;
+  transition: background 60ms ease;
+
+  &:hover {
+    background: var(--ticket);
+  }
+  &:active {
+    background: var(--gold);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--gold-deep);
+    outline-offset: -3px;
+  }
+`
+
+const RowIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2.5px solid #000;
+  background: var(--paper);
+  color: #000;
+  flex: none;
+`
+
+const RowBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+`
+
+const RowLabel = styled.span`
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 17px;
+  text-transform: uppercase;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+const RowHint = styled.span`
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  color: #5d5744;
+  margin-top: 2px;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+`
+
+const RowMeta = styled.span`
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 18px;
+  color: #000;
+  flex: none;
+  line-height: 1;
+`
+
+// Internal pages + external links, each with a one-line hint
+// that reads like an OS menu description. The "News (RSS)" entry
+// lives in Pages (not Elsewhere) because it's the studio's own
+// content, not an external social.
+const mobilePages = [
+  { to: '/', label: 'Home', end: true },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+]
+
+const pages = [
+  { to: '/', label: 'Home', hint: 'What we build', Icon: Home },
+  { to: '/contact', label: 'Start a project', hint: 'Get in touch', Icon: Send },
+  { to: '/about', label: 'Meet the Team', hint: 'The people', Icon: Users },
+  { to: '/rss.xml', label: 'News (RSS)', hint: 'Field notes', Icon: Rss, external: false },
+]
+
+// "Connect" = direct engagement channels (look at the work,
+// write to us). Different from Elsewhere, which is passive
+// "follow" destinations.
+const connects = [
+  {
+    href: 'https://github.com/robust-computer',
+    label: 'GitHub',
+    hint: 'View source',
+    external: true,
+    Icon: Github,
+  },
+  {
+    href: `mailto:${config.brand.contactEmail}`,
+    label: 'Email',
+    hint: 'Write to us',
+    external: false,
+    Icon: Mail,
+  },
+]
+
+const socials = [
+  {
+    href: 'https://linkedin.com/company/robust-computer',
+    label: 'LinkedIn',
+    hint: 'Follow',
+    external: true,
+    Icon: Linkedin,
+  },
+  {
+    href: 'https://www.facebook.com/profile.php?id=61594902219428',
+    label: 'Facebook',
+    hint: 'Follow',
+    external: true,
+    Icon: Facebook,
+  },
+  {
+    href: 'https://www.instagram.com/robust.computer/',
+    label: 'Instagram',
+    hint: 'Follow',
+    external: true,
+    Icon: Instagram,
+  },
+  {
+    href: 'https://x.com/Robust_Computer',
+    label: 'X',
+    hint: 'Follow',
+    external: true,
+    Icon: Twitter,
+  },
+]
+
+// ── Component ────────────────────────────────────────────────────────────
+
+const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const stickyRef = useRef(null)
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false)
+    }
+    // The scrim does not take hits, so an outside press both
+    // dismisses the panel and would otherwise activate whatever
+    // sits under the dim. Swallow that one click.
+    const onPointerDown = (e) => {
+      if (stickyRef.current?.contains(e.target)) return
+      setMobileOpen(false)
+      const swallow = (ev) => {
+        ev.preventDefault()
+        ev.stopPropagation()
+        document.removeEventListener('click', swallow, true)
+      }
+      document.addEventListener('click', swallow, true)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [mobileOpen])
+
+  const closeMobile = () => setMobileOpen(false)
+
+  return (
+    <>
+      <Sticky ref={stickyRef}>
+        <Bar data-chrome="nav">
+          <Brand
+            type="button"
+            onClick={() => {
+              setMobileOpen(false)
+              setMenuOpen(true)
+            }}
+            aria-label="Open site menu"
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+          >
+            <Logo variant="icon" h={87} />
+            <BrandWord><Zer0Text>Robust Computer</Zer0Text></BrandWord>
+          </Brand>
+          <Links>
+            <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
+            <NavA to="/contact"><Zer0Text>Contact</Zer0Text></NavA>
+            <CTA as={Link} to="/contact">
+              <Zer0Text>Start a project</Zer0Text>
+            </CTA>
+          </Links>
+          <MenuBtn
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+          >
+            {mobileOpen
+              ? <X size={22} strokeWidth={2.6} />
+              : <Menu size={22} strokeWidth={2.6} />}
+          </MenuBtn>
+        </Bar>
+        {mobileOpen && (
+          <Panel id="mobile-nav">
+            {mobilePages.map((p) => (
+              <PanelLink key={p.to} to={p.to} end={p.end} onClick={closeMobile}>
+                <Zer0Text>{p.label}</Zer0Text>
+              </PanelLink>
+            ))}
+            <PanelCTA as={Link} to="/contact" onClick={closeMobile}>
+              <Zer0Text>Start a project</Zer0Text>
+            </PanelCTA>
+          </Panel>
+        )}
+      </Sticky>
+
+      {mobileOpen && <Scrim aria-hidden="true" />}
+
+      <Modal
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        ariaLabel="Site menu"
+      >
+        <MenuBody>
+          <MenuHeader><Zer0Text>Menu</Zer0Text></MenuHeader>
+          <MenuSub><Zer0Text>Jump anywhere</Zer0Text></MenuSub>
+
+          <List>
+            <ListDivider>
+              <span><Zer0Text>Pages</Zer0Text></span>
+            </ListDivider>
+            {pages.map((p) => {
+              const { to, href, label, hint, Icon, external } = p
+              const isExternal = Boolean(href)
+              return (
+                <Row
+                  key={to || href}
+                  as={isExternal ? 'a' : Link}
+                  to={isExternal ? undefined : to}
+                  href={isExternal ? href : undefined}
+                  target={isExternal && external ? '_blank' : undefined}
+                  rel={isExternal && external ? 'noopener noreferrer' : undefined}
+                  onClick={isExternal ? undefined : () => setMenuOpen(false)}
+                >
+                  <RowIcon>
+                    <Icon size={20} strokeWidth={2.4} />
+                  </RowIcon>
+                  <RowBody>
+                    <RowLabel>{label}</RowLabel>
+                    <RowHint>{hint}</RowHint>
+                  </RowBody>
+                  <RowMeta aria-hidden="true">{isExternal ? '↗' : '→'}</RowMeta>
+                </Row>
+              )
+            })}
+
+            <ListDivider>
+              <span><Zer0Text>Connect</Zer0Text></span>
+            </ListDivider>
+            {connects.map(({ href, label, hint, external, Icon }) => (
+              <Row
+                key={label}
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+              >
+                <RowIcon>
+                  <Icon size={20} strokeWidth={2.4} />
+                </RowIcon>
+                <RowBody>
+                  <RowLabel>{label}</RowLabel>
+                  <RowHint>{hint}</RowHint>
+                </RowBody>
+                <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
+              </Row>
+            ))}
+
+            <ListDivider>
+              <span><Zer0Text>Elsewhere</Zer0Text></span>
+            </ListDivider>
+            {socials.map(({ href, label, hint, external, Icon }) => (
+              <Row
+                key={label}
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+              >
+                <RowIcon>
+                  <Icon size={20} strokeWidth={2.4} />
+                </RowIcon>
+                <RowBody>
+                  <RowLabel>{label}</RowLabel>
+                  <RowHint>{hint}</RowHint>
+                </RowBody>
+                <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
+              </Row>
+            ))}
+          </List>
+        </MenuBody>
+      </Modal>
+    </>
+  )
+}
 
 export default Navbar

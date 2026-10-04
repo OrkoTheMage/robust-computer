@@ -15,6 +15,7 @@ import Footer from '../components/sections/Footer'
 import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../components/ui'
 import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
+import { Zer0Text } from '../components/ui'
 import config from '../config'
 
 const Page = styled.main`
@@ -26,6 +27,9 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 7fr 5fr;
   gap: 48px;
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
   padding: 64px 56px 84px;
   align-items: start;
 
@@ -40,6 +44,7 @@ const Sheet = styled.form`
   background: var(--ticket);
   padding: 30px 34px 34px;
   box-shadow: 8px 8px 0 #000;
+  color: var(--ink);
 
   h3 {
     font-family: var(--display);
@@ -47,10 +52,12 @@ const Sheet = styled.form`
     font-size: 24px;
     margin: 0 0 4px;
     text-transform: uppercase;
+    color: var(--ink);
   }
 
   > p {
     margin: 0 0 22px;
+    color: var(--ink);
   }
 `
 
@@ -71,6 +78,7 @@ const Lab = styled.div`
   letter-spacing: 0.05em;
   margin: 0 0 8px;
   text-transform: uppercase;
+  color: var(--ink);
 `
 
 const Chips = styled.div`
@@ -176,7 +184,7 @@ const ContactForm = () => {
   if (c.submitted) {
     return (
       <Thank>
-        <h2>Enquiry sent</h2>
+        <h2><Zer0Text>Enquiry sent</Zer0Text></h2>
         <p>
           Thanks for the details — we&apos;ll reply within one business day
           from a real person at {config.brand.contactEmail}.
@@ -187,7 +195,7 @@ const ContactForm = () => {
 
   return (
     <Sheet onSubmit={c.handleSubmit}>
-      <h3>Pr0ject enquiry</h3>
+      <h3><Zer0Text>Project enquiry</Zer0Text></h3>
       <p>Goes straight to the team inbox.</p>
 
       <Two>
@@ -226,7 +234,7 @@ const ContactForm = () => {
         />
       </FieldGroup>
 
-      <Lab>What are you building?</Lab>
+      <Lab><Zer0Text>What are you building?</Zer0Text></Lab>
       <Chips>
         {PROJECT_TYPES.map((p) => (
           <button
@@ -245,7 +253,7 @@ const ContactForm = () => {
         ))}
       </Chips>
 
-      <Lab>Rough budget</Lab>
+      <Lab><Zer0Text>Rough budget</Zer0Text></Lab>
       <Chips>
         {BUDGETS.map((b) => (
           <button
@@ -282,7 +290,7 @@ const ContactForm = () => {
       )}
 
       <Button type="submit" disabled={c.submitting} style={{ marginTop: 6 }}>
-        {c.submitting ? 'Sending…' : 'Send enquiry'}
+        {c.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Send enquiry</Zer0Text>}
       </Button>
     </Sheet>
   )
@@ -291,8 +299,8 @@ const ContactForm = () => {
 const NewsletterBox = () => {
   const n = useNewsletterForm()
   return (
-    <Box bg="var(--gold)">
-      <h3>Field notes</h3>
+    <Box bg="var(--gold)" fg="var(--ink)">
+      <h3><Zer0Text>Field notes</Zer0Text></h3>
       <p>One short email a month on building software that lasts.</p>
       <form onSubmit={n.handleSubmit} style={{ marginBottom: 12 }}>
         <FieldGroup label="Email address">
@@ -309,23 +317,25 @@ const NewsletterBox = () => {
       </form>
       <Button
         type="button"
+        variant="alt"
         onClick={n.handleSubmit}
         disabled={n.submitting}
       >
-        {n.submitting ? 'Sending…' : 'Subscribe'}
+        {n.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
       </Button>
       <p
         style={{
           marginTop: 12,
           fontFamily: 'var(--mono)',
           fontSize: 13,
+          color: 'var(--ink)',
         }}
       >
         {n.status === 'success'
-          ? 'Thanks — check your inbox.'
+          ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
           : n.status === 'error'
-          ? 'Something went wrong. Try again in a moment.'
-          : 'Optional. No spam.'}
+          ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
+          : <Zer0Text>Optional. No spam.</Zer0Text>}
       </p>
     </Box>
   )
@@ -338,17 +348,18 @@ export default function Contact() {
       <PageHeader
         title="Start a project"
         lead="Tell us what you are building. A short message is fine, we will ask the right questions after that."
+        badgeVariant="badgeCut"
       />
       <Grid>
         <ContactForm />
         <Side>
           <Box bg="#000" fg="var(--paper)">
-            <h3>Prefer plain email?</h3>
+            <h3><Zer0Text>Prefer plain email?</Zer0Text></h3>
             <p>Write to us directly and we will reply from a real person.</p>
             <Mail>{config.brand.contactEmail}</Mail>
           </Box>
-          <Box>
-            <h3>What happens next</h3>
+          <Box fg="var(--ink)">
+            <h3><Zer0Text>What happens next</Zer0Text></h3>
             <ol>
               {whatHappens.map((step) => (
                 <li key={step}>{step}</li>

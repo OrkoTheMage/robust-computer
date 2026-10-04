@@ -20,6 +20,9 @@
   --display: 'Barlow', 'Arial Narrow', Arial, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
   --body: 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* Content stays inside --page. Band backgrounds are not capped;
+     they run the full viewport. Gutters default to paper. */
+  --page: 1750px;
 
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -53,12 +56,18 @@ html {
 
 body {
   margin: 0;
-  background: var(--desk);
+  background: var(--paper);
   color: var(--desk-ink);
   font-family: var(--body);
   font-size: 18px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--paper);
 }
 
 img,

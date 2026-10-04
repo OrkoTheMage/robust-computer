@@ -1,7 +1,7 @@
 /**
  * About page
  *
- * "Meet the developers." One section per developer, alternating
+ * "Meet the Team." One section per developer, alternating
  * sides. The "facts" strip sits between the page header and the
  * first developer. Closing CTA band before the footer.
  */
@@ -19,11 +19,17 @@ const Page = styled.main`
   background: var(--paper);
 `
 
+const FactsBand = styled.div`
+  background: var(--paper);
+  border-bottom: 3px solid #000;
+`
+
 const Facts = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-bottom: 3px solid #000;
-  background: var(--paper);
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
 
   @media (max-width: 760px) {
     grid-template-columns: 1fr;
@@ -62,9 +68,16 @@ const Fact = styled.div`
 
 // Three distinct portfolio preview styles — mapped by index so the
 // mockup's three previews land on the three developers.
+//
+// If a preview has an `image`, the browser-window mockup renders
+// a static screenshot (Aeryn is real; the other two are
+// placeholders and render the abstract content under `children`).
+// We use a screenshot instead of an iframe so the embedded site
+// doesn't fall into its mobile breakpoint.
 const previewStyles = [
   {
-    domain: 'aeryn.dev',
+    domain: 'grue.sh',
+    image: '/aeryn-preview.png',
     bg: '#0f1115',
     fg: '#eee',
     font: 'sans',
@@ -129,78 +142,14 @@ const previewStyles = [
   {
     domain: 'studio.example',
     bg: '#fff',
-    fg: '#1a1a1a',
-    font: 'serif',
-    children: (
-      <>
-        <h4 style={{ fontStyle: 'italic', fontWeight: 400, maxWidth: 300 }}>
-          Interfaces that feel obvious.
-        </h4>
-        <p
-          style={{
-            fontSize: 13,
-            maxWidth: 280,
-            color: '#555',
-            margin: '6px 0 0',
-          }}
-        >
-          Front-end developer working with small teams and founders.
-        </p>
-        <div
-          style={{
-            position: 'absolute',
-            right: 22,
-            top: 80,
-            width: 150,
-            height: 180,
-            background: '#f3c9a5',
-          }}
-        />
-      </>
-    ),
   },
   {
     domain: 'name.codes',
-    bg: '#2146d1',
-    fg: '#fff',
-    font: 'sans',
-    children: (
-      <>
-        <h4 style={{ maxWidth: 330, fontWeight: 900 }}>
-          I build the product behind the product.
-        </h4>
-        <span
-          style={{
-            display: 'inline-block',
-            margin: '10px 0 0',
-            background: '#ffe14d',
-            color: '#111',
-            padding: '9px 18px',
-            borderRadius: 8,
-            fontWeight: 700,
-            fontSize: 12,
-          }}
-        >
-          See what I&apos;ve built
-        </span>
-        <div
-          style={{
-            position: 'absolute',
-            left: 22,
-            right: 22,
-            bottom: 20,
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 10,
-          }}
-        >
-          <div style={{ height: 78, borderRadius: 14, background: '#fff' }} />
-          <div style={{ height: 78, borderRadius: 14, background: '#ffe14d' }} />
-          <div style={{ height: 78, borderRadius: 14, background: '#ff6b6b' }} />
-          <div style={{ height: 78, borderRadius: 14, background: '#7ee0b1' }} />
-        </div>
-      </>
-    ),
+    bg: '#fff',
+  },
+  {
+    domain: 'design.work',
+    bg: '#fff',
   },
 ]
 
@@ -209,17 +158,20 @@ export default function About() {
     <Page>
       <Navbar />
       <PageHeader
-        title="Meet the developers"
+        title="Meet the Team"
         lead="Robust Computer is a small team. When you hire us, you work with the people who write the code."
+        badgeVariant="badgeCut"
       />
-      <Facts>
-        {teamFacts.map((f) => (
-          <Fact key={f.big}>
-            <b>{f.big}</b>
-            {f.small}
-          </Fact>
-        ))}
-      </Facts>
+      <FactsBand>
+        <Facts>
+          {teamFacts.map((f) => (
+            <Fact key={f.big}>
+              <b>{f.big}</b>
+              {f.small}
+            </Fact>
+          ))}
+        </Facts>
+      </FactsBand>
       {developers.map((dev, i) => (
         <Developer
           key={dev.name + i}

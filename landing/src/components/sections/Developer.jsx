@@ -4,17 +4,20 @@
  * One developer per section on the about page. Alternating layout
  * (props.reversed flips sides). Avatar, name, role, bio, stack,
  * a portfolio link button + two text links, and a portfolio preview
- * block.
+ * block. The preview is rendered as either a static screenshot
+ * (`preview.image`) or a live iframe (`preview.url`); otherwise
+ * the abstract placeholder content under `preview.children` is used.
  */
 
 import styled from '@emotion/styled'
-import { Button } from '../ui'
+import { Button, Logo, Zer0Text } from '../ui'
 
 const Wrap = styled.section`
   display: grid;
   grid-template-columns: ${(p) => (p.reversed ? '7fr 5fr' : '5fr 7fr')};
   gap: 56px;
   padding: 72px 56px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   border-bottom: 3px solid #000;
   align-items: center;
   background: ${(p) => (p.reversed ? 'var(--ticket)' : 'transparent')};
@@ -48,6 +51,10 @@ const Id = styled.div`
     border-radius: 50%;
     background: var(--gold);
     padding: 4px;
+    /* Mirror the avatar on every other (reversed) developer
+       section, so the icon "faces" the direction the preview
+       mockup is on. */
+    transform: ${(p) => (p.reversed ? 'scaleX(-1)' : 'none')};
   }
 `
 
@@ -123,6 +130,10 @@ const PreviewBar = styled.div`
   gap: 6px;
   padding: 0 12px;
   border-bottom: 4px solid #000;
+  /* Float above the PreviewImage so the image can extend up under
+     the Bar (its top edge sits at the very top of the preview). */
+  position: relative;
+  z-index: 2;
 
   i {
     width: 10px;
@@ -175,14 +186,34 @@ const PreviewBody = styled.div`
   }
 `
 
+// Static screenshot preview. Extends UP by 34px (the height of
+// PreviewBar) so its top edge sits at the very top of the preview
+// window, behind the Bar. The Bar floats on top via z-index.
+// object-fit: cover crops to fill, with object-position: top so
+// the page header/nav is always visible.
+const PreviewImage = styled.img`
+  position: absolute;
+  top: -34px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% + 34px);
+  border: 0;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  background: #fff;
+`
+
 const Developer = ({ dev, preview, reversed }) => (
   <Wrap reversed={reversed}>
     <Info reversed={reversed}>
-      <Id>
-        <img src={dev.avatar} alt="" />
+      <Id reversed={reversed}>
+        <Logo variant={dev.avatar} alt="" h={104} />
         <div>
           <H2>{dev.name}</H2>
-          <Role>{dev.role}</Role>
+          <Role><Zer0Text>{dev.role}</Zer0Text></Role>
         </div>
       </Id>
       <Body>{dev.bio}</Body>
@@ -206,13 +237,13 @@ const Developer = ({ dev, preview, reversed }) => (
       </Chips>
       <Links>
         <Button as="a" href={dev.links?.portfolio || '#'}>
-          Visit P0rtf0li0
+          <Zer0Text>Visit portfolio</Zer0Text>
         </Button>
         {dev.links?.github && (
-          <TextLink href={dev.links.github}>GitHub</TextLink>
+          <TextLink href={dev.links.github}><Zer0Text>GitHub</Zer0Text></TextLink>
         )}
         {dev.links?.linkedin && (
-          <TextLink href={dev.links.linkedin}>LinkedIn</TextLink>
+          <TextLink href={dev.links.linkedin}><Zer0Text>LinkedIn</Zer0Text></TextLink>
         )}
       </Links>
     </Info>
@@ -225,11 +256,18 @@ const Developer = ({ dev, preview, reversed }) => (
           <span>{preview.domain}</span>
         </PreviewBar>
         <PreviewBody bg={preview.bg} fg={preview.fg} font={preview.font}>
-          {preview.children}
+          {preview.image ? (
+            <PreviewImage
+              src={preview.image}
+              alt={`${preview.domain} — portfolio screenshot`}
+              loading="lazy"
+            />
+          ) : (
+            preview.children
+          )}
         </PreviewBody>
         <Cap>
           <span>P0RTF0LI0 PREVIEW</span>
-          <span>PLACEHOLDER</span>
         </Cap>
       </Preview>
     </PreviewWrap>

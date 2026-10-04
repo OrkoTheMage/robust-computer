@@ -2,14 +2,15 @@
  * NotFound
  *
  * Fallback for unknown routes. Keeps the navbar + footer for
- * navigation context.
+ * navigation context. The 404 illustration (`icon-404.svg`)
+ * carries the visual; the headline underneath is plain copy.
  */
 
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/sections/Navbar'
 import Footer from '../components/sections/Footer'
-import { Button } from '../components/ui'
+import { Button, Logo, Zer0Text } from '../components/ui'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -26,22 +27,31 @@ const Inner = styled.section`
   justify-content: center;
   padding: 80px 20px;
   text-align: center;
+  gap: 24px;
+`
 
-  h1 {
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: clamp(64px, 10vw, 160px);
-    line-height: 0.9;
-    margin: 0 0 8px;
-    text-transform: uppercase;
-    color: #000;
-  }
+const Illustration = styled(Logo)`
+  width: clamp(180px, 28vw, 280px);
+  height: auto;
+  filter: drop-shadow(8px 8px 0 #000);
+`
 
-  p {
-    font-size: 18px;
-    max-width: 32em;
-    margin: 0 0 24px;
-  }
+const Headline = styled.h1`
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1;
+  margin: 0;
+  text-transform: uppercase;
+  color: #000;
+  letter-spacing: -0.005em;
+`
+
+const Lede = styled.p`
+  font-size: 18px;
+  max-width: 32em;
+  margin: 0;
+  color: #000;
 `
 
 export default function NotFound() {
@@ -49,10 +59,11 @@ export default function NotFound() {
     <Page>
       <Navbar />
       <Inner>
-        <h1>404</h1>
-        <p>That page is not here. The link is old or the URL is wrong.</p>
+        <Illustration variant="icon404" alt="Page not found" />
+        <Headline><Zer0Text>Page not found</Zer0Text></Headline>
+        <Lede>That page is not here. The link is old or the URL is wrong.</Lede>
         <Button as={Link} to="/">
-          Back to home
+          <Zer0Text>Back to home</Zer0Text>
         </Button>
       </Inner>
       <Footer />

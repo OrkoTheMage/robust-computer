@@ -7,12 +7,13 @@
  */
 
 import styled from '@emotion/styled'
-import { Container, Button, InputControl, FieldGroup } from '../ui'
+import { Container, Button, InputControl, FieldGroup, Zer0Text } from '../ui'
 
 const Band = styled.section`
   background: #000;
   color: var(--paper);
   padding: 64px 56px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
@@ -79,7 +80,7 @@ const SubscribeBtn = styled(Button)`
 const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => (
   <Band>
     <div>
-      <h2>Field notes</h2>
+      <h2><Zer0Text>Field notes</Zer0Text></h2>
       <p>
         One short email a month on building software that lasts. Practical,
         no spam, unsubscribe any time.
@@ -99,17 +100,17 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => (
               disabled={submitting}
             />
             <SubscribeBtn type="submit" disabled={submitting}>
-              {submitting ? 'Sending…' : 'Subscribe'}
+              {submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
             </SubscribeBtn>
           </Row>
         </FieldGroup>
       </div>
       <small>
         {status === 'success'
-          ? 'Thanks — check your inbox.'
+          ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
           : status === 'error'
-          ? 'Something went wrong. Try again in a moment.'
-          : 'Latest issue: placeholder title, read online.'}
+          ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
+          : <Zer0Text>Latest issue: placeholder title, read online.</Zer0Text>}
       </small>
     </Form>
   </Band>

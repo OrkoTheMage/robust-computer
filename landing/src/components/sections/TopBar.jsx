@@ -1,11 +1,18 @@
 /**
  * TopBar
  *
- * Slim announcement strip above the navbar. Repeats the "now booking"
- * message and the one-business-day reply promise.
+ * Slim announcement strip above the navbar. On home, the first
+ * cell carries a random software-dev tagline picked from
+ * `data/jokes.js` at mount. The "reply within one business day"
+ * promise stays static on every page.
  */
 
+import { useState } from 'react'
 import styled from '@emotion/styled'
+import { jokes } from '../../data/jokes'
+import { Zer0Text } from '../ui'
+
+const pickJoke = () => jokes[Math.floor(Math.random() * jokes.length)]
 
 const Bar = styled.div`
   background: #000;
@@ -37,12 +44,18 @@ const Dot = styled.span`
   flex: none;
 `
 
-const TopBar = () => (
-  <Bar>
-    <span>N0W B00KING PR0JECTS F0R EARLY 2027</span>
-    <Dot />
-    <span>REPLY WITHIN 0NE BUSINESS DAY</span>
-  </Bar>
-)
+const TopBar = () => {
+  // Picked once per mount. SSR-safe: the lazy initializer runs
+  // on the client only, so Math.random is fine.
+  const [joke] = useState(pickJoke)
+
+  return (
+    <Bar data-chrome="top">
+      <span><Zer0Text>{`Now with — ${joke}`}</Zer0Text></span>
+      <Dot />
+      <span><Zer0Text>Reply within one business day</Zer0Text></span>
+    </Bar>
+  )
+}
 
 export default TopBar

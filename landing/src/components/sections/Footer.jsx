@@ -1,20 +1,34 @@
 /**
  * Footer
  *
- * Black footer with a four-column layout: brand+blurb, BUILD links,
- * STUDIO links, ELSEWHERE links. Bottom strip with the small
- * copyright / build line.
+ * Black footer with a four-column layout: brand+blurb, SITE pages,
+ * CONNECT (direct engagement: GitHub + email), and ELSEWHERE
+ * (passive-follow socials). Bottom strip with the small copyright
+ * / build line.
  */
 
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
+import {
+  Home,
+  Users,
+  Send,
+  Rss,
+  Github,
+  Linkedin,
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+} from 'lucide-react'
 import config from '../../config'
-import { Logo } from '../ui'
+import { Logo, Zer0Text } from '../ui'
 
 const Foot = styled.footer`
   background: #000;
   color: var(--paper);
   padding: 56px 56px 30px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
 
   @media (max-width: 760px) {
     padding: 40px 24px 24px;
@@ -23,20 +37,22 @@ const Foot = styled.footer`
 
 const Cols = styled.div`
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
   gap: 40px;
-  padding-bottom: 36px;
+  padding-bottom: 24px;
   border-bottom: 3px solid var(--paper);
 
   @media (max-width: 760px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    justify-items: center;
+    text-align: center;
   }
 `
 
 const Brand = styled.div`
   .w {
-    height: 64px;
+    height: 160px;
     width: auto;
     margin-bottom: 14px;
   }
@@ -49,6 +65,16 @@ const Brand = styled.div`
   .mono {
     font-family: var(--mono);
     font-size: 15px;
+  }
+
+  @media (max-width: 760px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .w {
+      margin-inline: auto;
+    }
   }
 `
 
@@ -71,6 +97,55 @@ const Col = styled.div`
     text-decoration: none;
     color: var(--paper);
   }
+
+  /* Links get a gold underline + gold text on hover (and on
+     keyboard focus, so the effect is reachable). The 3px
+     transparent underline is always present so the link's
+     box height doesn't shift on hover.
+
+     width: fit-content is the key bit: the link is still
+     display: block (so each one stays on its own line) but
+     the box is only as wide as the text — otherwise the
+     border-bottom would run the full column width.
+
+     display: flex + align-items: center lays the icon
+     and the label out side-by-side. The icon gets flex: none
+     so it doesn't get squished if the link is narrow. */
+  a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    border-bottom: 3px solid transparent;
+    padding-bottom: 1px;
+    transition: color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  a svg {
+    flex: none;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  @media (max-width: 760px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h4 {
+      text-align: center;
+    }
+
+    a {
+      margin-inline: auto;
+    }
+  }
 `
 
 const Small = styled.div`
@@ -85,7 +160,51 @@ const Small = styled.div`
 
   @media (max-width: 760px) {
     flex-direction: column;
+    align-items: center;
     gap: 6px;
+    text-align: center;
+  }
+`
+
+// Legal row — sits between the four-column grid and the brand
+// strip. Not a column because legal links don't fit a services
+// hierarchy; they live in the fine print. The Cols's bottom
+// border is the divider above the legal links; we don't add
+// another border here (that would double up).
+const Legal = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0 0;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  span.sep {
+    opacity: 0.55;
+  }
+
+  a {
+    color: var(--paper);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 1px;
+    transition: color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  @media (max-width: 760px) {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
   }
 `
 
@@ -93,34 +212,68 @@ const Footer = () => (
   <Foot>
     <Cols>
       <Brand>
-        <Logo variant="badge" h={64} className="w" alt={config.brand.name} />
+        <Logo variant="banner2Cut" h={160} className="w" alt={config.brand.name} />
         <p>Bespoke websites and software.</p>
         <p className="mono">{config.brand.contactEmail}</p>
       </Brand>
       <Col>
-        <h4>Build</h4>
-        <Link to="/contact">Landing pages</Link>
-        <Link to="/contact">Web apps</Link>
-        <Link to="/contact">SaaS platforms</Link>
-        <Link to="/contact">Integrations</Link>
+        <h4><Zer0Text>Site</Zer0Text></h4>
+        <Link to="/">
+          <Home size={18} strokeWidth={2.4} aria-hidden="true" />
+          Home
+        </Link>
+        <Link to="/about">
+          <Users size={18} strokeWidth={2.4} aria-hidden="true" />
+          About
+        </Link>
+        <Link to="/contact">
+          <Send size={18} strokeWidth={2.4} aria-hidden="true" />
+          Contact
+        </Link>
+        <a href="/rss.xml">
+          <Rss size={18} strokeWidth={2.4} aria-hidden="true" />
+          News (RSS)
+        </a>
       </Col>
       <Col>
-        <h4>Studio</h4>
-        <Link to="/about">Work</Link>
-        <Link to="/about">Meet the developers</Link>
-        <Link to="/contact">Contact</Link>
-        <a href="#newsletter">Field notes</a>
+        <h4><Zer0Text>Connect</Zer0Text></h4>
+        <a href="https://github.com/robust-computer" target="_blank" rel="noopener noreferrer">
+          <Github size={18} strokeWidth={2.4} aria-hidden="true" />
+          GitHub
+        </a>
+        <a href={`mailto:${config.brand.contactEmail}`}>
+          <Mail size={18} strokeWidth={2.4} aria-hidden="true" />
+          Email
+        </a>
       </Col>
       <Col>
-        <h4>Elsewhere</h4>
-        <a href="#">GitHub</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">RSS</a>
+        <h4><Zer0Text>Elsewhere</Zer0Text></h4>
+        <a href="https://linkedin.com/company/robust-computer" target="_blank" rel="noopener noreferrer">
+          <Linkedin size={18} strokeWidth={2.4} aria-hidden="true" />
+          LinkedIn
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61594902219428" target="_blank" rel="noopener noreferrer">
+          <Facebook size={18} strokeWidth={2.4} aria-hidden="true" />
+          Facebook
+        </a>
+        <a href="https://www.instagram.com/robust.computer/" target="_blank" rel="noopener noreferrer">
+          <Instagram size={18} strokeWidth={2.4} aria-hidden="true" />
+          Instagram
+        </a>
+        <a href="https://x.com/Robust_Computer" target="_blank" rel="noopener noreferrer">
+          <Twitter size={18} strokeWidth={2.4} aria-hidden="true" />
+          X
+        </a>
       </Col>
     </Cols>
+    <Legal aria-label="Legal">
+      <Link to="/privacy">Privacy Policy</Link>
+      <span className="sep" aria-hidden="true">|</span>
+      <Link to="/terms">Terms of Service</Link>
+    </Legal>
     <Small>
       <span>{config.brand.name}</span>
-      <span>BUILT BY HAND, TESTED BEF0RE LAUNCH</span>
+      <span><Zer0Text>Built by hand, tested before launch</Zer0Text></span>
     </Small>
   </Foot>
 )

@@ -7,12 +7,13 @@
  */
 
 import styled from '@emotion/styled'
-import { Container, Chip } from '../ui'
+import { Container, Chip, Zer0Text } from '../ui'
 
 const Bar = styled.section`
   background: #000;
   color: var(--paper);
   padding: 44px 56px;
+  padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 40px;
@@ -54,7 +55,7 @@ const items = [
 
 const Industries = () => (
   <Bar>
-    <h2>Built across industries</h2>
+    <h2><Zer0Text>Built across industries</Zer0Text></h2>
     <Chips>
       {items.map((label) => (
         <Chip key={label} onInk>
