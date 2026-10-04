@@ -1,13 +1,14 @@
 {
   "name": "robust-computer",
   "private": true,
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Robust Computer — small developer studio, public website. Monorepo root.",
   "scripts": {
     "dev": "node scripts/dev.js",
     "dev:prod": "node scripts/dev.js --env=prod",
     "dev:landing": "cd landing && yarn dev",
     "dev:server": "cd server && yarn dev",
+    "mail": "node scripts/mailpit.js",
     "install:all": "yarn install && cd landing && yarn install && cd ../server && yarn install"
   },
   "engines": {
