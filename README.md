@@ -1,21 +1,43 @@
-# Robust Computer — v0.5.1
+![Logo](landing/public/banner2-cut.svg)
 
-Public marketing site for **Robust Computer**, a small developer studio.
-Built per the `PROJECT-CONVENTIONS.md` blueprint: one marketing frontend
-plus an Express + MongoDB API, both in a single monorepo, no workspaces.
+**Version 0.6.0**
 
 ## Tech stack
 
-| Layer | Choice |
-|---|---|
-| Frontend | React 18, Vite 5, `@emotion/styled` |
-| Routing | `react-router-dom` |
-| Icons | `lucide-react` |
-| HTTP | Native `fetch` wrapped in `src/api.js` |
-| Backend | Node 20+, Express 4, Mongoose 8 |
-| Auth (future) | `jsonwebtoken` + `bcryptjs` |
-| Email | `nodemailer` (Mailpit in dev, real SMTP in prod) |
-| Package manager | Yarn 1 (classic) |
+| Project | Stack | Dev Port | Purpose |
+|---------|-------|----------|---------|
+| `landing/` | React + Vite | 3000 | Marketing site |
+| `server/` | Express + MongoDB | 5000 | API |
+
+## Installation
+
+```bash
+yarn install
+yarn install:all
+yarn dev
+```
+
+Before `yarn dev` will boot the server, create your local env files at the
+repo root. Copy the committed [`.env.example`](.env.example) and fill in real values:
+
+```bash
+cp .env.example .env.dev
+cp .env.example .env.prod
+```
+
+The server selects between these via `NODE_ENV` (set by the
+`scripts/dev.js` wrapper). Both Vite apps point `envDir` at the
+repo root and read whichever file the wrapper chose.
+
+The file is shared by all three projects (server selects `.env.dev` or
+`.env.prod` based on `NODE_ENV`; both Vite apps point `envDir` at the
+repo root).
+
+- **`.env.dev`** — local development values.
+- **`.env.prod`** — reference / production-side script use. Real values live
+  on Railway and Vercel
+
+> NOTE: See [Environment Variables](#environment-variables) below for the full contract per project.
 
 ## Repository layout
 
@@ -78,7 +100,7 @@ server/
 - Node 20+
 - Yarn 1 (`npm i -g yarn`)
 - MongoDB 6+ running locally (`mongod` on default port)
-- Mailpit (optional, for capturing dev email) — `mailpit` on `:1025`
+- Mailpit (optional, for capturing dev email) — `yarn mail` to start it on `:1025` (auto-downloads the single-binary release)
 
 ### Install everything
 
@@ -116,25 +138,26 @@ yarn dev:server
 
 ## Environment variables
 
-Every var lives in `.env.example`. Deployers copy that file and fill
-in real values.
+Every required var lives in `.env.example`. Deployers copy that file and
+fill in real values. Non-required values (server lifecycle, brand identity,
+SMTP transport defaults) live in code — see `server/src/config.js` and
+`landing/src/config.js`.
 
 | Var | Read by | Required | Notes |
 |---|---|---|---|
-| `NODE_ENV` | server | yes | `development` or `production` |
-| `PORT` | server | no | default `5000` |
-| `MONGODB_URI` | server | yes | `mongodb://…` |
+| `NODE_ENV` | server | yes | `development` or `production` (wrapper/host injects; file is documentation) |
+| `MONGODB_URI` | server | yes | `mongodb+srv://…` (see Atlas) |
 | `JWT_SECRET` | server | yes | long random string |
 | `SMTP_HOST` | server | yes | `127.0.0.1` in dev |
-| `SMTP_PORT` | server | no | `1025` (Mailpit) / `587` (real) |
-| `SMTP_SECURE` | server | no | `true` for port 465 |
-| `SMTP_USER` | server | no | blank for Mailpit |
-| `SMTP_PASS` | server | no | blank for Mailpit |
-| `SMTP_FROM` | server | yes | sender header |
+| `SMTP_PORT` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
+| `SMTP_USER` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
+| `SMTP_PASS` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
 | `LANDING_URL` | server | yes | used in email links |
 | `API_URL` | server | yes | used in email links |
 | `VITE_API_URL` | landing | yes | backend origin |
-| `VITE_LANDING_URL` | landing | no | landing origin |
+| `VITE_LANDING_URL` | landing | yes | landing origin |
+
+Code constants (not in env): `PORT` (5000), `SMTP_PORT` (1025 dev / 587 prod — set by `NODE_ENV` branch in `server/src/config.js`), `SMTP_SECURE` (`false`, STARTTLS), `SMTP_FROM` (`hello@${BRAND_DOMAIN}`), `JWT_EXPIRES_IN` (`24h`), brand identity (`BRAND_NAME`, `BRAND_DOMAIN`, `BRAND_EMAIL`).
 
 ## API
 
