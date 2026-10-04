@@ -1,4 +1,4 @@
-# Robust Computer — v1.0.0
+# Robust Computer — v0.5.0
 
 Public marketing site for **Robust Computer**, a small developer studio.
 Built per the `PROJECT-CONVENTIONS.md` blueprint: one marketing frontend
@@ -183,7 +183,7 @@ to `node src/index.js`, and inject every env var from `.env.example`.
 
 ## Versioning
 
-- `MAJOR.MINOR.PATCH` (current: `v1.0.0`)
+- `MAJOR.MINOR.PATCH` (current: `v0.1.0`)
 - Branch model: `feature:<name>`, `dev`, `main`
 - Bump in `package.json` (root) on release.
 
