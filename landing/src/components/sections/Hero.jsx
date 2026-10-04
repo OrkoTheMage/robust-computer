@@ -32,8 +32,10 @@ const Wrap = styled.section`
   border-bottom: 3px solid #000;
 
   @media (max-width: 980px) {
+    /* On mobile the Opening drops the 100dvh clamp, so the hero
+       grows to fit its stacked content rather than overflowing. */
+    flex: none;
     align-items: flex-start;
-    min-height: auto;
   }
 `
 
@@ -95,24 +97,24 @@ const ArtFrame = styled.div`
   width: 960px;
 
   @media (max-width: 980px) {
-    width: 100%;
+    /* Cap the art on small screens so the ticket can sit at a
+       reasonable size below it without overflowing the column. */
+    width: min(100%, 320px);
+    margin-inline: auto;
   }
 `
 
 const ArtImg = styled(Logo)`
-  && {
-    display: block;
-    width: 960px;
-    height: 960px;
-    max-width: none;
-    filter: drop-shadow(16px 16px 0 #000);
-  }
+  display: block;
+  width: 960px;
+  height: 960px;
+  max-width: none;
+  filter: drop-shadow(16px 16px 0 #000);
 
   @media (max-width: 980px) {
-    && {
-      width: 100%;
-      height: auto;
-    }
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(8px 8px 0 #000);
   }
 `
 
@@ -130,9 +132,15 @@ const Ticket = styled.div`
   color: var(--ink);
 
   @media (max-width: 980px) {
-    left: 0;
-    bottom: -38px;
-    width: min(398px, calc(100vw - 48px));
+    /* Sits at the bottom of the art, not hanging past it, so it
+       never crashes into the headline below. */
+    position: static;
+    transform: rotate(-2.5deg);
+    width: 100%;
+    margin-top: 20px;
+    border-width: 3px;
+    box-shadow: 6px 6px 0 #000;
+    padding: 12px 14px 14px;
   }
 `
 
@@ -148,6 +156,13 @@ const TicketTag = styled.div`
   margin-bottom: 13px;
   text-transform: uppercase;
   color: var(--ink);
+
+  @media (max-width: 980px) {
+    font-size: 11px;
+    border-bottom-width: 3px;
+    padding-bottom: 7px;
+    margin-bottom: 8px;
+  }
 `
 
 const TicketBody = styled.pre`
@@ -157,6 +172,10 @@ const TicketBody = styled.pre`
   line-height: 1.55;
   white-space: pre-wrap;
   color: var(--ink);
+
+  @media (max-width: 980px) {
+    font-size: 13px;
+  }
 `
 
 const TicketStamp = styled.span`
@@ -171,6 +190,12 @@ const TicketStamp = styled.span`
   padding: 4px 13px;
   text-transform: uppercase;
   text-decoration: none;
+
+  @media (max-width: 980px) {
+    margin-top: 10px;
+    font-size: 11px;
+    padding: 3px 9px;
+  }
 
   ${(p) => p.$link && `
     cursor: pointer;

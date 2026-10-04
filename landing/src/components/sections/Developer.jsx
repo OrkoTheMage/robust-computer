@@ -56,6 +56,23 @@ const Id = styled.div`
        mockup is on. */
     transform: ${(p) => (p.reversed ? 'scaleX(-1)' : 'none')};
   }
+
+  /* On phones, stack the avatar above the name so the name
+     gets the full row width — otherwise long names like
+     "PLACEHOLDER" wrap and drop their last letter onto a
+     second line. Also shrink the avatar and tighten the gap. */
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+
+    img {
+      width: 64px;
+      height: 64px;
+      padding: 3px;
+    }
+  }
 `
 
 const H2 = styled.h2`
@@ -66,6 +83,12 @@ const H2 = styled.h2`
   margin: 0;
   text-transform: uppercase;
   overflow-wrap: anywhere;
+
+  /* Drop the heading size on phones so the name doesn't
+     dominate the row even after the avatar stacks above. */
+  @media (max-width: 600px) {
+    font-size: 28px;
+  }
 `
 
 const Role = styled.div`
@@ -91,6 +114,25 @@ const Chips = styled.div`
 `
 
 const Links = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 26px;
+  align-items: center;
+
+  /* On phones, stack the "Visit portfolio" button on its own
+     line and put GitHub + LinkedIn together on a row below. */
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+`
+
+// Row that holds the secondary text links (GitHub, LinkedIn).
+// On desktop this sits inline next to the "Visit portfolio"
+// button via the parent flex; on mobile the parent collapses
+// to a column and this row stays a single horizontal line.
+const TextLinks = styled.div`
   display: flex;
   gap: 26px;
   align-items: center;
@@ -239,11 +281,15 @@ const Developer = ({ dev, preview, reversed }) => (
         <Button as="a" href={dev.links?.portfolio || '#'}>
           <Zer0Text>Visit portfolio</Zer0Text>
         </Button>
-        {dev.links?.github && (
-          <TextLink href={dev.links.github}><Zer0Text>GitHub</Zer0Text></TextLink>
-        )}
-        {dev.links?.linkedin && (
-          <TextLink href={dev.links.linkedin}><Zer0Text>LinkedIn</Zer0Text></TextLink>
+        {(dev.links?.github || dev.links?.linkedin) && (
+          <TextLinks>
+            {dev.links?.github && (
+              <TextLink href={dev.links.github}><Zer0Text>GitHub</Zer0Text></TextLink>
+            )}
+            {dev.links?.linkedin && (
+              <TextLink href={dev.links.linkedin}><Zer0Text>LinkedIn</Zer0Text></TextLink>
+            )}
+          </TextLinks>
         )}
       </Links>
     </Info>

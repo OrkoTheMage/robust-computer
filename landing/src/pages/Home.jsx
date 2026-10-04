@@ -6,8 +6,10 @@
  * No state here — the FieldNotes section gets its bindings from
  * the page-local `useNewsletterForm` hook.
  *
- * Promises sits inside the hero's viewport, pinned to the bottom,
- * so the sections below start at the fold instead of one bar lower.
+ * On desktop, Promises sits inside the hero's viewport (pinned to
+ * the bottom) so the sections below start at the fold. On mobile
+ * the stacked layout is taller than a screen, so both Hero and
+ * Promises flow normally and the chrome-height clamp is skipped.
  */
 
 import styled from '@emotion/styled'
@@ -36,10 +38,10 @@ const Opening = styled.div`
   height: calc(100dvh - var(--chrome, 145px));
 
   @media (max-width: 980px) {
-    /* Stacked layout can outgrow a viewport — fall back to
-       min-height so the promises bar still sits inside the
-       first screen but the content can keep growing. */
-    min-height: calc(100dvh - var(--chrome, 145px));
+    /* The stacked art + headline + ticket + lead + CTAs is taller
+       than a phone screen, so let the hero grow and let Promises
+       sit in normal flow below it. */
+    height: auto;
   }
 `
 
