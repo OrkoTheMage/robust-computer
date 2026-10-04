@@ -1,4 +1,4 @@
-# Robust Computer — v0.5.0
+# Robust Computer — v0.5.1
 
 Public marketing site for **Robust Computer**, a small developer studio.
 Built per the `PROJECT-CONVENTIONS.md` blueprint: one marketing frontend
