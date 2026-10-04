@@ -19,6 +19,8 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import pkg from '../../../../package.json'
 import { Button, Logo, Zer0Text } from '../ui'
+import { useLatestRss, formatPubDate } from '../../hooks/useLatestRss'
+import { ticketIn } from '../../animations'
 
 /* Fills the opening viewport above the promises bar. The inner
    grid stays on --page, which keeps the ticket parked on the art. */
@@ -118,6 +120,14 @@ const ArtImg = styled(Logo)`
   }
 `
 
+// Ticket comes up from below the art and settles into its
+// tilted position. The `ticketIn` keyframes live in
+// `src/animations.js` so other surfaces (a future modal opener,
+// a CTA, etc.) can reuse the same entrance.
+//
+// 0.3s delay lets the hero settle first; the
+// `cubic-bezier(0.22, 1, 0.36, 1)` is the same ease the rest of
+// the site uses, so it feels native.
 const Ticket = styled.div`
   position: absolute;
   left: -50px;
@@ -130,17 +140,26 @@ const Ticket = styled.div`
   transform: rotate(-2.5deg);
   z-index: 2;
   color: var(--ink);
+  animation: ${ticketIn} 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+  /* Hint the browser to promote the ticket to its own layer so
+     the animation runs on the compositor (no layout/paint). */
+  will-change: transform, opacity;
 
   @media (max-width: 980px) {
-    /* Sits at the bottom of the art, not hanging past it, so it
-       never crashes into the headline below. */
     position: static;
     transform: rotate(-2.5deg);
     width: 100%;
-    margin-top: 20px;
+    margin-top: -60px;
     border-width: 3px;
     box-shadow: 6px 6px 0 #000;
     padding: 12px 14px 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Skip the entrance — show the ticket in its final position
+       immediately. The base transform / opacity still apply, so
+       the visual result is identical to the no-animation case. */
+    animation: none;
   }
 `
 
@@ -207,70 +226,8 @@ const TicketStamp = styled.span`
   `}
 `
 
-// Feed links are absolute (example domain or local). The stamp
-// stays inside the app, so only the pathname is kept.
-const fieldNotePath = (href) => {
-  if (!href) return null
-  try {
-    return new URL(href, 'https://robustcomputer.example').pathname
-  } catch {
-    return null
-  }
-}
-
-// First sentence, terminator included. If the excerpt never
-// ends a sentence, the whole cleaned string is used.
-const firstSentence = (raw) => {
-  const cleaned = raw.replace(/\s+/g, ' ').trim()
-  if (!cleaned) return '—'
-  const match = cleaned.match(/^.*?[.!?](?=\s|$)/)
-  return match ? match[0] : cleaned
-}
-
-// Read /rss.xml on mount and return the most recent <item>, or
-// null if the feed has no items (or the fetch fails). The ticket
-// uses this to render its body in real time.
-const useLatestRss = () => {
-  const [latest, setLatest] = useState(null)
-  useEffect(() => {
-    let cancelled = false
-    fetch('/rss.xml')
-      .then((r) => (r.ok ? r.text() : Promise.reject()))
-      .then((xml) => {
-        if (cancelled) return
-        const doc = new DOMParser().parseFromString(xml, 'application/xml')
-        const item = doc.querySelector('item')
-        if (!item) return
-        const title = item.querySelector('title')?.textContent ?? ''
-        const pubDate = item.querySelector('pubDate')?.textContent ?? ''
-        const description = firstSentence(
-          item.querySelector('description')?.textContent ?? ''
-        )
-        const to = fieldNotePath(item.querySelector('link')?.textContent ?? '')
-        setLatest({ title, pubDate, description, to })
-      })
-      .catch(() => {
-        /* fail silently — the ticket shows its placeholder */
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-  return latest
-}
-
-// Format an RFC 822 pubDate (e.g. "Fri, 03 Oct 2025 00:00:00 GMT")
-// to a short human form. Falls back to the raw string if parsing fails.
-const formatPubDate = (raw) => {
-  if (!raw) return ''
-  const d = new Date(raw)
-  if (Number.isNaN(d.getTime())) return raw
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
+// RSS reading + date formatting live in `hooks/useLatestRss.js`
+// so the Field Notes section can show the same latest issue.
 
 const Hero = () => {
   const latest = useLatestRss()

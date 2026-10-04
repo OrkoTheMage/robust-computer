@@ -17,6 +17,7 @@
 import styled from '@emotion/styled'
 import { Fragment } from 'react'
 import { Zer0Text } from '../ui'
+import { marqueeLr } from '../../animations'
 
 const items = [
   '4+ years building',
@@ -71,17 +72,8 @@ const Track = styled.div`
   gap: 28px;
   width: max-content;
   padding-right: 28px;
-  animation: marquee-lr 144s linear infinite;
+  animation: ${marqueeLr} 144s linear infinite;
   will-change: transform;
-
-  @keyframes marquee-lr {
-    from {
-      transform: translateX(-50%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

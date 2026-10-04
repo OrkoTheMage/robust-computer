@@ -13,6 +13,7 @@ import Developer from '../components/sections/Developer'
 import CTABand from '../components/sections/CTABand'
 import Footer from '../components/sections/Footer'
 import { developers, teamFacts } from '../data/copy'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -154,6 +155,7 @@ const previewStyles = [
 ]
 
 export default function About() {
+  useDocumentTitle('About')
   return (
     <Page>
       <Navbar />

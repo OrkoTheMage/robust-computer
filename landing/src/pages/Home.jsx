@@ -24,6 +24,7 @@ import FieldNotes from '../components/sections/FieldNotes'
 import Footer from '../components/sections/Footer'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -46,6 +47,7 @@ const Opening = styled.div`
 `
 
 export default function Home() {
+  useDocumentTitle()
   const newsletter = useNewsletterForm()
   const chrome = useChromeHeight()
 

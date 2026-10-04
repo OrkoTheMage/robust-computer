@@ -63,7 +63,7 @@ export const sendSubscriberConfirmation = async (email) => {
     "Thanks for subscribing to Field Notes.",
     '',
     'One short email a month on building software that lasts. Practical, no spam.',
-    `Unsubscribe any time: ${config.urls.landing}/unsubscribe?email=${encodeURIComponent(email)}`,
+    `Unsubscribe any time: ${config.landingUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
   ].join('\n')
 
   try {

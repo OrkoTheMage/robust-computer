@@ -11,6 +11,7 @@ import styled from '@emotion/styled'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -63,7 +64,9 @@ const Meta = styled.p`
   margin: 0 0 32px;
 `
 
-const Privacy = () => (
+const Privacy = () => {
+  useDocumentTitle('Privacy')
+  return (
   <Page>
     <Navbar />
     <PageHeader
@@ -149,6 +152,7 @@ const Privacy = () => (
     </Body>
     <Footer />
   </Page>
-)
+  )
+}
 
 export default Privacy

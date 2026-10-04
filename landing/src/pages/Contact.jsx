@@ -17,6 +17,7 @@ import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { Zer0Text } from '../components/ui'
 import config from '../config'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -153,14 +154,22 @@ const Mail = styled.span`
   word-break: break-all;
 `
 
+// Same card treatment as the project-enquiry Sheet (ticket
+// background, 3px black border, hard offset shadow) so the
+// success state reads as "the form, filled out" rather than a
+// detached page-level message.
 const Thank = styled.div`
+  border: 3px solid #000;
+  background: var(--ticket);
+  padding: 60px 34px;
+  box-shadow: 8px 8px 0 #000;
+  color: var(--ink);
   text-align: center;
-  padding: 80px 20px;
 
   h2 {
     font-family: var(--display);
     font-weight: 800;
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: clamp(36px, 5vw, 56px);
     line-height: 1;
     text-transform: uppercase;
     margin: 0 0 16px;
@@ -171,6 +180,18 @@ const Thank = styled.div`
     max-width: 32em;
     margin: 0 auto;
   }
+`
+
+// Matches the FieldGroup label styling so micro-copy under
+// the form sits on the same baseline as "Email address".
+const FieldNote = styled.p`
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
 `
 
 const whatHappens = [
@@ -187,7 +208,7 @@ const ContactForm = () => {
         <h2><Zer0Text>Enquiry sent</Zer0Text></h2>
         <p>
           Thanks for the details — we&apos;ll reply within one business day
-          from a real person at {config.brand.contactEmail}.
+          from a real person at {config.brand.email}.
         </p>
       </Thank>
     )
@@ -323,25 +344,19 @@ const NewsletterBox = () => {
       >
         {n.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
       </Button>
-      <p
-        style={{
-          marginTop: 12,
-          fontFamily: 'var(--mono)',
-          fontSize: 13,
-          color: 'var(--ink)',
-        }}
-      >
+      <FieldNote>
         {n.status === 'success'
           ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
           : n.status === 'error'
           ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
           : <Zer0Text>Optional. No spam.</Zer0Text>}
-      </p>
+      </FieldNote>
     </Box>
   )
 }
 
 export default function Contact() {
+  useDocumentTitle('Contact')
   return (
     <Page>
       <Navbar />
@@ -356,7 +371,7 @@ export default function Contact() {
           <Box bg="#000" fg="var(--paper)">
             <h3><Zer0Text>Prefer plain email?</Zer0Text></h3>
             <p>Write to us directly and we will reply from a real person.</p>
-            <Mail>{config.brand.contactEmail}</Mail>
+            <Mail>{config.brand.email}</Mail>
           </Box>
           <Box fg="var(--ink)">
             <h3><Zer0Text>What happens next</Zer0Text></h3>

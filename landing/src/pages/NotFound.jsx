@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/sections/Navbar'
 import Footer from '../components/sections/Footer'
 import { Button, Logo, Zer0Text } from '../components/ui'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -55,6 +56,7 @@ const Lede = styled.p`
 `
 
 export default function NotFound() {
+  useDocumentTitle('404')
   return (
     <Page>
       <Navbar />
@@ -63,7 +65,7 @@ export default function NotFound() {
         <Headline><Zer0Text>Page not found</Zer0Text></Headline>
         <Lede>That page is not here. The link is old or the URL is wrong.</Lede>
         <Button as={Link} to="/">
-          <Zer0Text>Back to home</Zer0Text>
+          <Zer0Text>{'Back\u00A0to\u00A0home'}</Zer0Text>
         </Button>
       </Inner>
       <Footer />

@@ -33,7 +33,7 @@ app.use(express.json({ limit: '64kb' }))
 app.use(express.urlencoded({ extended: false, limit: '64kb' }))
 
 // ── CORS: allowlist the configured landing URL ──────────────────────────
-const allow = new Set([config.urls.landing, config.urls.api])
+const allow = new Set([config.landingUrl, config.apiUrl])
 app.use(
   cors({
     origin(origin, cb) {
@@ -46,7 +46,7 @@ app.use(
 
 // ── health ──────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, env: config.nodeEnv, time: new Date().toISOString() })
+  res.json({ ok: true, env: config.env, time: new Date().toISOString() })
 })
 
 // ── resources ───────────────────────────────────────────────────────────
@@ -79,47 +79,86 @@ app.use((err, _req, res, _next) => {
     return res.status(503).json({ error: err.message })
   }
 
-  console.error('[server] unhandled error:', err)
+  console.error('unhandled error:', err)
   return res.status(500).json({ error: 'Something went wrong.' })
 })
 
 // ── boot ────────────────────────────────────────────────────────────────
-const start = () => {
-  // Start listening FIRST so the API is reachable even while Mongo is
-  // still connecting (or down entirely). Routes that need the DB will
-  // return 503 from the /api readiness middleware until the connection
-  // is up.
-  app.listen(config.port, () => {
-    console.log(`[server] listening on http://localhost:${config.port}`)
-    console.log(`[server] env=${config.nodeEnv}  landing=${config.urls.landing}`)
-  })
+let server
 
-  // Connect to Mongo in the background. In dev, log and continue on
-  // failure; in prod, fail loud.
+const start = () => {
+  console.log(
+    `📦 Environment: ${config.isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`
+  )
+
+  // Connect to Mongo first, then start listening — so the boot log reads
+  // env → connected → server running. In prod, a Mongo failure exits
+  // hard. In dev, we log and continue so the operator can fix the DB
+  // without restarting the whole stack.
   mongoose.set('strictQuery', true)
   mongoose
-    .connect(config.mongodbUri, {
-      serverSelectionTimeoutMS:
-        config.nodeEnv === 'production' ? 30000 : 3000,
+    .connect(config.mongoUri, {
+      serverSelectionTimeoutMS: config.isProduction ? 30000 : 3000,
     })
     .then(() => {
-      console.log(
-        `[server] mongo connected: ${config.mongodbUri.replace(/\/\/.*@/, '//***@')}`
-      )
+      const dbName =
+        config.mongoUri.match(/\/([^/?]+)(?:\?|$)/)?.[1] ?? 'unknown'
+      console.log(`✅ Connected to MongoDB: ${dbName}`)
+
+      server = app.listen(config.port, () => {
+        console.log(`🚀 Server running on port ${config.port}`)
+      })
     })
     .catch((err) => {
-      if (config.nodeEnv === 'production') {
-        console.error('[server] mongo connection failed:', err.message)
+      if (config.isProduction) {
+        console.error(`❌ MongoDB connection failed: ${err.message}`)
         process.exit(1)
       }
       console.error(
-        '[server] mongo connection failed (dev mode — continuing without DB):',
-        err.message
+        `❌ MongoDB connection failed (continuing in dev): ${err.message}`
       )
       console.error(
-        '[server] start it with: mongod  (or update MONGODB_URI in .env.dev)'
+        'start it with: mongod  (or update MONGODB_URI in .env.dev)'
       )
     })
 }
+
+// ── shutdown ────────────────────────────────────────────────────────────
+// Capture SIGINT (Ctrl+C, `node --watch` restart) and SIGTERM (Railway /
+// Fly / Render shutdown). Print the same shape as boot, in order:
+// signal → server closed → mongo disconnected.
+let isShuttingDown = false
+
+const shutdown = async (signal) => {
+  if (isShuttingDown) return
+  isShuttingDown = true
+
+  // Force exit if shutdown hangs (stuck in-flight request or Mongo
+  // disconnect stalls). 10s is generous; most clean shutdowns finish
+  // in milliseconds.
+  const forceExit = setTimeout(() => process.exit(1), 10_000)
+  forceExit.unref()
+
+  console.log(`🛑 Received ${signal}, shutting down server...`)
+
+  // Stop accepting new connections, wait for in-flight requests.
+  if (server) {
+    await new Promise((resolve) => server.close(resolve))
+    console.log('✅ Shutdown complete')
+  }
+
+  // Close the MongoDB connection.
+  try {
+    await mongoose.disconnect()
+    console.log('⚠️  MongoDB disconnected')
+  } catch (err) {
+    console.error(`❌ MongoDB disconnect failed: ${err.message}`)
+  }
+
+  process.exit(0)
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'))
+process.on('SIGTERM', () => shutdown('SIGTERM'))
 
 start()

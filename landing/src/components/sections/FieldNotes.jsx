@@ -4,10 +4,16 @@
  * Newsletter band. Black on the left (headline + one-liner), gold
  * bordered form on the right. The form is owned by a page-level
  * hook — this section just renders the bindings it gets.
+ *
+ * The small line under the form shows the latest issue title from
+ * /rss.xml, linked through to the post. Shared with the Hero
+ * ticket via `hooks/useLatestRss.js`.
  */
 
 import styled from '@emotion/styled'
-import { Container, Button, InputControl, FieldGroup, Zer0Text } from '../ui'
+import { Link } from 'react-router-dom'
+import { Button, InputControl, FieldGroup, Zer0Text } from '../ui'
+import { useLatestRss } from '../../hooks/useLatestRss'
 
 const Band = styled.section`
   background: #000;
@@ -52,8 +58,29 @@ const Form = styled.form`
   small {
     display: block;
     margin-top: 12px;
-    font-size: 14px;
-    color: #5d5744;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  /* The "latest issue" line is a real link through to the post.
+     Keep the text-decoration on always (1px transparent) so the
+     box height doesn't shift on hover. */
+  small a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 2px;
+    transition: text-decoration-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  small a:hover,
+  small a:focus-visible {
+    text-decoration-color: currentColor;
   }
 `
 
@@ -77,43 +104,56 @@ const SubscribeBtn = styled(Button)`
   min-height: 50px;
 `
 
-const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => (
-  <Band>
-    <div>
-      <h2><Zer0Text>Field notes</Zer0Text></h2>
-      <p>
-        One short email a month on building software that lasts. Practical,
-        no spam, unsubscribe any time.
-      </p>
-    </div>
-    <Form onSubmit={onSubmit}>
-      <div style={{ marginBottom: 0 }}>
-        <FieldGroup label="Email address">
-          <Row>
-            <InputControl
-              type="email"
-              name="email"
-              required
-              placeholder="you@company.com"
-              value={email}
-              onChange={onChange}
-              disabled={submitting}
-            />
-            <SubscribeBtn type="submit" disabled={submitting}>
-              {submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
-            </SubscribeBtn>
-          </Row>
-        </FieldGroup>
+const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => {
+  const latest = useLatestRss()
+  return (
+    <Band>
+      <div>
+        <h2><Zer0Text>Field notes</Zer0Text></h2>
+        <p>
+          One short email a month on building software that lasts. Practical,
+          no spam, unsubscribe any time.
+        </p>
       </div>
-      <small>
-        {status === 'success'
-          ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
-          : status === 'error'
-          ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
-          : <Zer0Text>Latest issue: placeholder title, read online.</Zer0Text>}
-      </small>
-    </Form>
-  </Band>
-)
+      <Form onSubmit={onSubmit}>
+        <div style={{ marginBottom: 0 }}>
+          <FieldGroup label="Email address">
+            <Row>
+              <InputControl
+                type="email"
+                name="email"
+                required
+                placeholder="you@company.com"
+                value={email}
+                onChange={onChange}
+                disabled={submitting}
+              />
+              <SubscribeBtn type="submit" disabled={submitting}>
+                {submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
+              </SubscribeBtn>
+            </Row>
+          </FieldGroup>
+        </div>
+        <small>
+          {status === 'success'
+            ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
+            : status === 'error'
+            ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
+            : latest
+              ? (
+                <>
+                  <Zer0Text>Latest issue: </Zer0Text>
+                  {latest.to
+                    ? <Link to={latest.to}><Zer0Text>{latest.title}</Zer0Text></Link>
+                    : <Zer0Text>{latest.title}</Zer0Text>}
+                  <Zer0Text>, read online.</Zer0Text>
+                </>
+              )
+              : <Zer0Text>Latest issue: placeholder title, read online.</Zer0Text>}
+        </small>
+      </Form>
+    </Band>
+  )
+}
 
 export default FieldNotes

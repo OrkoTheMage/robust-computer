@@ -71,6 +71,10 @@ const Id = styled.div`
       width: 64px;
       height: 64px;
       padding: 3px;
+      /* Don't mirror the avatar on phones — the alternation is
+         a desktop layout cue and inverting icons on a stacked
+         column reads as "wrong" on touch. */
+      transform: none;
     }
   }
 `

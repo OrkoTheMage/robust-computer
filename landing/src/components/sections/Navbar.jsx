@@ -17,7 +17,7 @@
 
 import styled from '@emotion/styled'
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import {
   Github,
   Linkedin,
@@ -154,14 +154,26 @@ const Scrim = styled.div`
 const NavA = styled(NavLink)`
   font-family: var(--mono);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 19px;
   letter-spacing: 0.04em;
   text-decoration: none;
-  padding: 4px 0;
+  padding: 6px 0;
   border-bottom: 3px solid transparent;
   color: #000;
+  transition: color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
 
   &.active {
+    border-bottom-color: var(--ink);
+  }
+
+  /* Same hover shape as the Footer's site links: 3px underline
+     + color shift, but ink instead of gold (the text is already
+     ink, so the underline is the visible change). The transparent
+     border is always present so the box height doesn't shift. */
+  &:hover,
+  &:focus-visible {
+    color: var(--ink);
     border-bottom-color: var(--ink);
   }
 `
@@ -348,7 +360,7 @@ const connects = [
     Icon: Github,
   },
   {
-    href: `mailto:${config.brand.contactEmail}`,
+    href: `mailto:${config.brand.email}`,
     label: 'Email',
     hint: 'Write to us',
     external: false,
@@ -393,6 +405,19 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const stickyRef = useRef(null)
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+
+  // If we're already on home, the Home row in the modal should
+  // smooth-scroll to the top instead of doing a no-op navigate.
+  // Anywhere else, let the Link navigate normally.
+  const onHomeClick = (e) => {
+    if (isHome) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    setMenuOpen(false)
+  }
 
   useEffect(() => {
     if (!mobileOpen) return
@@ -490,6 +515,7 @@ const Navbar = () => {
             {pages.map((p) => {
               const { to, href, label, hint, Icon, external } = p
               const isExternal = Boolean(href)
+              const isHomeRow = !isExternal && to === '/'
               return (
                 <Row
                   key={to || href}
@@ -498,13 +524,17 @@ const Navbar = () => {
                   href={isExternal ? href : undefined}
                   target={isExternal && external ? '_blank' : undefined}
                   rel={isExternal && external ? 'noopener noreferrer' : undefined}
-                  onClick={isExternal ? undefined : () => setMenuOpen(false)}
+                  onClick={isExternal
+                    ? undefined
+                    : isHomeRow
+                      ? onHomeClick
+                      : () => setMenuOpen(false)}
                 >
                   <RowIcon>
                     <Icon size={20} strokeWidth={2.4} />
                   </RowIcon>
                   <RowBody>
-                    <RowLabel>{label}</RowLabel>
+                    <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
                     <RowHint>{hint}</RowHint>
                   </RowBody>
                   <RowMeta aria-hidden="true">{isExternal ? '↗' : '→'}</RowMeta>
@@ -526,7 +556,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel>{label}</RowLabel>
+                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
@@ -547,7 +577,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel>{label}</RowLabel>
+                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>

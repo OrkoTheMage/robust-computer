@@ -8,7 +8,7 @@
  */
 
 import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Home,
   Users,
@@ -208,20 +208,33 @@ const Legal = styled.nav`
   }
 `
 
-const Footer = () => (
-  <Foot>
-    <Cols>
-      <Brand>
-        <Logo variant="banner2Cut" h={160} className="w" alt={config.brand.name} />
-        <p>Bespoke websites and software.</p>
-        <p className="mono">{config.brand.contactEmail}</p>
-      </Brand>
-      <Col>
-        <h4><Zer0Text>Site</Zer0Text></h4>
-        <Link to="/">
-          <Home size={18} strokeWidth={2.4} aria-hidden="true" />
-          Home
-        </Link>
+const Footer = () => {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+  // If we're already on home, smooth-scroll to the top instead of
+  // doing a no-op navigate. The <Link> still gets a `to="/"` so
+  // SSR and the no-JS fallback both land on the home page.
+  const onHomeClick = (e) => {
+    if (isHome) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <Foot>
+      <Cols>
+        <Brand>
+          <Logo variant="banner2Cut" h={160} className="w" alt={config.brand.name} />
+          <p>Bespoke websites and software.</p>
+          <p className="mono">{config.brand.email}</p>
+        </Brand>
+        <Col>
+          <h4><Zer0Text>Site</Zer0Text></h4>
+          <Link to="/" onClick={onHomeClick}>
+            <Home size={18} strokeWidth={2.4} aria-hidden="true" />
+            Home
+          </Link>
         <Link to="/about">
           <Users size={18} strokeWidth={2.4} aria-hidden="true" />
           About
@@ -241,7 +254,7 @@ const Footer = () => (
           <Github size={18} strokeWidth={2.4} aria-hidden="true" />
           GitHub
         </a>
-        <a href={`mailto:${config.brand.contactEmail}`}>
+        <a href={`mailto:${config.brand.email}`}>
           <Mail size={18} strokeWidth={2.4} aria-hidden="true" />
           Email
         </a>
@@ -276,6 +289,7 @@ const Footer = () => (
       <span><Zer0Text>Built by hand, tested before launch</Zer0Text></span>
     </Small>
   </Foot>
-)
+  )
+}
 
 export default Footer
