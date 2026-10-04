@@ -1,7 +1,7 @@
 {
   "name": "robust-computer",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Robust Computer — small developer studio, public website. Monorepo root.",
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -15,5 +15,8 @@
   },
   "dependencies": {
     "concurrently": "^9.0.0"
+  },
+  "devDependencies": {
+    "ws": "^8.22.0"
   }
 }
