@@ -36,7 +36,12 @@ const Inner = styled.section`
 const Illustration = styled(Logo)`
   width: clamp(180px, 28vw, 280px);
   height: auto;
-  filter: drop-shadow(8px 8px 0 ${colors.ink});
+  /* No drop-shadow here: the icon is a circular badge whose
+     silhouette ring is already a solid black outline, so a
+     hard-offset shadow filter duplicates the whole circle and
+     only the bottom-right crescent of the duplicate is visible
+     — reads as a stray "half-circle shadow." The Hero's ArtImg
+     keeps its drop-shadow because it's rectangular. */
 `
 
 const Headline = styled.h1`
