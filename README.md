@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.10.6**
+**Version 0.10.7**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
