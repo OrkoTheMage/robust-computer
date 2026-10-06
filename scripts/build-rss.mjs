@@ -3,22 +3,34 @@
 
 /**
  * Regenerate the Field Notes feed files from the array in
- * `landing/src/data/fieldNotes.js`. Writes:
+ * `landing/src/data/fieldNotes.js`. By default writes all four:
  *
- *   landing/public/rss.xml   — the XML feed (RSS 2.0)
- *   landing/public/feed.txt  — the plain-text sibling
+ *   landing/public/rss.xml       — full feed, RSS 2.0 XML
+ *   landing/public/feed.txt      — full feed, plain text
+ *   landing/public/latest.xml    — latest post only, RSS 2.0 XML
+ *   landing/public/latest.txt    — latest post only, plain text
  *
- * Both files are committed artifacts; feed readers, search
- * crawlers, and plain-text consumers don't have to ship a
- * build step. Run this script after adding/editing a post
- * and commit the result.
+ * The `latest.*` pair is the public link target for "ping me
+ * when there's a new post" — feed readers and one-off
+ * subscribers can poll a tiny file instead of re-parsing the
+ * whole archive. The `rss.xml` / `feed.txt` pair stays the
+ * full archive for readers that want the back catalog.
+ *
+ * All four files are committed artifacts; consumers don't
+ * have to ship a build step. Run this script after adding or
+ * editing a post and commit the result.
  *
  * Usage:
- *   node scripts/build-rss.mjs                # write both feed files
+ *   node scripts/build-rss.mjs                # write all four files
+ *   node scripts/build-rss.mjs --xml-only     # only the XML files
+ *   node scripts/build-rss.mjs --txt-only     # only the TXT files
+ *   node scripts/build-rss.mjs --full-only    # skip the latest.* files
+ *   node scripts/build-rss.mjs --latest-only  # skip the full files
  *   node scripts/build-rss.mjs --dry-run      # print everything to stdout
- *   node scripts/build-rss.mjs --xml-only     # only write rss.xml
- *   node scripts/build-rss.mjs --txt-only     # only write feed.txt
- *   node scripts/build-rss.mjs --out <path>   # custom rss.xml output
+ *
+ * Format flags and variant flags compose: `--xml-only
+ * --latest-only` writes only `latest.xml`. `--full-only
+ * --xml-only` writes only `rss.xml`.
  *
  * Why not a Vite plugin: the public folder is served as-is
  * (no transform), and a regen step at edit time is more
@@ -42,44 +54,61 @@ const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const xmlOnly = args.includes('--xml-only')
 const txtOnly = args.includes('--txt-only')
-const outIdx = args.indexOf('--out')
-const customOut = outIdx !== -1 ? args[outIdx + 1] : null
+const fullOnly = args.includes('--full-only')
+const latestOnly = args.includes('--latest-only')
 
 // `--xml-only` and `--txt-only` are mutually exclusive; if
-// neither is set we write both.
+// neither is set we write both formats.
 const writeXml = !txtOnly
 const writeTxt = !xmlOnly
+
+// `--full-only` and `--latest-only` are mutually exclusive; if
+// neither is set we write both variants.
+const writeFull = !latestOnly
+const writeLatest = !fullOnly
 
 // ── dynamic import of the data module ────────────────────────────────────
 const dataModulePath = path.join(
   repoRoot,
   'landing/src/data/fieldNotes.js',
 )
-const { buildRss, buildFeedTxt } = await import(
+const { buildRss, buildFeedTxt, getLatest } = await import(
   pathToFileURL(dataModulePath).href
 )
 
-// ── build both payloads up front (so --dry-run prints both) ─────────────
-const xml = writeXml ? buildRss() : ''
-const txt = writeTxt ? buildFeedTxt() : ''
+// Latest post as a one-element array. `getLatest()` returns
+// null if the data is empty; fall back to an empty array so
+// the builders still emit a well-formed (but item-less) feed
+// rather than throwing.
+const latestNotes = getLatest() ? [getLatest()] : []
+
+// ── build the (path, content) pairs we'll write ─────────────────────────
+// Each pair is independent so --dry-run can print them all
+// and any combination of format/variant flags just narrows
+// the list.
+const files = []
+
+if (writeFull) {
+  if (writeXml) files.push(['landing/public/rss.xml', buildRss()])
+  if (writeTxt) files.push(['landing/public/feed.txt', buildFeedTxt()])
+}
+if (writeLatest) {
+  if (writeXml) files.push(['landing/public/latest.xml', buildRss(latestNotes)])
+  if (writeTxt) files.push(['landing/public/latest.txt', buildFeedTxt(latestNotes)])
+}
 
 if (dryRun) {
-  if (xml) process.stdout.write(xml)
-  if (xml && txt) process.stdout.write('\n')
-  if (txt) process.stdout.write(txt)
+  files.forEach(([rel, content], i) => {
+    if (i > 0) process.stdout.write('\n')
+    process.stdout.write(`── ${rel}\n`)
+    process.stdout.write(content)
+  })
   process.exit(0)
 }
 
 // ── write ────────────────────────────────────────────────────────────────
-if (writeXml) {
-  const outPath =
-    customOut || path.resolve(repoRoot, 'landing/public/rss.xml')
-  fs.writeFileSync(outPath, xml, 'utf8')
-  console.log(`✓ Wrote ${path.relative(repoRoot, outPath)}`)
-}
-if (writeTxt) {
-  const outPath =
-    customOut || path.resolve(repoRoot, 'landing/public/feed.txt')
-  fs.writeFileSync(outPath, txt, 'utf8')
+for (const [rel, content] of files) {
+  const outPath = path.resolve(repoRoot, rel)
+  fs.writeFileSync(outPath, content, 'utf8')
   console.log(`✓ Wrote ${path.relative(repoRoot, outPath)}`)
 }

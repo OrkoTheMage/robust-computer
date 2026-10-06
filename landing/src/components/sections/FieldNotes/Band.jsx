@@ -1,21 +1,28 @@
 /**
- * FieldNotes
+ * FieldNotes/Band
  *
- * Newsletter band. Black on the left (headline + one-liner), gold
- * bordered form on the right. The form is owned by a page-level
- * hook — this section just renders the bindings it gets.
+ * Newsletter band on the home page. Black on the left
+ * (headline + one-liner), gold bordered form on the right.
+ * The form is owned by a page-level hook — this section
+ * just renders the bindings.
  *
- * The small line under the form shows the latest issue title from
- * `data/fieldNotes.js`, linked through to the post. Shared with
- * the Hero ticket via `hooks/useLatestRss.js`.
+ * The small line under the form shows the latest issue
+ * title from `data/fieldNotes.js`, linked through to the
+ * post. Shared with the Hero ticket via
+ * `hooks/useLatestRss.js`.
+ *
+ * Sibling of `NewsletterBox.jsx` in this same directory —
+ * the Band is the large two-column home-page module, the
+ * Box is the small reusable subscribe widget used on the
+ * Contact sidebar and on the new /field-notes index page.
  */
 
 import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
+import { colors } from '../../../styles/colors'
 import { Link } from 'react-router-dom'
-import { Button, InputControl, FieldGroup, Zer0Text } from '../ui'
-import { useLatestRss } from '../../hooks/useLatestRss'
-import { fieldNotes } from '../../data/copy'
+import { Button, InputControl, FieldGroup, Zer0Text } from '../../ui'
+import { useLatestRss } from '../../../hooks/useLatestRss'
+import { fieldNotes } from '../../../data/copy'
 
 const Band = styled.section`
   background: ${colors.ink};

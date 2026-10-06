@@ -24,6 +24,15 @@
  * up, this block-parsing logic would be replaced by
  * rendering the post body directly.
  *
+ * Mobile: the Lede (28px), QuoteSection (18px text + 56px
+ * decorative quote marks), and AuthorStamp (24px + 6px
+ * border + 8.7° rotation) were all sized for the desktop
+ * Sheet (760px wide). Below 760px they dwarf the
+ * viewport, so each has a mobile pass that uses `clamp()`
+ * for fluid typography and a `@media (max-width: 760px)`
+ * block for the layout pieces. The Sheet and HeaderBox
+ * already had mobile padding/margins before this pass.
+ *
  * Route: /field-notes/:slug  (items live at /field-notes/<slug>;
  * single-segment slug for now — see the App.jsx comment if a
  * multi-segment slug is ever needed).
@@ -78,8 +87,15 @@ const Page = styled.main`
 // background, 8px hard offset shadow — so the post body reads as
 // a physical artifact sitting below the gold PageHeader, the same
 // way the enquiry form sits below the Contact PageHeader.
+//
+// No explicit `width` — a block element already takes the full
+// available width of its parent, capped by `max-width`. Adding
+// `width: 100%` on top of a horizontal margin caused the Sheet
+// to overflow the viewport on mobile (the margin was added
+// outside the 100% width, pushing the right edge 16px past the
+// viewport). Without the explicit width, the block element
+// correctly accounts for the margin and stays inside.
 const Sheet = styled.article`
-  width: 100%;
   max-width: 760px;
   margin: 48px auto;
   border: 3px solid ${colors.ink};
@@ -101,8 +117,11 @@ const Sheet = styled.article`
 // Inside it: the issue kicker (inverted — paper-on-black chip),
 // the post title (h1, display, paper), and the published date
 // (mono, paper, muted).
+//
+// Same fix as `Sheet` — no explicit `width`, so the
+// block element naturally accounts for the mobile margin
+// instead of overflowing the viewport.
 const HeaderBox = styled.div`
-  width: 100%;
   max-width: 760px;
   margin: 32px auto 0;
   border: 3px solid ${colors.ink};
@@ -158,9 +177,15 @@ const HeaderBox = styled.div`
 // at 28px (vs body's 18px) — 25% larger than the previous
 // 22px — so it dominates the reading flow and reads as the
 // post's thesis at a glance.
+//
+// Mobile: scales down via `clamp()` to ~21px (down from
+// 28px) so the deck still reads as the lead but doesn't
+// dominate the phone viewport. The left border thins to
+// 4px and the bottom margin shrinks so the lede doesn't
+// push the first body section halfway down the screen.
 const Lede = styled.p`
   font-family: var(--body);
-  font-size: 28px;
+  font-size: clamp(21px, 5vw, 28px);
   font-weight: 700;
   line-height: 1.45;
   color: ${colors.ink};
@@ -197,6 +222,12 @@ const Lede = styled.p`
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 2px;
+  }
+
+  @media (max-width: 760px) {
+    padding: 2px 0 2px 16px;
+    margin: 0 0 32px;
+    border-left-width: 4px;
   }
 `
 
@@ -249,6 +280,13 @@ const TextSection = styled.div`
 // (still Georgia serif, just italic). The opening mark
 // (Unicode 201C) sits at the top-left, the closing mark
 // (Unicode 201D, the typographic mirror) at the bottom-right.
+//
+// Mobile: the 56px decorative quotes dwarf the body text
+// on a phone, so they drop to 32px (still readable, still
+// decorative, no longer competing with the prose). Padding
+// tightens to 28px/20px and the quote marks tuck closer
+// to the border corners so the field still feels like a
+// framed box rather than a paragraph with floating marks.
 const QuoteSection = styled.div`
   position: relative;
   width: 100%;
@@ -318,6 +356,23 @@ const QuoteSection = styled.div`
     text-underline-offset: 3px;
     text-decoration-thickness: 2px;
   }
+
+  @media (max-width: 760px) {
+    padding: 28px 20px 24px;
+    font-size: 16px;
+
+    &::before {
+      top: 0;
+      left: 10px;
+      font-size: 32px;
+    }
+
+    &::after {
+      bottom: 0;
+      right: 10px;
+      font-size: 32px;
+    }
+  }
 `
 
 const BackLink = styled(Link)`
@@ -339,6 +394,12 @@ const BackLink = styled(Link)`
   &:hover,
   &:focus-visible {
     color: ${colors.goldDeep};
+  }
+
+  @media (max-width: 760px) {
+    margin-top: 32px;
+    padding-top: 20px;
+    font-size: 13px;
   }
 `
 
@@ -398,6 +459,11 @@ const CodeHeader = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border-bottom: 3px solid ${colors.ink};
+
+  @media (max-width: 760px) {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
 `
 
 const CodeBody = styled.pre`
@@ -419,6 +485,11 @@ const CodeBody = styled.pre`
     padding: 0;
     border: 0;
     font-size: inherit;
+  }
+
+  @media (max-width: 760px) {
+    padding: 12px 16px;
+    font-size: 13px;
   }
 `
 
@@ -451,6 +522,24 @@ const AuthorStamp = styled.div`
   /* Counter-clockwise tilt — reads as hand-pressed, not
      perfectly aligned. Negative degrees = left side up. */
   transform: rotate(-8.7deg);
+
+  /* Mobile: the stamp's 6px border + 24px text + 8.7deg
+     rotation overflows the Sheet on small viewports. Drop
+     the border to 4px, the text to 17px, and the rotation
+     to ~4deg (still hand-pressed, not so much that the
+     right edge of the stamp touches the Sheet's border).
+     The margin-right that lined the stamp up with the
+     closing quote on desktop would push it into the
+     Sheet's right padding on mobile, so pull it in to
+     keep the stamp readable. */
+  @media (max-width: 760px) {
+    padding: 11px 20px;
+    border-width: 4px;
+    box-shadow: 2px 2px 0 ${colors.gold};
+    margin-right: 16px;
+    font-size: 17px;
+    transform: rotate(-4deg);
+  }
 `
 
 // Inline markdown renderer for body text. Uses `marked` for

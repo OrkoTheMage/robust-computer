@@ -49,16 +49,19 @@ import config from '../../config.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Read the nearest package.json once at module load so the email
-// version stamp stays in sync with the on-page Hero ticket and
-// the rest of the brand surfaces. In Railway, only `server/` is
-// deployed — the monorepo's root package.json is not on disk —
-// so we read server/package.json, which carries the same version
-// (kept in sync at release time; see README > Versioning).
+// Read the monorepo root package.json once at module load so the
+// email version stamp stays in sync with the on-page Hero ticket
+// and the rest of the brand surfaces. We walk up four levels
+// (server/src/utils/email/ → server/src/utils/ → server/src/ →
+// server/ → repo root) — same pattern the landing uses in
+// `Hero.jsx`. Only the root package.json carries the `version`
+// field; the per-package manifests (`server/package.json`,
+// `landing/package.json`) don't, so reading them returns
+// `undefined` and the email renders "Release undefined".
 // Restart the server to pick up a version bump (same cadence as
 // the page).
 const pkg = JSON.parse(
-  readFileSync(path.join(__dirname, '../../../package.json'), 'utf8')
+  readFileSync(path.join(__dirname, '../../../../package.json'), 'utf8')
 )
 const VERSION = pkg.version
 

@@ -81,7 +81,7 @@ const BRAND_NAME = 'Robust Computer'
 // consumers (this file + the React FieldNote page) need it,
 // and per PROJECT-CONVENTIONS.md §4 utils/ is the home for
 // pure helpers.
-import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks'
+import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
 
 // Channel-level metadata for the RSS feed. The lead copy matches
 // what the Field Notes section band on the home page renders
@@ -116,18 +116,24 @@ export const fieldNotes = [
     body: `
 Welcome to the first issue of Field Notes
 
-> I thought this was a **cool idea** — So I built it and now here we are. This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one. 
+> I thought this was a **cool idea** — So I built it and now here we are. This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one.
 
 We will keep each issue tight. If it cannot fit in a few minutes of reading, it does not belong here. *No bull*****, no marketing copy disguised as engineering wisdom — just the work, the mistakes, and the small victories.
 
 Check out our \u0060RSS\u0060 feed for the first issue:
 
 \u0060\u0060\u0060bash
-// This will fetch the raw RSS feed asfor the first issue
-curl -sL "https://www.robust.computer/rss.xml"
+  # Full RSS feed (XML) — point your feed reader at this
+   curl -sL "https://www.robust.computer/rss.xml"
 
-// This will fetch the raw feed content in the terminal
-curl -sL "https://www.robust.computer/feed.txt"
+   # Full RSS feed as plain text — readable in a terminal
+   curl -sL "https://www.robust.computer/feed.txt"
+
+   # Just the latest issue (XML) — single-item RSS shape
+   curl -sL "https://www.robust.computer/latest.xml"
+
+   # Just the latest issue as plain text — one post, terminal-friendly
+   curl -sL "https://www.robust.computer/latest.txt"
 \u0060\u0060\u0060
 `,
   },
@@ -182,7 +188,7 @@ export const buildRss = (notes = fieldNotes) => {
   const lastBuildDate = latest
     ? toRfc822(latest.pubDate)
     : toRfc822(new Date().toISOString())
-  const items = notes.map(buildItem).join('\n\n')
+  const items = sorted.map(buildItem).join('\n\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -356,7 +362,7 @@ export const buildFeedTxt = (notes = fieldNotes) => {
     '',
   ].join('\n')
 
-  const blocks = notes.map((note) => {
+  const blocks = sorted.map((note) => {
     // The meta block ends with two blanks so the post's body
     // opens on its own paragraph after a visual breath —
     // the rule above the body should not look glued to the

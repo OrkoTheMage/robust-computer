@@ -118,6 +118,19 @@ export const industriesHeadline = 'Built across industries'
 export const fieldNotes = {
   headline: 'Field notes',
   lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
+  // The two `NewsletterBox` call sites share the form
+  // (email input + subscribe button + status caption) but
+  // differ in framing. Both pairs of strings live here so
+  // the two pages stay in sync on the only thing they
+  // actually differ on.
+  contactBox: {
+    header: 'Field notes',
+    sub: 'Short issues — updates frequently — on building software that lasts.',
+  },
+  subscribeBox: {
+    header: 'Not already Subscribed?',
+    sub: "Subscribe to 'Field Notes' today.",
+  },
 }
 
 // ── CTABand ─────────────────────────────────────────────────────────────
@@ -138,12 +151,13 @@ export const navbarPages = [
   { to: '/', label: 'Home', hint: 'What we build', icon: 'Home' },
   { to: '/contact', label: 'Start a project', hint: 'Get in touch', icon: 'Send' },
   { to: '/about', label: 'Meet the Team', hint: 'About', icon: 'Users' },
-  // News goes straight to the latest issue, not to a (not-yet-built)
-  // /field-notes index. `getLatestNewsPath()` reads from
-  // `data/fieldNotes.js` so adding FN-002 to the array auto-updates
-  // this link — no second file to edit.
-  { to: getLatestNewsPath(), label: 'News', hint: 'Field notes', icon: 'Newspaper' },
-  { to: '/language', label: 'Language', hint: 'Coming soon', icon: 'Languages' },
+  // News goes to the Field Notes index page (not the latest
+  // individual issue) so the modal entry matches the main-nav
+  // entry. The per-issue deep link still works through the
+  // Hero "Shipped" stamp and the FieldNotes band's
+  // "Latest issue" line, both of which read from
+  // `useLatestRss`.
+  { to: '/field-notes', label: 'News', hint: 'Field notes', icon: 'Newspaper' },
 ]
 
 export const navbarConnects = [
@@ -228,11 +242,12 @@ export const footerSections = {
     { to: '/', label: 'Home', icon: 'Home' },
     { to: '/about', label: 'About', icon: 'Users' },
     { to: '/contact', label: 'Contact', icon: 'Send' },
-    // News goes straight to the latest issue, not to a (not-yet-built)
-    // /field-notes index. `getLatestNewsPath()` reads from
-    // `data/fieldNotes.js` so adding FN-002 to the array auto-updates
-    // this link — no second file to edit.
-    { to: getLatestNewsPath(), label: 'News', icon: 'Newspaper' },
+    // News goes to the Field Notes index page (not the latest
+    // individual issue) so the footer matches the main-nav and
+    // modal entries. The per-issue deep link still works
+    // through the Hero "Shipped" stamp and the FieldNotes
+    // band's "Latest issue" line.
+    { to: '/field-notes', label: 'News', icon: 'Newspaper' },
   ],
   connect: [
     { href: 'https://github.com/robust-computer', label: 'GitHub', icon: 'Github' },

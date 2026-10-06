@@ -236,8 +236,8 @@ const TicketStamp = styled.span`
 const Hero = () => {
   const latest = useLatestRss()
   const ticketBody = latest
-    ? `$ tail --rss -n -1\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
-    : '$ tail --rss -n -1\n> (no issues yet)'
+    ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
+    : '$ curl /latest.txt\n> (no issues yet)'
 
   return (
     <Wrap>
