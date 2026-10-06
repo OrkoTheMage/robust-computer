@@ -5,7 +5,6 @@
   "description": "Robust Computer API — Express + MongoDB.",
   "type": "module",
   "scripts": {
-    "postinstall": "node scripts/sync-version.mjs",
     "dev": "node --watch src/index.js",
     "start": "node src/index.js"
   },
