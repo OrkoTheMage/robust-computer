@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.9.0**
+**Version 0.10.0**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -57,7 +57,7 @@ yarn dev:prod     # loads .env.prod for all three (prod DB, prod URLs)
 ```
 robust-computer/
 ├── landing/                # Marketing site (React + Vite, port 3000)
-│   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, robots.txt, ...)
+│   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, feed.txt, robots.txt, ...)
 │   ├── src/
 │   │   ├── api/                 # fetch wrapper (index.js exports api + ApiError)
 │   │   ├── components/
