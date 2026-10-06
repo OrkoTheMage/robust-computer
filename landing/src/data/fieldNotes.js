@@ -123,11 +123,17 @@ We will keep each issue tight. If it cannot fit in a few minutes of reading, it 
 Check out our \u0060RSS\u0060 feed for the first issue:
 
 \u0060\u0060\u0060bash
-// This will fetch the raw RSS feed, as XML - for your RSS reader
-curl -sL "https://www.robust.computer/rss.xml"
+  # Full RSS feed (XML) — point your feed reader at this
+   curl -sL "https://www.robust.computer/rss.xml"
 
-// This will fetch the raw RSS feed as plain text - for your terminal
-curl -sL "https://www.robust.computer/feed.txt"
+   # Full RSS feed as plain text — readable in a terminal
+   curl -sL "https://www.robust.computer/feed.txt"
+
+   # Just the latest issue (XML) — single-item RSS shape
+   curl -sL "https://www.robust.computer/latest.xml"
+
+   # Just the latest issue as plain text — one post, terminal-friendly
+   curl -sL "https://www.robust.computer/latest.txt"
 \u0060\u0060\u0060
 `,
   },
