@@ -512,7 +512,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
+                  <RowLabel>{label}</RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
@@ -536,7 +536,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
+                  <RowLabel>{label}</RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
