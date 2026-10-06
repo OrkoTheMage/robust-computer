@@ -75,19 +75,30 @@ const PORT = 5000
 // JWT.
 const JWT_EXPIRES_IN = '24h'
 
-// SMTP transport. `host`, `user`, `pass` are required env vars (Mailpit in
-// dev, real provider in prod). Port + secure + from come from code: 587 is
-// the standard SMTP submission port and is STARTTLS, `secure: false` means
-// "use STARTTLS if offered"; `from` is derived from BRAND_DOMAIN so a
-// domain migration updates the envelope sender too.
+// SMTP transport. `host`, `port`, `secure`, `user`, `pass` are all
+// required env vars. We don't derive port/secure from NODE_ENV
+// because every provider has its own combination:
 //
-// In dev, Mailpit listens on its default 1025; in prod, real SMTP uses 587.
-// We branch on NODE_ENV rather than expose SMTP_PORT as an env var because
-// the port is determined by which SMTP server we're talking to, not by
-// operator preference.
-const SMTP_PORT = NODE_ENV === 'production' ? 587 : 1025
-const SMTP_SECURE = false
+//   Mailpit (dev)       : 1025, secure=false (plaintext)
+//   Resend              : 465,  secure=true  (implicit TLS)
+//   SendGrid / Mailgun  : 587,  secure=false (STARTTLS)
+//   AWS SES (SMTP)      : 587,  secure=false (STARTTLS)
+//
+// The deployer picks the combination and sets all five vars; the
+// code doesn't care which provider it's talking to.
+//
+// `SMTP_FROM` is derived from BRAND_DOMAIN so a domain migration
+// updates the envelope sender too.
 const SMTP_FROM = `hello@${BRAND_DOMAIN}`
+
+// nodemailer's `secure` field is a boolean, but env values are
+// always strings. Parse the deployer's value here so the rest of
+// the file treats `config.smtp.secure` as a real boolean.
+const parseBool = (val, key) => {
+  if (val === 'true') return true
+  if (val === 'false') return false
+  throw new Error(`[${APP_NAME}] Invalid boolean for env var ${key}: ${val} (expected "true" or "false")`)
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Required env vars (deployer must set these — no fallback to constants)
@@ -128,8 +139,8 @@ const config = Object.freeze({
 
   smtp: Object.freeze({
     host: required('SMTP_HOST'),
-    port: SMTP_PORT,
-    secure: SMTP_SECURE,
+    port: parseInt(required('SMTP_PORT'), 10),
+    secure: parseBool(required('SMTP_SECURE'), 'SMTP_SECURE'),
     user: required('SMTP_USER'),
     pass: required('SMTP_PASS'),
     from: SMTP_FROM,

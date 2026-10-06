@@ -50,6 +50,12 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, env: config.env, time: new Date().toISOString() })
 })
 
+// Root-level /health for Railway's default health check, which hits
+// `/` unless overridden in the service's Healthcheck settings. Returns
+// 200 with no body so the proxy marks the container healthy; the
+// /api/health endpoint above is the one that exposes env/time info.
+app.get('/health', (_req, res) => res.status(200).end())
+
 // ── resources ───────────────────────────────────────────────────────────
 app.use('/api', (_req, _res, next) => {
   // readyState 1 = connected. Anything else means the DB is unreachable.
@@ -93,10 +99,24 @@ const start = () => {
     `📦 Environment: ${config.isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`
   )
 
-  // Connect to Mongo first, then start listening — so the boot log reads
-  // env → connected → server running. In prod, a Mongo failure exits
-  // hard. In dev, we log and continue so the operator can fix the DB
-  // without restarting the whole stack.
+  // Start the HTTP listener FIRST, then connect to Mongo in the
+  // background. Why this order:
+  //   - Railway (and any other proxy-based host) fires health checks
+  //     within seconds of container start. If we wait for Mongo before
+  //     listening, the health check times out, the service is marked
+  //     unhealthy, and every request 502s until the next deploy.
+  //   - `/api/health` is registered before the /api middleware that
+  //     checks DB readiness, so it returns 200 even if Mongo is down.
+  //   - The /api middleware returns 503 for any request that needs the
+  //     DB, so a Mongo outage degrades gracefully instead of
+  //     502-ing the whole service.
+  // We log the Mongo failure but do NOT exit in production — keeping
+  // the container alive means a Mongo recovery (or a redeploy with a
+  // fixed connection string) doesn't require a separate restart.
+  server = app.listen(config.port, '0.0.0.0', () => {
+    console.log(`🚀 Server running on port ${config.port}`)
+  })
+
   mongoose.set('strictQuery', true)
   mongoose
     .connect(config.mongoUri, {
@@ -106,22 +126,14 @@ const start = () => {
       const dbName =
         config.mongoUri.match(/\/([^/?]+)(?:\?|$)/)?.[1] ?? 'unknown'
       console.log(`✅ Connected to MongoDB: ${dbName}`)
-
-      server = app.listen(config.port, () => {
-        console.log(`🚀 Server running on port ${config.port}`)
-      })
     })
     .catch((err) => {
-      if (config.isProduction) {
-        console.error(`❌ MongoDB connection failed: ${err.message}`)
-        process.exit(1)
+      console.error(`❌ MongoDB connection failed: ${err.message}`)
+      if (!config.isProduction) {
+        console.error(
+          'start it with: mongod  (or update MONGODB_URI in .env.dev)'
+        )
       }
-      console.error(
-        `❌ MongoDB connection failed (continuing in dev): ${err.message}`
-      )
-      console.error(
-        'start it with: mongod  (or update MONGODB_URI in .env.dev)'
-      )
     })
 }
 
