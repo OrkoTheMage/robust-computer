@@ -162,7 +162,7 @@ export const navbarPages = [
 
 export const navbarConnects = [
   {
-    href: 'https://github.com/robust-computer',
+    href: 'https://github.com/OrkoTheMage/robust-computer',
     label: 'GitHub',
     hint: 'View source',
     external: true,
@@ -250,7 +250,7 @@ export const footerSections = {
     { to: '/field-notes', label: 'News', icon: 'Newspaper' },
   ],
   connect: [
-    { href: 'https://github.com/robust-computer', label: 'GitHub', icon: 'Github' },
+    { href: 'https://github.com/OrkoTheMage/robust-computer', label: 'GitHub', icon: 'Github' },
     { href: 'mailto:hello@robust.computer', label: 'Email', icon: 'Mail' },
   ],
   elsewhere: [
