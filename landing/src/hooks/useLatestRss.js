@@ -1,90 +1,73 @@
 /**
  * landing/src/hooks/useLatestRss.js
  *
- * Fetches /rss.xml on mount and returns the most recent <item>,
- * or null if the feed is empty (or the fetch fails). Shared by
- * the Hero ticket and the Field Notes "latest issue" link.
+ * Returns the most recent Field Notes post, or null if the array
+ * is empty. Backed by `data/fieldNotes.js` — the JS array is the
+ * single source of truth (the /public/rss.xml is regenerated
+ * from the same array, so what the Hero ticket and Field Notes
+ * band render is always in sync with the feed).
  *
  * The shape returned is:
  *   { title, pubDate, description, to }
  *
- *   title       — the <title> text
- *   pubDate     — the raw RFC 822 string from <pubDate>
- *   description — first sentence of the <description>, cleaned
- *   to         — pathname of the <link>, suitable for <Link to={…}>
+ *   title       — the post title (without the "Issue NNN - " prefix)
+ *   pubDate     — the ISO 8601 string from the source array
+ *   description — the one-sentence excerpt for the post
+ *   to         — pathname of the post, suitable for <Link to={…}>
  *
- * `formatPubDate` is a small helper that turns the RFC 822 string
- * into a short human-readable form ("Oct 3, 2026"). It falls back
- * to the raw string if the input can't be parsed.
+ * `formatPubDate` is a small helper that turns the ISO 8601
+ * string into a short human-readable form ("Oct 4, 2026"). It
+ * falls back to the raw string if the input can't be parsed.
  *
- * The fetch is cancelled on unmount so a fast route change doesn't
- * try to set state on an unmounted component.
+ * Kept as a hook (rather than a plain function) so the call
+ * sites — Hero ticket, Field Notes band's "Latest issue" line —
+ * stay uniform with `useRssItem`. Synchronous today; the hook
+ * shape means a future async source (CMS, fetch, …) can drop in
+ * without touching the consumers.
  */
 
-import { useEffect, useState } from 'react'
-import config from '../config'
-
-// Feed links are absolute (example domain or local). Callers
-// inside the app only need the pathname, so we strip the rest.
-const fieldNotePath = (href) => {
-  if (!href) return null
-  try {
-    return new URL(href, 'https://robustcomputer.example').pathname
-  } catch {
-    return null
-  }
-}
-
-// First sentence, terminator included. If the excerpt never ends
-// a sentence, the whole cleaned string is used.
-const firstSentence = (raw) => {
-  const cleaned = raw.replace(/\s+/g, ' ').trim()
-  if (!cleaned) return '—'
-  const match = cleaned.match(/^.*?[.!?](?=\s|$)/)
-  return match ? match[0] : cleaned
-}
+import { getLatest } from '../data/fieldNotes'
 
 export const formatPubDate = (raw) => {
   if (!raw) return ''
+  // For YYYY-MM-DD strings (the canonical form in the data
+  // file), parse as a local date so the displayed day matches
+  // the typed day. ISO 8601 date-only strings are otherwise
+  // parsed as UTC midnight, which would shift the displayed
+  // day backward in any negative-offset timezone (e.g.
+  // "2026-10-07" formatted in America/Chicago would show
+  // "Oct 6, 2026" because UTC midnight Oct 7 is 7pm Oct 6 in
+  // CDT). The local-time constructor + no timeZone option on
+  // the formatter means parse and format round-trip exactly.
+  const m = String(raw).match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (m) {
+    const [, y, mo, d] = m
+    return new Date(+y, +mo - 1, +d).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+  // Fallback for any other date format (full ISO datetime,
+  // RFC 822, etc.) — parse generically and format in the
+  // runtime's local timezone. No shift, but no normalization
+  // either; this branch is for legacy/external inputs.
   const d = new Date(raw)
   if (Number.isNaN(d.getTime())) return raw
-  // Render in the brand's timezone (CST/CDT) so every visitor
-  // sees the same publication date regardless of where their
-  // browser is. The pubDate in /rss.xml is always UTC; this is
-  // the user-facing translation step.
   return d.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    timeZone: config.brand.timezone,
   })
 }
 
 export const useLatestRss = () => {
-  const [latest, setLatest] = useState(null)
-  useEffect(() => {
-    let cancelled = false
-    fetch('/rss.xml')
-      .then((r) => (r.ok ? r.text() : Promise.reject()))
-      .then((xml) => {
-        if (cancelled) return
-        const doc = new DOMParser().parseFromString(xml, 'application/xml')
-        const item = doc.querySelector('item')
-        if (!item) return
-        const title = item.querySelector('title')?.textContent ?? ''
-        const pubDate = item.querySelector('pubDate')?.textContent ?? ''
-        const description = firstSentence(
-          item.querySelector('description')?.textContent ?? ''
-        )
-        const to = fieldNotePath(item.querySelector('link')?.textContent ?? '')
-        setLatest({ title, pubDate, description, to })
-      })
-      .catch(() => {
-        /* fail silently — caller renders its placeholder */
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-  return latest
+  const latest = getLatest()
+  if (!latest) return null
+  return {
+    title: latest.title,
+    pubDate: latest.pubDate,
+    description: latest.description,
+    to: `/field-notes/${latest.slug}`,
+  }
 }

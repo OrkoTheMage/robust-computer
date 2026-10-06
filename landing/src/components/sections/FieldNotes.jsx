@@ -6,8 +6,8 @@
  * hook — this section just renders the bindings it gets.
  *
  * The small line under the form shows the latest issue title from
- * /rss.xml, linked through to the post. Shared with the Hero
- * ticket via `hooks/useLatestRss.js`.
+ * `data/fieldNotes.js`, linked through to the post. Shared with
+ * the Hero ticket via `hooks/useLatestRss.js`.
  */
 
 import styled from '@emotion/styled'

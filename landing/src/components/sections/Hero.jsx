@@ -8,10 +8,11 @@
  * The ticket is a real surface, not a static decoration:
  *   - the right tag reads from the version in package.json
  *     ("RELEASE 0.1.0" today, "RELEASE 0.2.0" after a bump)
- *   - the body fetches /rss.xml on mount and renders the most
- *     recent <item> — its title, pub date, and the first sentence
- *     of the description. If the feed is empty or the fetch fails,
- *     it shows a placeholder.
+ *   - the body reads the most recent Field Notes post from
+ *     `data/fieldNotes.js` (the single source of truth — the
+ *     /public/rss.xml is regenerated from the same array) and
+ *     renders its title, pub date, and one-sentence excerpt. If
+ *     the array is empty, it shows a placeholder.
  */
 
 import { useEffect, useState } from 'react'
@@ -228,8 +229,9 @@ const TicketStamp = styled.span`
   `}
 `
 
-// RSS reading + date formatting live in `hooks/useLatestRss.js`
-// so the Field Notes section can show the same latest issue.
+// Field Notes data + date formatting live in
+// `hooks/useLatestRss.js` (backed by `data/fieldNotes.js`) so the
+// Field Notes section can show the same latest issue.
 
 const Hero = () => {
   const latest = useLatestRss()

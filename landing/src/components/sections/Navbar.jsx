@@ -37,6 +37,7 @@ import {
 import { Button, Logo, Modal, Zer0Text } from '../ui'
 import { colors } from '../../styles/colors'
 import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, languages } from '../../data/copy'
+import { getLatestNewsPath } from '../../data/fieldNotes'
 
 // Map icon-name strings from the data file to Lucide components.
 const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper, Languages }
@@ -697,7 +698,7 @@ const Navbar = () => {
           </Brand>
           <Links>
             <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
-            <NavA to="/field-notes/issue-001"><Zer0Text>News</Zer0Text></NavA>
+            <NavA to={getLatestNewsPath()}><Zer0Text>News</Zer0Text></NavA>
             <IconLinks>
               <LanguageButton />
               {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
