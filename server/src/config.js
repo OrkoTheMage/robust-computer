@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BRAND_NAME, BRAND_DOMAIN, BRAND_EMAIL, BRAND_TIMEZONE } from '../../landing/src/data/brand.js'
 
 /**
  * server/src/config.js
@@ -59,10 +58,15 @@ const required = (key) => {
 // Code constants
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ── Brand identity ───────────────────────────────────────────────────────────
-// Mirrored in landing/src/config.js. Used in email body copy and as the
-// contact-form recipient. When migrating to a custom domain, change
-// BRAND_DOMAIN here AND flip the *URL env vars.
+// ── Brand identity (mirrored from landing/src/data/brand.js) ─────────────────
+// Mirrored locally — can't import `../../landing/...` because the Railway
+// deploy is rooted at `server/`. Keep in sync with landing/src/data/brand.js
+// and the *URL env vars.
+const BRAND_NAME = 'Robust Computer'
+const BRAND_DOMAIN = 'robust.computer'
+const BRAND_EMAIL = `hello@${BRAND_DOMAIN}`
+const BRAND_TIMEZONE = 'America/Chicago'
+
 // ── Server-only constants (NOT mirrored) ────────────────────────────────────
 
 // Server lifecycle.
