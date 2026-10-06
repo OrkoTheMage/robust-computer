@@ -7,8 +7,10 @@ import { fileURLToPath } from 'node:url'
  *
  * Reads the monorepo-root `package.json#version` and writes
  * `server/src/version.js` so the running server can import it without
- * touching the deploy root. Run as a side-effect import via Node's
- * `--import` flag (see `start` and `dev` in server/package.json).
+ * touching the deploy root. Run as the `postinstall` hook in
+ * server/package.json — i.e. during `yarn install`, when the full
+ * repo is on disk. The file ships with the deploy and `layout.js`
+ * imports it at runtime; no further work at server startup.
  */
 
 const here = dirname(fileURLToPath(import.meta.url))
