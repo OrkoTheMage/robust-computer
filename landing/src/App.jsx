@@ -25,7 +25,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/bugreport" element={<BugReport />} />
+        <Route path="/bug-report" element={<BugReport />} />
         {/* Field-note post pages: items live at
             `/field-notes/<slug>`. Single-segment slugs for now;
             if multi-segment slugs are ever needed, switch to

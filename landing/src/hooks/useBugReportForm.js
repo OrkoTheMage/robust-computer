@@ -1,7 +1,7 @@
 /**
  * useBugReportForm
  *
- * Owns the state for the bug-report form on the /bugreport page:
+ * Owns the state for the bug-report form on the /bug-report page:
  * field values, submission lifecycle, and server-error surfacing.
  *
  * The form is anonymous-friendly — name + email are optional, the

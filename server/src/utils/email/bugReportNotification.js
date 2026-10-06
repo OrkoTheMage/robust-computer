@@ -2,7 +2,7 @@
  * server/src/utils/email/bugReportNotification.js
  *
  * "Bug report" — sent to the team when someone files a bug through
- * /bugreport on the landing site. Mirrors the on-page form
+ * /bug-report on the landing site. Mirrors the on-page form
  * (what were you doing / what expected / what happened / browser
  * + device) as a labelled ticket. The reporter's name and email
  * are optional (anonymous-friendly) — if either is provided the

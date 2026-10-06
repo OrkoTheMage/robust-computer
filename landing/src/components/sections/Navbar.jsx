@@ -29,16 +29,17 @@ import {
   Home,
   Users,
   Send,
+  Newspaper,
+  Languages,
   Menu,
   X,
 } from 'lucide-react'
 import { Button, Logo, Modal, Zer0Text } from '../ui'
-import config from '../../config'
 import { colors } from '../../styles/colors'
-import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials } from '../../data/copy'
+import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, languages } from '../../data/copy'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send }
+const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper, Languages }
 
 const Sticky = styled.div`
   position: sticky;
@@ -171,9 +172,10 @@ const Scrim = styled.div`
 
 const NavA = styled(NavLink)`
   font-family: var(--mono);
-  font-weight: 600;
-  font-size: 19px;
-  letter-spacing: 0.04em;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  line-height: 1;
   text-decoration: none;
   padding: 6px 0;
   border-bottom: 3px solid transparent;
@@ -203,10 +205,285 @@ const NavA = styled(NavLink)`
 // hero's "Start a project" button exactly.
 const CTA = styled(Button)``
 
+// Icon cluster on the main bar — the Languages icon plus the
+// two connects flagged with mainBar: true in navbarConnects
+// (GitHub + RSS Feed). Those entries are also surfaced as
+// full text rows in the site-menu modal (Pages / Connect), but
+// the inline icons give a one-click shortcut for repeat
+// visitors. The whole cluster disappears below the 760px
+// mobile cut; the mobile panel covers those entries on small
+// screens.
+const IconLinks = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  @media (max-width: 760px) {
+    display: none;
+  }
+`
+
+const IconLink = styled.a`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 3px solid #000;
+  background: ${colors.paper};
+  color: #000;
+  flex: none;
+  text-decoration: none;
+  transition: background 80ms ease, color 80ms ease;
+
+  &:hover,
+  &:active {
+    background: ${colors.ink};
+    color: ${colors.paper};
+  }
+  &[aria-expanded='true'] {
+    background: ${colors.ink};
+    color: ${colors.paper};
+  }
+  &:focus-visible {
+    outline: 3px solid ${colors.goldDeep};
+    outline-offset: 3px;
+  }
+
+  /* Custom hover tooltip. Reads data-tooltip on the element
+     and renders a brand-styled label below the icon. Native
+     title is removed in favor of this so the browser's
+     default tooltip does not double up. */
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${colors.ink};
+    color: ${colors.paper};
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 8px;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 ${colors.gold};
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 80ms ease;
+    z-index: 50;
+  }
+
+  &:hover:not([aria-expanded='true'])::after,
+  &:focus-visible:not([aria-expanded='true'])::after {
+    opacity: 1;
+  }
+`
+
 const PanelCTA = styled(CTA)`
   width: 100%;
   margin-top: 14px;
 `
+
+// Mobile-only icon row that mirrors the desktop main-bar cluster
+// (Languages stub + the two mainBar-marked connects). Reuses the
+// same <IconLink> styled component so the icons render at the
+// same size and use the same hover/active inversion on both
+// surfaces. Sits between the page links and the CTA, with its
+// own bottom border so the row reads as a discrete block.
+const PanelIcons = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 0 14px;
+  border-bottom: 3px solid #000;
+`
+
+// Languages dropdown — wraps the icon so the menu can anchor
+// against it. The wrapper is the only thing that needs
+// position: relative; the menu is absolute-positioned and
+// drops below the icon.
+const LanguageWrap = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`
+
+const LanguageMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  background: ${colors.paper};
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 ${colors.gold};
+  z-index: 50;
+`
+
+const LanguageItem = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: ${colors.paper};
+  color: #000;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 0;
+  border-bottom: 3px solid #000;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  line-height: 1;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
+    background: ${colors.ticket};
+    outline: 0;
+  }
+
+  &:active:not(:disabled) {
+    background: ${colors.gold};
+  }
+
+  &:disabled {
+    color: #5d5744;
+    cursor: not-allowed;
+  }
+
+  &[aria-current='true'] {
+    background: ${colors.gold};
+  }
+`
+
+const LanguageItemHint = styled.span`
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: #5d5744;
+  margin-left: 12px;
+`
+
+// Static-positioned wrapper for the language list when rendered
+// inside the centered Modal (mobile). Reuses the same
+// LanguageItem rows as the dropdown so the "current / disabled /
+// coming soon" states look identical across desktop and mobile.
+// The wrapper provides only the padding inside the Modal card
+// (the card itself has no padding, per the MenuBody pattern
+// used elsewhere in this file).
+const LanguageModalList = styled.div`
+  padding: 12px 0;
+  min-width: 320px;
+`
+
+// ── LanguageButton ───────────────────────────────────────────────────
+// Self-contained: owns the open state, the close-on-outside-click
+// effect, and the close-on-Escape effect. Used twice (main bar +
+// mobile panel); each instance manages its own dropdown.
+// `onAfterSelect` is fired after the user picks a row — used by
+// the mobile panel to also dismiss itself.
+//
+// `variant="dropdown"` (default): desktop, renders a custom menu
+// anchored below the icon.
+// `variant="modal"`: mobile, renders the same list inside a
+// centered Modal dialog (the Modal primitive handles backdrop
+// and Escape; its built-in close button is hidden for this
+// case via the hideCloseButton prop).
+const LanguageButton = ({ variant = 'dropdown', onAfterSelect }) => {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef(null)
+  const isModal = variant === 'modal'
+
+  // The Modal handles its own Escape / backdrop dismissal, so
+  // the document-level close listeners are only needed for the
+  // dropdown variant.
+  useEffect(() => {
+    if (!open || isModal) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    const onClick = (e) => {
+      if (wrapRef.current?.contains(e.target)) return
+      setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('click', onClick)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('click', onClick)
+    }
+  }, [open, isModal])
+
+  const renderItems = () =>
+    languages.map(({ code, label, available, active }) => (
+      <LanguageItem
+        key={code}
+        role="menuitem"
+        disabled={!available}
+        aria-current={active ? 'true' : undefined}
+        onClick={() => {
+          if (available) {
+            // future: persist language choice
+          }
+          setOpen(false)
+          onAfterSelect?.()
+        }}
+      >
+        <span>{label}</span>
+        {!available && <LanguageItemHint>(coming soon)</LanguageItemHint>}
+      </LanguageItem>
+    ))
+
+  return (
+    <LanguageWrap ref={wrapRef} data-language-wrap>
+      <IconLink
+        as="button"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault()
+          setOpen((o) => !o)
+        }}
+        aria-label="Language"
+        aria-haspopup={isModal ? 'dialog' : 'menu'}
+        aria-expanded={open}
+        data-tooltip="Language"
+      >
+        <Languages size={26} strokeWidth={2.4} />
+      </IconLink>
+      {open && isModal && (
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          ariaLabel="Language"
+          hideCloseButton
+        >
+          <LanguageModalList role="menu" aria-label="Language">
+            {renderItems()}
+          </LanguageModalList>
+        </Modal>
+      )}
+      {open && !isModal && (
+        <LanguageMenu role="menu" aria-label="Language">
+          {renderItems()}
+        </LanguageMenu>
+      )}
+    </LanguageWrap>
+  )
+}
 
 // ── Modal content ───────────────────────────────────────────────────────
 //
@@ -420,6 +697,25 @@ const Navbar = () => {
           </Brand>
           <Links>
             <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
+            <NavA to="/field-notes/issue-001"><Zer0Text>News</Zer0Text></NavA>
+            <IconLinks>
+              <LanguageButton />
+              {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
+                const Icon = ICON_MAP[icon]
+                return (
+                  <IconLink
+                    key={label}
+                    href={href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    aria-label={label}
+                    data-tooltip={label}
+                  >
+                    <Icon size={26} strokeWidth={2.4} />
+                  </IconLink>
+                )
+              })}
+            </IconLinks>
             <CTA as={Link} to="/contact">
               <Zer0Text>Start a project</Zer0Text>
             </CTA>
@@ -443,6 +739,25 @@ const Navbar = () => {
                 <Zer0Text>{p.label}</Zer0Text>
               </PanelLink>
             ))}
+            <PanelIcons>
+              <LanguageButton variant="modal" onAfterSelect={closeMobile} />
+              {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
+                const Icon = ICON_MAP[icon]
+                return (
+                  <IconLink
+                    key={label}
+                    href={href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    aria-label={label}
+                    data-tooltip={label}
+                    onClick={closeMobile}
+                  >
+                    <Icon size={26} strokeWidth={2.4} />
+                  </IconLink>
+                )
+              })}
+            </PanelIcons>
             <PanelCTA as={Link} to="/contact" onClick={closeMobile}>
               <Zer0Text>Start a project</Zer0Text>
             </PanelCTA>

@@ -79,7 +79,7 @@ const CloseBtn = styled.button`
   }
 `
 
-const Modal = ({ open, onClose, ariaLabel, children }) => {
+const Modal = ({ open, onClose, ariaLabel, hideCloseButton, children }) => {
   const cardRef = useRef(null)
   const closeBtnRef = useRef(null)
 
@@ -119,14 +119,16 @@ const Modal = ({ open, onClose, ariaLabel, children }) => {
         aria-modal="true"
         aria-label={ariaLabel}
       >
-        <CloseBtn
-          ref={closeBtnRef}
-          onClick={onClose}
-          aria-label="Close"
-          type="button"
-        >
-          <X size={20} strokeWidth={2.5} />
-        </CloseBtn>
+        {!hideCloseButton && (
+          <CloseBtn
+            ref={closeBtnRef}
+            onClick={onClose}
+            aria-label="Close"
+            type="button"
+          >
+            <X size={20} strokeWidth={2.5} />
+          </CloseBtn>
+        )}
         {children}
       </Card>
     </Overlay>,

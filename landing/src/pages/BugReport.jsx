@@ -1,7 +1,7 @@
 /**
  * BugReport
  *
- * /bugreport — anonymous-friendly bug report form. Same visual
+ * /bug-report — anonymous-friendly bug report form. Same visual
  * language as the project enquiry form (gold PageHeader, ticket
  * Sheet, form fields styled like the on-site <Input>): it's a
  * "contact form variant" that emails the team via the bug-report
@@ -204,7 +204,7 @@ export default function BugReport() {
       <SEO
         title="Report a bug"
         description="File a bug report — tell us what broke, what you expected, and what actually happened."
-        path="/bugreport"
+        path="/bug-report"
       />
       <Navbar />
       <PageHeader

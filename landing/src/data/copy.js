@@ -136,8 +136,13 @@ export const navbarMobilePages = [
 export const navbarPages = [
   { to: '/', label: 'Home', hint: 'What we build', icon: 'Home' },
   { to: '/contact', label: 'Start a project', hint: 'Get in touch', icon: 'Send' },
-  { to: '/about', label: 'Meet the Team', hint: 'The people', icon: 'Users' },
-  { to: '/rss.xml', label: 'News (RSS)', hint: 'Field notes', icon: 'Rss', external: false },
+  { to: '/about', label: 'Meet the Team', hint: 'About', icon: 'Users' },
+  // News goes straight to the latest issue, not to a (not-yet-built)
+  // /field-notes index. Hardcoded to the current latest slug; will
+  // move to the field-notes SSOT (Chunk 9) so this stays in sync
+  // when a new post is published.
+  { to: '/field-notes/issue-001', label: 'News', hint: 'Field notes', icon: 'Newspaper' },
+  { to: '/language', label: 'Language', hint: 'Coming soon', icon: 'Languages' },
 ]
 
 export const navbarConnects = [
@@ -147,6 +152,7 @@ export const navbarConnects = [
     hint: 'View source',
     external: true,
     icon: 'Github',
+    mainBar: true,
   },
   {
     href: 'mailto:hello@robust.computer',
@@ -154,6 +160,14 @@ export const navbarConnects = [
     hint: 'Write to us',
     external: false,
     icon: 'Mail',
+  },
+  {
+    href: '/rss.xml',
+    label: 'RSS Feed',
+    hint: 'Subscribe',
+    external: false,
+    icon: 'Rss',
+    mainBar: true,
   },
 ]
 
@@ -188,13 +202,36 @@ export const navbarSocials = [
   },
 ]
 
+// ── Languages (i18n stub) ────────────────────────────────────────────────
+// Drives the language dropdown that opens behind the Languages
+// icon in the nav. Top 5 by total speakers (native + L2), per
+// the common "most used languages" ranking. English is the
+// active language; the other four are disabled placeholders so
+// the menu shape is visible before translations actually land.
+//
+// Non-Latin scripts (zh, hi) will fall back from IBM Plex Mono
+// to the browser's system CJK / Devanagari font on the menu row.
+// That's a visible inconsistency — see Navbar.jsx for a
+// fallback stack you can add to LanguageItem if it bothers you.
+export const languages = [
+  { code: 'en', label: 'English', available: true, active: true },
+  { code: 'es', label: 'Español', available: false },
+  { code: 'fr', label: 'Français', available: false },
+  { code: 'hi', label: 'हिन्दी', available: false },
+  { code: 'zh', label: '中文', available: false },
+]
+
 // ── Footer ──────────────────────────────────────────────────────────────
 export const footerSections = {
   site: [
     { to: '/', label: 'Home', icon: 'Home' },
     { to: '/about', label: 'About', icon: 'Users' },
     { to: '/contact', label: 'Contact', icon: 'Send' },
-    { href: '/rss.xml', label: 'News (RSS)', icon: 'Rss' },
+    // News goes straight to the latest issue, not to a (not-yet-built)
+    // /field-notes index. Hardcoded to the current latest slug; will
+    // move to the field-notes SSOT (Chunk 9) so this stays in sync
+    // when a new post is published.
+    { to: '/field-notes/issue-001', label: 'News', icon: 'Newspaper' },
   ],
   connect: [
     { href: 'https://github.com/robust-computer', label: 'GitHub', icon: 'Github' },
