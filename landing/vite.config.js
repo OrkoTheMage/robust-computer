@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// ── shutdown logging ──────────────────────────────────────────────────
+/**
+ * landing/vite.config.js
+ *
+ * Env files live at the repo root (`envDir: '../'`). The dev
+ * wrapper injects PORT so the /api proxy hits the bound server
+ * port. strictPort fails loud instead of sliding to another port.
+ */
+
 // Vite handles SIGINT/SIGTERM silently. Register here so the landing's
 // shutdown is visible alongside the server's in the wrapper.
 //
