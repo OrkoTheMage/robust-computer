@@ -2,8 +2,13 @@
  * Services
  *
  * "What we build" — four square-ish cards arranged in a 12-col grid
- * with alternating black/gold/paper backgrounds. Each card has an
- * icon, a title, and a one-liner.
+ * with alternating black/gold/paper backgrounds (ink, gold, paper,
+ * gold — top to bottom). Each card has an icon, a title, and a
+ * one-liner.
+ *
+ * Per-card copy and `bg`/`fg` colors live in `data/copy.js`; this
+ * file is just the layout and the icon-name → Lucide-component
+ * map. See ICON_MAP below.
  */
 
 import styled from '@emotion/styled'

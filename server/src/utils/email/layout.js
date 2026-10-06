@@ -49,14 +49,18 @@ import config from '../../config.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Read the root package.json once at module load so the email
+// Read the nearest package.json once at module load so the email
 // version stamp stays in sync with the on-page Hero ticket and
-// the rest of the brand surfaces. Restart the server to pick up
-// a version bump (same cadence as the page).
-const rootPkg = JSON.parse(
-  readFileSync(path.join(__dirname, '../../../../package.json'), 'utf8')
+// the rest of the brand surfaces. In Railway, only `server/` is
+// deployed — the monorepo's root package.json is not on disk —
+// so we read server/package.json, which carries the same version
+// (kept in sync at release time; see README > Versioning).
+// Restart the server to pick up a version bump (same cadence as
+// the page).
+const pkg = JSON.parse(
+  readFileSync(path.join(__dirname, '../../../package.json'), 'utf8')
 )
-const VERSION = rootPkg.version
+const VERSION = pkg.version
 
 // Read both IBM Plex Mono weights we ship (400 + 700) at module
 // load so we can inline them as data: URLs. Inlining (rather
@@ -67,16 +71,10 @@ const VERSION = rootPkg.version
 // (notably Outlook desktop) fall through to the slashed-zero
 // system monos in the FONT.mono stack below.
 const plexMono400B64 = readFileSync(
-  path.join(
-    __dirname,
-    '../../../../landing/public/fonts/ibm-plex-mono-400.woff2'
-  )
+  path.join(__dirname, './fonts/ibm-plex-mono-400.woff2')
 ).toString('base64')
 const plexMono700B64 = readFileSync(
-  path.join(
-    __dirname,
-    '../../../../landing/public/fonts/ibm-plex-mono-700.woff2'
-  )
+  path.join(__dirname, './fonts/ibm-plex-mono-700.woff2')
 ).toString('base64')
 
 // ── Brand tokens (mirrored from landing/src/index.css) ──────────────────────
