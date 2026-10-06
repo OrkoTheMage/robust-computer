@@ -36,8 +36,9 @@ const required = (key) => {
 // `name` and in contact-info copy. When migrating to a custom domain,
 // change BRAND_DOMAIN here AND flip the VITE_*_URL env vars.
 const BRAND_NAME = 'Robust Computer'
-const BRAND_DOMAIN = 'robustcomputer.example'
+const BRAND_DOMAIN = 'robust.computer'
 const BRAND_EMAIL = `hello@${BRAND_DOMAIN}`
+const BRAND_TIMEZONE = 'America/Chicago'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Required env vars (deployer must set these — no fallback to constants)
@@ -51,6 +52,7 @@ const config = Object.freeze({
     name: BRAND_NAME,
     domain: BRAND_DOMAIN,
     email: BRAND_EMAIL,
+    timezone: BRAND_TIMEZONE,
   }),
 })
 

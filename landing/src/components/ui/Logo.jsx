@@ -21,8 +21,7 @@ const Img = styled.img`
 
 const variantToSrc = {
   icon: '/icon.svg',
-  iconAlt: '/icon-alt.svg',
-  icon404: '/icon-404.svg',
+  icon404: '/icon-var-404.svg',
   iconVarAngry: '/icon-var-angry.svg',
   iconVarCrying: '/icon-var-crying.svg',
   iconVarDead: '/icon-var-dead.svg',
@@ -30,31 +29,33 @@ const variantToSrc = {
   iconVarPanicked: '/icon-var-panicked.svg',
   iconVarUnamused: '/icon-var-unamused.svg',
   badge: '/badge.svg',
-  badgeCut: '/badge-cut.svg',
+  badgeAlt: '/badge-cut.svg',
   wordmark: '/wordmark.svg',
   poster: '/poster.svg',
   banner: '/banner.svg',
+  bannerAlt: '/banner-cut.svg',
   banner2: '/banner2.svg',
-  banner2Cut: '/banner2-cut.svg',
+  banner2Alt: '/banner2-cut.svg',
 }
 
 const variantToAlt = {
   icon: 'Robust Computer',
-  iconAlt: 'Robust Computer',
+  bannerAlt: 'Robust Computer',
   icon404: 'Page not found',
-  iconVarAngry: 'Aeryn (angry)',
+  iconVarAngry: 'developer (angry)',
   iconVarCrying: 'developer (crying)',
   iconVarDead: 'developer (dead inside)',
-  iconVarHappy: 'Aeryn (happy)',
+  iconVarHappy: 'developer (happy)',
   iconVarPanicked: 'developer (panicked)',
   iconVarUnamused: 'developer (unamused)',
   badge: 'Robust Computer badge',
-  badgeCut: 'Robust Computer badge',
+  badgeAlt: 'Robust Computer badge',
   wordmark: 'Robust Computer',
   poster: 'Robust Computer',
   banner: 'Robust Computer',
+  bannerAlt: 'Robust Computer',
   banner2: 'Robust Computer',
-  banner2Cut: 'Robust Computer',
+  banner2Alt: 'Robust Computer',
 }
 
 const Logo = ({ variant = 'icon', h, alt, ...rest }) => (

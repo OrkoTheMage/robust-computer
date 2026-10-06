@@ -22,6 +22,7 @@
  */
 
 import { useEffect, useState } from 'react'
+import config from '../config'
 
 // Feed links are absolute (example domain or local). Callers
 // inside the app only need the pathname, so we strip the rest.
@@ -47,10 +48,15 @@ export const formatPubDate = (raw) => {
   if (!raw) return ''
   const d = new Date(raw)
   if (Number.isNaN(d.getTime())) return raw
+  // Render in the brand's timezone (CST/CDT) so every visitor
+  // sees the same publication date regardless of where their
+  // browser is. The pubDate in /rss.xml is always UTC; this is
+  // the user-facing translation step.
   return d.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    timeZone: config.brand.timezone,
   })
 }
 

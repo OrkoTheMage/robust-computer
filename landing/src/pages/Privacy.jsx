@@ -8,21 +8,23 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { SEO } from '../components/seo'
+import { privacySections } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
 `
 
 const Body = styled.section`
   max-width: 760px;
   margin: 0 auto;
   padding: 56px 24px 96px;
-  color: #000;
+  color: ${colors.ink};
   font-size: 17px;
   line-height: 1.65;
 
@@ -60,19 +62,23 @@ const Meta = styled.p`
   font-size: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #5d5744;
+  color: ${colors.deskSoft};
   margin: 0 0 32px;
 `
 
 const Privacy = () => {
-  useDocumentTitle('Privacy')
   return (
   <Page>
+    <SEO
+      title="Privacy"
+      description="Privacy policy for Robust Computer — what we collect when you visit the site, send an enquiry, or subscribe to Field Notes."
+      path="/privacy"
+    />
     <Navbar />
     <PageHeader
       title="Privacy Policy"
       lead="What we collect when you contact us, and what we do with it."
-      badgeVariant="badgeCut"
+      imageVariant="bannerAlt"
     />
     <Body>
       <Meta>Effective [date to be set on launch]</Meta>
@@ -118,7 +124,7 @@ const Privacy = () => {
         your record at any time.
       </p>
 
-      <h2>Cookies and analytics</h2>
+      <h2>{privacySections[0]}</h2>
       <p>
         We do not currently set any tracking cookies or use
         third-party analytics on this site. If this changes, we will
@@ -140,11 +146,11 @@ const Privacy = () => {
       </ul>
       <p>
         To exercise any of these rights, email us at
-        [hello@robustcomputer.example] and we will respond within
+        [hello@robust.computer] and we will respond within
         [30 days / the period required by your jurisdiction].
       </p>
 
-      <h2>Changes to this policy</h2>
+      <h2>{privacySections[1]}</h2>
       <p>
         If we make material changes, we will post the updated policy
         on this page with a new effective date.

@@ -1,31 +1,45 @@
 /**
  * landing/src/styles/colors.js
  *
- * Color tokens. Sampled directly from the Robust Computer badge
- * (paper, gold, ink, tie) — see `WebsiteMockups.html` Brand Kit tile.
+ * Single source of truth for every color in the brand. CSS does
+ * as little as possible — it only handles @font-face, body/html
+ * defaults, and global page behavior. Every component reads
+ * colors from here via `${colors.name}` in its styled-component
+ * template, so a brand reskin is a single-file edit.
  *
- * Tokens live in code, not in env, because they're brand, not
- * configuration. A future reskin edits this file.
+ * Hex values are the brand samples (paper, gold, ink, tie from
+ * the original badge — see WebsiteMockups.html). Lowercase hex
+ * throughout so the file matches the `var(--name)` lowercase
+ * convention the CSS previously used.
+ *
+ * `Object.freeze` so styled-components can't accidentally
+ * reassign a token at runtime.
  */
 
 export const colors = Object.freeze({
-  paper: '#E2DBC8',
-  ticket: '#F1ECDD',
-  gold: '#D0C096',
-  goldDeep: '#A8935A',
+  // Brand surface colors
+  paper: '#e2dbc8',
+  ticket: '#f1ecdd',
+  gold: '#d0c096',
+  goldDeep: '#a8935a',
   ink: '#000000',
-  tie: '#14120E',
-  desk: '#EFEAD9',
-  deskDark: '#17150F',
-})
+  tie: '#14120e',
+  desk: '#efe9d9',
 
-export const darkColors = Object.freeze({
-  paper: '#E2DBC8',
-  ticket: '#1F1C13',
-  gold: '#D0C096',
-  goldDeep: '#A8935A',
-  ink: '#000000',
-  tie: '#14120E',
-  desk: '#17150F',
-  deskDark: '#0E0D08',
+  // Desk surface / text variants — were --desk-line, --desk-ink,
+  // --desk-soft in the old index.css. Kept here for any future
+  // dark-mode work (today nothing imports them — included for
+  // parity with the old CSS).
+  deskLine: '#14120e',
+  deskInk: '#14120e',
+  deskSoft: '#5d5744',
+
+  // Form input surfaces
+  inputBg: '#fff8',
+  placeholderLight: '#6b6450',
+  placeholderOnInk: '#7a7260',
+
+  // Form error / validation red — used by Field error slot and
+  // the inline error message under form submit buttons.
+  error: '#b00020',
 })

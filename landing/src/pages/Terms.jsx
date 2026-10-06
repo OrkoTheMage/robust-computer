@@ -8,21 +8,23 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { SEO } from '../components/seo'
+import { termsSections } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
 `
 
 const Body = styled.section`
   max-width: 760px;
   margin: 0 auto;
   padding: 56px 24px 96px;
-  color: #000;
+  color: ${colors.ink};
   font-size: 17px;
   line-height: 1.65;
 
@@ -60,19 +62,23 @@ const Meta = styled.p`
   font-size: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #5d5744;
+  color: ${colors.deskSoft};
   margin: 0 0 32px;
 `
 
 const Terms = () => {
-  useDocumentTitle('Terms')
   return (
   <Page>
+    <SEO
+      title="Terms"
+      description="Terms of service for the Robust Computer website and any work we deliver."
+      path="/terms"
+    />
     <Navbar />
     <PageHeader
       title="Terms of Service"
       lead="The ground rules for using this site and working with us."
-      badgeVariant="badgeCut"
+      imageVariant="bannerAlt"
     />
     <Body>
       <Meta>Effective [date to be set on launch]</Meta>
@@ -92,7 +98,7 @@ const Terms = () => {
         or scrape it without our written permission.
       </p>
 
-      <h2>Intellectual property</h2>
+      <h2>{termsSections[0]}</h2>
       <p>
         The design, copy, illustrations, code and other content on
         this site are owned by [Robust Computer] or our licensors and
@@ -102,7 +108,7 @@ const Terms = () => {
         derivative works without our written permission.
       </p>
 
-      <h2>Engagements and work product</h2>
+      <h2>{termsSections[1]}</h2>
       <p>
         Any project we agree to do for you is governed by a separate
         written agreement (a proposal, statement of work, or master
@@ -118,7 +124,7 @@ const Terms = () => {
         harmful components.
       </p>
 
-      <h2>Limitation of liability</h2>
+      <h2>{termsSections[2]}</h2>
       <p>
         To the maximum extent permitted by law, [Robust Computer] is
         not liable for any indirect, incidental, special, or
@@ -132,7 +138,7 @@ const Terms = () => {
         Wales"], without regard to its conflict-of-laws provisions.
       </p>
 
-      <h2>Changes to these Terms</h2>
+      <h2>{termsSections[3]}</h2>
       <p>
         If we make material changes, we will post the updated Terms
         on this page with a new effective date. Continued use of the
@@ -142,7 +148,7 @@ const Terms = () => {
       <h2>Contact</h2>
       <p>
         Questions about these Terms can be sent to
-        [hello@robustcomputer.example].
+        [hello@robust.computer].
       </p>
     </Body>
     <Footer />

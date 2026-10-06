@@ -6,12 +6,14 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { Link } from 'react-router-dom'
 import { Button, Zer0Text } from '../ui'
+import { ctaBand } from '../../data/copy'
 
 const Band = styled.section`
-  background: #000;
-  color: var(--paper);
+  background: ${colors.ink};
+  color: ${colors.paper};
   padding: 64px 56px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   display: flex;
@@ -20,7 +22,7 @@ const Band = styled.section`
   gap: 40px;
 
   h2 {
-    color: var(--paper);
+    color: ${colors.paper};
     font-family: var(--display);
     font-weight: 800;
     font-size: clamp(36px, 4vw, 60px);
@@ -45,11 +47,8 @@ const Band = styled.section`
 const CTABand = () => (
   <Band>
     <div>
-      <h2><Zer0Text>Work with the team</Zer0Text></h2>
-      <p>
-        Tell us what you are building and who it is for. We will reply within
-        one business day.
-      </p>
+      <h2><Zer0Text>{ctaBand.headline}</Zer0Text></h2>
+      <p>{ctaBand.lead}</p>
     </div>
     <Button as={Link} to="/contact" variant="gold">
       <Zer0Text>Start a project</Zer0Text>

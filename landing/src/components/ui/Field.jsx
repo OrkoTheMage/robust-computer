@@ -6,6 +6,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 
 const Wrap = styled.label`
   display: block;
@@ -20,29 +21,29 @@ const Label = styled.span`
   letter-spacing: 0.05em;
   margin-bottom: 6px;
   text-transform: uppercase;
-  color: ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
+  color: ${(p) => (p.onInk ? colors.paper : colors.ink)};
 `
 
 const Input = styled.input`
   width: 100%;
-  border: 3px solid ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
-  background: ${(p) => (p.onInk ? 'var(--tie)' : '#fff8')};
-  color: ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
+  border: 3px solid ${(p) => (p.onInk ? colors.paper : colors.ink)};
+  background: ${(p) => (p.onInk ? colors.tie : colors.inputBg)};
+  color: ${(p) => (p.onInk ? colors.paper : colors.ink)};
   padding: 11px 14px;
   font-size: 17px;
   min-height: 50px;
   font-family: var(--mono);
 
   &::placeholder {
-    color: ${(p) => (p.onInk ? '#7a7260' : '#6b6450')};
+    color: ${(p) => (p.onInk ? colors.placeholderOnInk : colors.placeholderLight)};
   }
 `
 
 const Textarea = styled.textarea`
   width: 100%;
-  border: 3px solid ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
-  background: ${(p) => (p.onInk ? 'var(--tie)' : '#fff8')};
-  color: ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
+  border: 3px solid ${(p) => (p.onInk ? colors.paper : colors.ink)};
+  background: ${(p) => (p.onInk ? colors.tie : colors.inputBg)};
+  color: ${(p) => (p.onInk ? colors.paper : colors.ink)};
   padding: 11px 14px;
   font-size: 17px;
   min-height: 150px;
@@ -50,7 +51,7 @@ const Textarea = styled.textarea`
   resize: vertical;
 
   &::placeholder {
-    color: ${(p) => (p.onInk ? '#7a7260' : '#6b6450')};
+    color: ${(p) => (p.onInk ? colors.placeholderOnInk : colors.placeholderLight)};
   }
 `
 
@@ -59,7 +60,7 @@ const Error = styled.div`
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: #b00020;
+  color: ${colors.error};
 `
 
 export const FieldGroup = ({ label, error, children }) => (

@@ -11,13 +11,15 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { Link } from 'react-router-dom'
 import { Button, InputControl, FieldGroup, Zer0Text } from '../ui'
 import { useLatestRss } from '../../hooks/useLatestRss'
+import { fieldNotes } from '../../data/copy'
 
 const Band = styled.section`
-  background: #000;
-  color: var(--paper);
+  background: ${colors.ink};
+  color: ${colors.paper};
   padding: 64px 56px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   display: grid;
@@ -33,7 +35,7 @@ const Band = styled.section`
     margin: 0;
     text-transform: uppercase;
     letter-spacing: -0.005em;
-    color: var(--paper);
+    color: ${colors.paper};
   }
 
   p {
@@ -49,11 +51,11 @@ const Band = styled.section`
 `
 
 const Form = styled.form`
-  background: var(--ticket);
-  color: #000;
-  border: 3px solid var(--gold);
+  background: ${colors.ticket};
+  color: ${colors.ink};
+  border: 3px solid ${colors.gold};
   padding: 26px;
-  box-shadow: 8px 8px 0 var(--gold);
+  box-shadow: 8px 8px 0 ${colors.gold};
 
   small {
     display: block;
@@ -63,7 +65,7 @@ const Form = styled.form`
     font-size: 13px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #000;
+    color: ${colors.ink};
   }
 
   /* The "latest issue" line is a real link through to the post.
@@ -94,9 +96,9 @@ const Row = styled.div`
 `
 
 const SubscribeBtn = styled(Button)`
-  background: var(--gold);
-  color: #000;
-  box-shadow: 6px 6px 0 var(--paper);
+  background: ${colors.gold};
+  color: ${colors.ink};
+  box-shadow: 6px 6px 0 ${colors.paper};
   padding: 0 22px;
   display: flex;
   align-items: center;
@@ -104,16 +106,13 @@ const SubscribeBtn = styled(Button)`
   min-height: 50px;
 `
 
-const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => {
+const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage }) => {
   const latest = useLatestRss()
   return (
     <Band>
       <div>
-        <h2><Zer0Text>Field notes</Zer0Text></h2>
-        <p>
-          One short email a month on building software that lasts. Practical,
-          no spam, unsubscribe any time.
-        </p>
+        <h2><Zer0Text>{fieldNotes.headline}</Zer0Text></h2>
+        <p>{fieldNotes.lead}</p>
       </div>
       <Form onSubmit={onSubmit}>
         <div style={{ marginBottom: 0 }}>
@@ -137,8 +136,10 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status }) => {
         <small>
           {status === 'success'
             ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
+            : status === 'already'
+            ? <Zer0Text>Already on the list. No new email sent.</Zer0Text>
             : status === 'error'
-            ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
+            ? <Zer0Text>{errorMessage || 'Something went wrong. Try again in a moment.'}</Zer0Text>
             : latest
               ? (
                 <>

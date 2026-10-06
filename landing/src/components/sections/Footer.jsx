@@ -8,6 +8,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Home,
@@ -23,10 +24,14 @@ import {
 } from 'lucide-react'
 import config from '../../config'
 import { Logo, Zer0Text } from '../ui'
+import { footerTagline, footerSections } from '../../data/copy'
+
+// Map icon-name strings from the data file to Lucide components.
+const ICON_MAP = { Home, Users, Send, Rss, Github, Linkedin, Facebook, Instagram, Twitter, Mail }
 
 const Foot = styled.footer`
-  background: #000;
-  color: var(--paper);
+  background: ${colors.ink};
+  color: ${colors.paper};
   padding: 56px 56px 30px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
 
@@ -40,7 +45,7 @@ const Cols = styled.div`
   grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
   gap: 40px;
   padding-bottom: 24px;
-  border-bottom: 3px solid var(--paper);
+  border-bottom: 3px solid ${colors.paper};
 
   @media (max-width: 760px) {
     grid-template-columns: 1fr;
@@ -85,7 +90,7 @@ const Col = styled.div`
     margin: 0 0 10px;
     font-size: 14px;
     letter-spacing: 0.05em;
-    color: var(--gold);
+    color: ${colors.gold};
     text-transform: uppercase;
   }
 
@@ -95,7 +100,7 @@ const Col = styled.div`
     margin: 0 0 6px;
     font-size: 17px;
     text-decoration: none;
-    color: var(--paper);
+    color: ${colors.paper};
   }
 
   /* Links get a gold underline + gold text on hover (and on
@@ -129,8 +134,8 @@ const Col = styled.div`
 
   a:hover,
   a:focus-visible {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
+    color: ${colors.gold};
+    border-bottom-color: ${colors.gold};
   }
 
   @media (max-width: 760px) {
@@ -187,7 +192,7 @@ const Legal = styled.nav`
   }
 
   a {
-    color: var(--paper);
+    color: ${colors.paper};
     text-decoration: none;
     border-bottom: 2px solid transparent;
     padding-bottom: 1px;
@@ -197,8 +202,8 @@ const Legal = styled.nav`
 
   a:hover,
   a:focus-visible {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
+    color: ${colors.gold};
+    border-bottom-color: ${colors.gold};
   }
 
   @media (max-width: 760px) {
@@ -225,68 +230,62 @@ const Footer = () => {
     <Foot>
       <Cols>
         <Brand>
-          <Logo variant="banner2Cut" h={160} className="w" alt={config.brand.name} />
-          <p>Bespoke websites and software.</p>
+          <Logo variant="banner2Alt" h={160} className="w" alt={config.brand.name} />
+          <p>{footerTagline}</p>
           <p className="mono">{config.brand.email}</p>
         </Brand>
         <Col>
           <h4><Zer0Text>Site</Zer0Text></h4>
-          <Link to="/" onClick={onHomeClick}>
-            <Home size={18} strokeWidth={2.4} aria-hidden="true" />
-            Home
-          </Link>
-        <Link to="/about">
-          <Users size={18} strokeWidth={2.4} aria-hidden="true" />
-          About
-        </Link>
-        <Link to="/contact">
-          <Send size={18} strokeWidth={2.4} aria-hidden="true" />
-          Contact
-        </Link>
-        <a href="/rss.xml">
-          <Rss size={18} strokeWidth={2.4} aria-hidden="true" />
-          News (RSS)
-        </a>
+          {footerSections.site.map((l) => {
+            const Icon = ICON_MAP[l.icon]
+            return l.to ? (
+              <Link key={l.label} to={l.to} onClick={l.to === '/' ? onHomeClick : undefined}>
+                <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.label} href={l.href}>
+                <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+                {l.label}
+              </a>
+            )
+          })}
       </Col>
       <Col>
         <h4><Zer0Text>Connect</Zer0Text></h4>
-        <a href="https://github.com/robust-computer" target="_blank" rel="noopener noreferrer">
-          <Github size={18} strokeWidth={2.4} aria-hidden="true" />
-          GitHub
-        </a>
-        <a href={`mailto:${config.brand.email}`}>
-          <Mail size={18} strokeWidth={2.4} aria-hidden="true" />
-          Email
-        </a>
+        {footerSections.connect.map((l) => {
+          const Icon = ICON_MAP[l.icon]
+          return (
+            <a key={l.label} href={l.href}>
+              <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+              {l.label}
+            </a>
+          )
+        })}
       </Col>
       <Col>
         <h4><Zer0Text>Elsewhere</Zer0Text></h4>
-        <a href="https://linkedin.com/company/robust-computer" target="_blank" rel="noopener noreferrer">
-          <Linkedin size={18} strokeWidth={2.4} aria-hidden="true" />
-          LinkedIn
-        </a>
-        <a href="https://www.facebook.com/profile.php?id=61594902219428" target="_blank" rel="noopener noreferrer">
-          <Facebook size={18} strokeWidth={2.4} aria-hidden="true" />
-          Facebook
-        </a>
-        <a href="https://www.instagram.com/robust.computer/" target="_blank" rel="noopener noreferrer">
-          <Instagram size={18} strokeWidth={2.4} aria-hidden="true" />
-          Instagram
-        </a>
-        <a href="https://x.com/Robust_Computer" target="_blank" rel="noopener noreferrer">
-          <Twitter size={18} strokeWidth={2.4} aria-hidden="true" />
-          X
-        </a>
+        {footerSections.elsewhere.map((l) => {
+          const Icon = ICON_MAP[l.icon]
+          return (
+            <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer">
+              <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+              {l.label}
+            </a>
+          )
+        })}
       </Col>
     </Cols>
     <Legal aria-label="Legal">
       <Link to="/privacy">Privacy Policy</Link>
       <span className="sep" aria-hidden="true">|</span>
       <Link to="/terms">Terms of Service</Link>
+      <span className="sep" aria-hidden="true">|</span>
+      <Link to="/bugreport">Report a bug</Link>
     </Legal>
     <Small>
       <span>{config.brand.name}</span>
-      <span><Zer0Text>Built by hand, tested before launch</Zer0Text></span>
+      <span><Zer0Text>Custom software, built to last.</Zer0Text></span>
     </Small>
   </Foot>
   )

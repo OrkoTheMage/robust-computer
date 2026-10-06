@@ -1,13 +1,21 @@
 /**
  * server/src/utils/email.js
  *
- * Single nodemailer transport + per-template send helpers. Reuse one
- * transport across sends (Mailpit / SMTP both work — the difference is
- * just host + credentials).
+ * Single nodemailer transport + per-template send helpers. The
+ * transport is shared across sends (Mailpit / SMTP both work — the
+ * difference is host + credentials). Each send*() function pulls a
+ * rendered { subject, html, text } from the templates/ directory
+ * and dispatches it. SMTP failures never propagate to the API
+ * response — the underlying record is already persisted in Mongo
+ * for the contact path, and a missed welcome email is recoverable
+ * (the user can re-subscribe).
  */
 
 import nodemailer from 'nodemailer'
 import config from '../config.js'
+import { subscriberConfirmation as renderSubscriber } from './email/subscriberConfirmation.js'
+import { enquiryNotification as renderEnquiry } from './email/enquiryNotification.js'
+import { bugReportNotification as renderBugReport } from './email/bugReportNotification.js'
 
 const transport = nodemailer.createTransport({
   host: config.smtp.host,
@@ -18,32 +26,28 @@ const transport = nodemailer.createTransport({
     : undefined,
 })
 
+// Sender name in the From header — small touch, but matters for
+// inbox recognition. Nodemailer accepts "Name <addr@host>".
+const fromAddress = `"${config.brand.name}" <${config.smtp.from}>`
+
 /**
  * sendEnquiryNotification
  *
- * Notifies the team that a new project enquiry has landed. Falls back
- * to a no-op if SMTP is unavailable — the enquiry is already persisted
- * in Mongo, so we never want email failure to drop the request.
+ * Notifies the team that a new project enquiry has landed. Sent
+ * to the brand inbox, with Reply-To set to the enquirer's address
+ * so the team can respond with one click in their mail client.
+ * Best-effort: never blocks the API response.
  */
 export const sendEnquiryNotification = async (enquiry) => {
-  const subject = `[Robust Computer] New enquiry from ${enquiry.name}`
-  const text = [
-    `Name:     ${enquiry.name}`,
-    `Email:    ${enquiry.email}`,
-    `Company:  ${enquiry.company || '—'}`,
-    `Type:     ${enquiry.projectType}`,
-    `Budget:   ${enquiry.budget}`,
-    '',
-    'Message:',
-    enquiry.message,
-  ].join('\n')
+  const { subject, html, text } = renderEnquiry(enquiry)
 
   try {
     await transport.sendMail({
-      from: config.smtp.from,
+      from: fromAddress,
       to: config.smtp.from,
       replyTo: enquiry.email,
       subject,
+      html,
       text,
     })
   } catch (err) {
@@ -55,25 +59,47 @@ export const sendEnquiryNotification = async (enquiry) => {
 /**
  * sendSubscriberConfirmation
  *
- * Greets the new subscriber. Best-effort: never blocks the API response.
+ * Greets the new Field Notes subscriber. Best-effort: never blocks
+ * the API response.
  */
 export const sendSubscriberConfirmation = async (email) => {
-  const subject = 'Welcome to Field Notes'
-  const text = [
-    "Thanks for subscribing to Field Notes.",
-    '',
-    'One short email a month on building software that lasts. Practical, no spam.',
-    `Unsubscribe any time: ${config.landingUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
-  ].join('\n')
+  const { subject, html, text } = renderSubscriber(email)
 
   try {
     await transport.sendMail({
-      from: config.smtp.from,
+      from: fromAddress,
       to: email,
       subject,
+      html,
       text,
     })
   } catch (err) {
     console.error('[email] subscriber confirmation failed:', err.message)
+  }
+}
+
+/**
+ * sendBugReportNotification
+ *
+ * Notifies the team that a bug report has been filed. Sent to the
+ * brand inbox, with Reply-To set to the reporter's address if they
+ * provided one (anonymous reports land with no Reply-To). Mirrors
+ * the enquiry flow's best-effort contract — SMTP failures never
+ * block the API response.
+ */
+export const sendBugReportNotification = async (report) => {
+  const { subject, html, text } = renderBugReport(report)
+
+  try {
+    await transport.sendMail({
+      from: fromAddress,
+      to: config.smtp.from,
+      replyTo: report.email || undefined,
+      subject,
+      html,
+      text,
+    })
+  } catch (err) {
+    console.error('[email] bug report notification failed:', err.message)
   }
 }

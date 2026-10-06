@@ -8,6 +8,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import { useState } from 'react'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
@@ -16,12 +17,13 @@ import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../comp
 import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { Zer0Text } from '../components/ui'
+import { SEO } from '../components/seo'
 import config from '../config'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { contactWhatHappens } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
 `
 
 const Grid = styled.div`
@@ -41,11 +43,11 @@ const Grid = styled.div`
 `
 
 const Sheet = styled.form`
-  border: 3px solid #000;
-  background: var(--ticket);
+  border: 3px solid ${colors.ink};
+  background: ${colors.ticket};
   padding: 30px 34px 34px;
-  box-shadow: 8px 8px 0 #000;
-  color: var(--ink);
+  box-shadow: 8px 8px 0 ${colors.ink};
+  color: ${colors.ink};
 
   h3 {
     font-family: var(--display);
@@ -53,12 +55,12 @@ const Sheet = styled.form`
     font-size: 24px;
     margin: 0 0 4px;
     text-transform: uppercase;
-    color: var(--ink);
+    color: ${colors.ink};
   }
 
   > p {
     margin: 0 0 22px;
-    color: var(--ink);
+    color: ${colors.ink};
   }
 `
 
@@ -79,7 +81,7 @@ const Lab = styled.div`
   letter-spacing: 0.05em;
   margin: 0 0 8px;
   text-transform: uppercase;
-  color: var(--ink);
+  color: ${colors.ink};
 `
 
 const Chips = styled.div`
@@ -96,7 +98,7 @@ const Side = styled.div`
 `
 
 const Box = styled.div`
-  border: 3px solid #000;
+  border: 3px solid ${colors.ink};
   padding: 26px;
   background: ${(p) => p.bg};
   color: ${(p) => p.fg};
@@ -124,7 +126,7 @@ const Box = styled.div`
       display: flex;
       gap: 14px;
       padding: 10px 0;
-      border-top: 3px dotted ${(p) => (p.bg === '#000' ? 'var(--paper)' : '#000')};
+      border-top: 3px dotted ${(p) => (p.bg === colors.ink ? colors.paper : colors.ink)};
 
       &:first-child {
         border-top: 0;
@@ -159,11 +161,11 @@ const Mail = styled.span`
 // success state reads as "the form, filled out" rather than a
 // detached page-level message.
 const Thank = styled.div`
-  border: 3px solid #000;
-  background: var(--ticket);
+  border: 3px solid ${colors.ink};
+  background: ${colors.ticket};
   padding: 60px 34px;
-  box-shadow: 8px 8px 0 #000;
-  color: var(--ink);
+  box-shadow: 8px 8px 0 ${colors.ink};
+  color: ${colors.ink};
   text-align: center;
 
   h2 {
@@ -182,23 +184,19 @@ const Thank = styled.div`
   }
 `
 
-// Matches the FieldGroup label styling so micro-copy under
-// the form sits on the same baseline as "Email address".
-const FieldNote = styled.p`
-  margin: 12px 0 0;
+// Matches the <small> caption under the Field Notes form so
+// "Optional. No spam." sits on the same baseline as
+// "Latest issue: {issue}, read online.".
+const FieldNote = styled.small`
+  display: block;
+  margin-top: 12px;
   font-family: var(--mono);
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: ${colors.ink};
 `
-
-const whatHappens = [
-  'We reply within one business day with questions.',
-  'A short call to agree scope and timing.',
-  'A written proposal with a fixed price.',
-]
 
 const ContactForm = () => {
   const c = useContactForm()
@@ -207,8 +205,8 @@ const ContactForm = () => {
       <Thank>
         <h2><Zer0Text>Enquiry sent</Zer0Text></h2>
         <p>
-          Thanks for the details — we&apos;ll reply within one business day
-          from a real person at {config.brand.email}.
+          Thanks for the details — we&apos;ll reply within 1-3 business days
+          from a real person at <strong>{config.brand.email}</strong>.
         </p>
       </Thank>
     )
@@ -217,7 +215,7 @@ const ContactForm = () => {
   return (
     <Sheet onSubmit={c.handleSubmit}>
       <h3><Zer0Text>Project enquiry</Zer0Text></h3>
-      <p>Goes straight to the team inbox.</p>
+      <p>Send an automatic enquiry straight to the team inbox.</p>
 
       <Two>
         <FieldGroup label="Your name" error={c.fieldErrors.name}>
@@ -305,12 +303,12 @@ const ContactForm = () => {
       </FieldGroup>
 
       {c.error && (
-        <p style={{ color: '#b00020', fontFamily: 'var(--mono)', fontSize: 14, marginTop: 0 }}>
+        <p style={{ color: colors.error, fontFamily: 'var(--mono)', fontSize: 14, marginTop: 0 }}>
           {c.error}
         </p>
       )}
 
-      <Button type="submit" disabled={c.submitting} style={{ marginTop: 6 }}>
+      <Button type="submit" disabled={c.submitting} variant="gold" style={{ marginTop: 6 }}>
         {c.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Send enquiry</Zer0Text>}
       </Button>
     </Sheet>
@@ -320,9 +318,9 @@ const ContactForm = () => {
 const NewsletterBox = () => {
   const n = useNewsletterForm()
   return (
-    <Box bg="var(--gold)" fg="var(--ink)">
+    <Box bg={colors.gold} fg={colors.ink}>
       <h3><Zer0Text>Field notes</Zer0Text></h3>
-      <p>One short email a month on building software that lasts.</p>
+      <p>Short issues — updates frequently — on building software that lasts.</p>
       <form onSubmit={n.handleSubmit} style={{ marginBottom: 12 }}>
         <FieldGroup label="Email address">
           <InputControl
@@ -347,8 +345,10 @@ const NewsletterBox = () => {
       <FieldNote>
         {n.status === 'success'
           ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
+          : n.status === 'already'
+          ? <Zer0Text>Already on the list. No new email sent.</Zer0Text>
           : n.status === 'error'
-          ? <Zer0Text>Something went wrong. Try again in a moment.</Zer0Text>
+          ? <Zer0Text>{n.errorMessage || 'Something went wrong. Try again in a moment.'}</Zer0Text>
           : <Zer0Text>Optional. No spam.</Zer0Text>}
       </FieldNote>
     </Box>
@@ -356,27 +356,31 @@ const NewsletterBox = () => {
 }
 
 export default function Contact() {
-  useDocumentTitle('Contact')
   return (
     <Page>
+      <SEO
+        title="Contact"
+        description="Start a project with Robust Computer. Send an enquiry straight to the team inbox — we reply within 1–3 business days."
+        path="/contact"
+      />
       <Navbar />
       <PageHeader
         title="Start a project"
-        lead="Tell us what you are building. A short message is fine, we will ask the right questions after that."
-        badgeVariant="badgeCut"
+        lead="Tell us what you are building. A short message is fine, we will ask the right questions after that. Whether it's a rough idea or a detailed plan, you'll hear back from a developer."
+        imageVariant="bannerAlt"
       />
       <Grid>
         <ContactForm />
         <Side>
-          <Box bg="#000" fg="var(--paper)">
+          <Box bg={colors.ink} fg={colors.paper}>
             <h3><Zer0Text>Prefer plain email?</Zer0Text></h3>
             <p>Write to us directly and we will reply from a real person.</p>
             <Mail>{config.brand.email}</Mail>
           </Box>
-          <Box fg="var(--ink)">
+          <Box fg={colors.ink}>
             <h3><Zer0Text>What happens next</Zer0Text></h3>
             <ol>
-              {whatHappens.map((step) => (
+              {contactWhatHappens.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>

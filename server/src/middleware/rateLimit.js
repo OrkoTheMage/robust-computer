@@ -23,3 +23,14 @@ export const newsletterLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'Too many subscribe attempts. Please try again later.' },
 })
+
+// Bug reports are a higher-volume path (people may file duplicates
+// while reproducing, and the consequence of a throttled report is
+// a lost bug) — looser limits than the enquiry path.
+export const bugReportLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many bug reports from this address. Please try again later.' },
+})

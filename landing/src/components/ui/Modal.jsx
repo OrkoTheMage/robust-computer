@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { colors } from '../../styles/colors'
 import { createPortal } from 'react-dom'
 import styled from '@emotion/styled'
 import { X } from 'lucide-react'
@@ -32,16 +33,16 @@ const Overlay = styled.div`
 `
 
 const Card = styled.div`
-  background: var(--paper);
-  border: 4px solid #000;
-  box-shadow: 10px 10px 0 var(--gold);
+  background: ${colors.paper};
+  border: 4px solid ${colors.ink};
+  box-shadow: 10px 10px 0 ${colors.gold};
   max-width: 480px;
   width: 100%;
   max-height: 90vh;
   overflow: auto;
   position: relative;
   font-family: var(--body);
-  color: #000;
+  color: ${colors.ink};
 `
 
 const CloseBtn = styled.button`
@@ -50,9 +51,9 @@ const CloseBtn = styled.button`
   right: 12px;
   width: 40px;
   height: 40px;
-  border: 3px solid #000;
-  background: #000;
-  color: var(--paper);
+  border: 3px solid ${colors.ink};
+  background: ${colors.ink};
+  color: ${colors.paper};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,14 +67,14 @@ const CloseBtn = styled.button`
 
   &:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--gold);
+    box-shadow: 4px 4px 0 ${colors.gold};
   }
   &:active {
     transform: translate(2px, 2px);
-    box-shadow: 0 0 0 var(--gold);
+    box-shadow: 0 0 0 ${colors.gold};
   }
   &:focus-visible {
-    outline: 3px solid var(--gold-deep);
+    outline: 3px solid ${colors.goldDeep};
     outline-offset: 3px;
   }
 `

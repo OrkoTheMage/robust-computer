@@ -34,6 +34,11 @@ import {
 } from 'lucide-react'
 import { Button, Logo, Modal, Zer0Text } from '../ui'
 import config from '../../config'
+import { colors } from '../../styles/colors'
+import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials } from '../../data/copy'
+
+// Map icon-name strings from the data file to Lucide components.
+const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send }
 
 const Sticky = styled.div`
   position: sticky;
@@ -42,7 +47,7 @@ const Sticky = styled.div`
 `
 
 const Bar = styled.nav`
-  background: var(--paper);
+  background: ${colors.paper};
   border-bottom: 3px solid #000;
   display: flex;
   align-items: center;
@@ -68,7 +73,16 @@ const Brand = styled.button`
   font: inherit;
 `
 
-const BrandWord = styled.span`
+// Stacked brand text: R0BUST on top, C0MPUTER below. Both lines
+// share the same starting x (left-aligned flex column), and
+// because IBM Plex Mono is monospace the 0s — which both sit at
+// character index 2 — line up vertically without any per-glyph
+// padding. Two <span>s so each word is its own <Zer0Text> unit
+// and so the line break isn't a stray space.
+const BrandStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   font-family: var(--mono);
   font-weight: 800;
   font-size: 32px;
@@ -80,6 +94,10 @@ const BrandWord = styled.span`
   @media (max-width: 760px) {
     display: none;
   }
+`
+
+const BrandLine = styled.span`
+  display: block;
 `
 
 const Links = styled.div`
@@ -100,7 +118,7 @@ const MenuBtn = styled.button`
   align-items: center;
   justify-content: center;
   border: 3px solid #000;
-  background: var(--ticket);
+  background: ${colors.ticket};
   color: #000;
   padding: 0;
 
@@ -114,7 +132,7 @@ const Panel = styled.div`
   flex-direction: column;
   gap: 0;
   padding: 4px 18px 18px;
-  background: var(--paper);
+  background: ${colors.paper};
   border-bottom: 3px solid #000;
 
   @media (min-width: 761px) {
@@ -133,7 +151,7 @@ const PanelLink = styled(NavLink)`
   border-bottom: 3px solid #000;
 
   &.active {
-    background: var(--gold);
+    background: ${colors.gold};
   }
 `
 
@@ -164,7 +182,7 @@ const NavA = styled(NavLink)`
               border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
 
   &.active {
-    border-bottom-color: var(--ink);
+    border-bottom-color: ${colors.ink};
   }
 
   /* Same hover shape as the Footer's site links: 3px underline
@@ -173,16 +191,17 @@ const NavA = styled(NavLink)`
      border is always present so the box height doesn't shift. */
   &:hover,
   &:focus-visible {
-    color: var(--ink);
-    border-bottom-color: var(--ink);
+    color: ${colors.ink};
+    border-bottom-color: ${colors.ink};
   }
 `
 
-const CTA = styled(Button)`
-  padding: 10px 18px;
-  font-size: 14px;
-  box-shadow: 4px 4px 0 var(--gold);
-`
+// CTA kept as its own styled component (vs. using <Button>
+// inline) so <PanelCTA> can still extend it for the full-width
+// mobile menu variant. The visual itself is just the default
+// <Button> — no size or shadow overrides — so it matches the
+// hero's "Start a project" button exactly.
+const CTA = styled(Button)``
 
 const PanelCTA = styled(CTA)`
   width: 100%;
@@ -271,13 +290,13 @@ const Row = styled.a`
   transition: background 60ms ease;
 
   &:hover {
-    background: var(--ticket);
+    background: ${colors.ticket};
   }
   &:active {
-    background: var(--gold);
+    background: ${colors.gold};
   }
   &:focus-visible {
-    outline: 3px solid var(--gold-deep);
+    outline: 3px solid ${colors.goldDeep};
     outline-offset: -3px;
   }
 `
@@ -289,7 +308,7 @@ const RowIcon = styled.span`
   width: 36px;
   height: 36px;
   border: 2.5px solid #000;
-  background: var(--paper);
+  background: ${colors.paper};
   color: #000;
   flex: none;
 `
@@ -330,74 +349,6 @@ const RowMeta = styled.span`
   flex: none;
   line-height: 1;
 `
-
-// Internal pages + external links, each with a one-line hint
-// that reads like an OS menu description. The "News (RSS)" entry
-// lives in Pages (not Elsewhere) because it's the studio's own
-// content, not an external social.
-const mobilePages = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-]
-
-const pages = [
-  { to: '/', label: 'Home', hint: 'What we build', Icon: Home },
-  { to: '/contact', label: 'Start a project', hint: 'Get in touch', Icon: Send },
-  { to: '/about', label: 'Meet the Team', hint: 'The people', Icon: Users },
-  { to: '/rss.xml', label: 'News (RSS)', hint: 'Field notes', Icon: Rss, external: false },
-]
-
-// "Connect" = direct engagement channels (look at the work,
-// write to us). Different from Elsewhere, which is passive
-// "follow" destinations.
-const connects = [
-  {
-    href: 'https://github.com/robust-computer',
-    label: 'GitHub',
-    hint: 'View source',
-    external: true,
-    Icon: Github,
-  },
-  {
-    href: `mailto:${config.brand.email}`,
-    label: 'Email',
-    hint: 'Write to us',
-    external: false,
-    Icon: Mail,
-  },
-]
-
-const socials = [
-  {
-    href: 'https://linkedin.com/company/robust-computer',
-    label: 'LinkedIn',
-    hint: 'Follow',
-    external: true,
-    Icon: Linkedin,
-  },
-  {
-    href: 'https://www.facebook.com/profile.php?id=61594902219428',
-    label: 'Facebook',
-    hint: 'Follow',
-    external: true,
-    Icon: Facebook,
-  },
-  {
-    href: 'https://www.instagram.com/robust.computer/',
-    label: 'Instagram',
-    hint: 'Follow',
-    external: true,
-    Icon: Instagram,
-  },
-  {
-    href: 'https://x.com/Robust_Computer',
-    label: 'X',
-    hint: 'Follow',
-    external: true,
-    Icon: Twitter,
-  },
-]
 
 // ── Component ────────────────────────────────────────────────────────────
 
@@ -462,11 +413,13 @@ const Navbar = () => {
             aria-expanded={menuOpen}
           >
             <Logo variant="icon" h={87} />
-            <BrandWord><Zer0Text>Robust Computer</Zer0Text></BrandWord>
+            <BrandStack>
+              <BrandLine><Zer0Text>Robust</Zer0Text></BrandLine>
+              <BrandLine><Zer0Text>Computer</Zer0Text></BrandLine>
+            </BrandStack>
           </Brand>
           <Links>
             <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
-            <NavA to="/contact"><Zer0Text>Contact</Zer0Text></NavA>
             <CTA as={Link} to="/contact">
               <Zer0Text>Start a project</Zer0Text>
             </CTA>
@@ -485,7 +438,7 @@ const Navbar = () => {
         </Bar>
         {mobileOpen && (
           <Panel id="mobile-nav">
-            {mobilePages.map((p) => (
+            {navbarMobilePages.map((p) => (
               <PanelLink key={p.to} to={p.to} end={p.end} onClick={closeMobile}>
                 <Zer0Text>{p.label}</Zer0Text>
               </PanelLink>
@@ -512,8 +465,9 @@ const Navbar = () => {
             <ListDivider>
               <span><Zer0Text>Pages</Zer0Text></span>
             </ListDivider>
-            {pages.map((p) => {
-              const { to, href, label, hint, Icon, external } = p
+            {navbarPages.map((p) => {
+              const { to, href, label, hint, icon, external } = p
+              const Icon = ICON_MAP[icon]
               const isExternal = Boolean(href)
               const isHomeRow = !isExternal && to === '/'
               return (
@@ -545,7 +499,9 @@ const Navbar = () => {
             <ListDivider>
               <span><Zer0Text>Connect</Zer0Text></span>
             </ListDivider>
-            {connects.map(({ href, label, hint, external, Icon }) => (
+            {navbarConnects.map(({ href, label, hint, external, icon }) => {
+              const Icon = ICON_MAP[icon]
+              return (
               <Row
                 key={label}
                 href={href}
@@ -561,12 +517,15 @@ const Navbar = () => {
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
               </Row>
-            ))}
+              )
+            })}
 
             <ListDivider>
               <span><Zer0Text>Elsewhere</Zer0Text></span>
             </ListDivider>
-            {socials.map(({ href, label, hint, external, Icon }) => (
+            {navbarSocials.map(({ href, label, hint, external, icon }) => {
+              const Icon = ICON_MAP[icon]
+              return (
               <Row
                 key={label}
                 href={href}
@@ -582,7 +541,8 @@ const Navbar = () => {
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
               </Row>
-            ))}
+              )
+            })}
           </List>
         </MenuBody>
       </Modal>

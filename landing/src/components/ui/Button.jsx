@@ -14,6 +14,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 
 const base = `
   display: inline-flex;
@@ -24,7 +25,7 @@ const base = `
   font-size: 16px;
   letter-spacing: 0.04em;
   padding: 15px 24px;
-  border: 3px solid #000;
+  border: 3px solid ${colors.ink};
   text-decoration: none;
   cursor: pointer;
   text-align: center;
@@ -34,30 +35,30 @@ const base = `
 `
 
 const solid = `
-  background: #000;
-  color: var(--paper);
-  box-shadow: 6px 6px 0 var(--gold);
+  background: ${colors.ink};
+  color: ${colors.paper};
+  box-shadow: 6px 6px 0 ${colors.gold};
 
   &:hover:not(:disabled) {
     transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 var(--gold);
+    box-shadow: 8px 8px 0 ${colors.gold};
   }
   &:active:not(:disabled) {
     transform: translate(3px, 3px);
-    box-shadow: 3px 3px 0 var(--gold);
+    box-shadow: 3px 3px 0 ${colors.gold};
   }
 `
 
 const alt = `
   background: transparent;
-  color: #000;
+  color: ${colors.ink};
   box-shadow: 0 0 0 0 transparent;
   transition: background 180ms cubic-bezier(0.22, 1, 0.36, 1),
               color 180ms cubic-bezier(0.22, 1, 0.36, 1);
 
   &:hover:not(:disabled) {
-    background: #000;
-    color: var(--paper);
+    background: ${colors.ink};
+    color: ${colors.paper};
   }
   &:active:not(:disabled) {
     transform: translate(2px, 2px);
@@ -65,17 +66,17 @@ const alt = `
 `
 
 const gold = `
-  background: var(--gold);
-  color: #000;
-  box-shadow: 6px 6px 0 var(--paper);
+  background: ${colors.gold};
+  color: ${colors.ink};
+  box-shadow: 6px 6px 0 ${colors.paper};
 
   &:hover:not(:disabled) {
     transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 var(--paper);
+    box-shadow: 8px 8px 0 ${colors.paper};
   }
   &:active:not(:disabled) {
     transform: translate(3px, 3px);
-    box-shadow: 3px 3px 0 var(--paper);
+    box-shadow: 3px 3px 0 ${colors.paper};
   }
 `
 

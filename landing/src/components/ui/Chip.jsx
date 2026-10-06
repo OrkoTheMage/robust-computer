@@ -6,15 +6,16 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 
 const Chip = styled.span`
   display: inline-block;
-  border: 3px solid ${(p) => (p.onInk ? 'var(--paper)' : '#000')};
-  background: ${(p) => (p.on ? '#000' : 'transparent')};
+  border: 3px solid ${(p) => (p.onInk ? colors.paper : colors.ink)};
+  background: ${(p) => (p.on ? colors.ink : 'transparent')};
   color: ${(p) => {
-    if (p.on) return 'var(--paper)'
-    if (p.onInk) return 'var(--paper)'
-    return '#000'
+    if (p.on) return colors.paper
+    if (p.onInk) return colors.paper
+    return colors.ink
   }};
   font-family: var(--mono);
   font-weight: 600;

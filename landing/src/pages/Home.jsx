@@ -13,6 +13,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import TopBar from '../components/sections/TopBar'
 import Navbar from '../components/sections/Navbar'
 import Hero from '../components/sections/Hero'
@@ -22,13 +23,13 @@ import Industries from '../components/sections/Industries'
 import Steps from '../components/sections/Steps'
 import FieldNotes from '../components/sections/FieldNotes'
 import Footer from '../components/sections/Footer'
+import { SEO } from '../components/seo'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
 `
 
 const Opening = styled.div`
@@ -47,12 +48,15 @@ const Opening = styled.div`
 `
 
 export default function Home() {
-  useDocumentTitle()
   const newsletter = useNewsletterForm()
   const chrome = useChromeHeight()
 
   return (
     <Page>
+      <SEO
+        description="Custom software, built to last. Robust Computer is a small team of developers. We design it, build it, and stay on after launch."
+        path="/"
+      />
       <TopBar />
       <Navbar />
       <Opening style={{ '--chrome': `${chrome}px` }}>
@@ -69,6 +73,7 @@ export default function Home() {
           onSubmit={newsletter.handleSubmit}
           submitting={newsletter.submitting}
           status={newsletter.status}
+          errorMessage={newsletter.errorMessage}
         />
       </div>
       <Footer />

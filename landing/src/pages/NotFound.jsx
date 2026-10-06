@@ -2,20 +2,22 @@
  * NotFound
  *
  * Fallback for unknown routes. Keeps the navbar + footer for
- * navigation context. The 404 illustration (`icon-404.svg`)
+ * navigation context. The 404 illustration (`icon-var-404.svg`)
  * carries the visual; the headline underneath is plain copy.
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/sections/Navbar'
 import Footer from '../components/sections/Footer'
 import { Button, Logo, Zer0Text } from '../components/ui'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { SEO } from '../components/seo'
+import { notFound } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
   display: flex;
   flex-direction: column;
 `
@@ -34,7 +36,7 @@ const Inner = styled.section`
 const Illustration = styled(Logo)`
   width: clamp(180px, 28vw, 280px);
   height: auto;
-  filter: drop-shadow(8px 8px 0 #000);
+  filter: drop-shadow(8px 8px 0 ${colors.ink});
 `
 
 const Headline = styled.h1`
@@ -44,7 +46,7 @@ const Headline = styled.h1`
   line-height: 1;
   margin: 0;
   text-transform: uppercase;
-  color: #000;
+  color: ${colors.ink};
   letter-spacing: -0.005em;
 `
 
@@ -52,18 +54,22 @@ const Lede = styled.p`
   font-size: 18px;
   max-width: 32em;
   margin: 0;
-  color: #000;
+  color: ${colors.ink};
 `
 
 export default function NotFound() {
-  useDocumentTitle('404')
   return (
     <Page>
+      <SEO
+        title="Not found"
+        description={notFound.lede}
+        type="website"
+      />
       <Navbar />
       <Inner>
         <Illustration variant="icon404" alt="Page not found" />
-        <Headline><Zer0Text>Page not found</Zer0Text></Headline>
-        <Lede>That page is not here. The link is old or the URL is wrong.</Lede>
+        <Headline><Zer0Text>{notFound.headline}</Zer0Text></Headline>
+        <Lede>{notFound.lede}</Lede>
         <Button as={Link} to="/">
           <Zer0Text>{'Back\u00A0to\u00A0home'}</Zer0Text>
         </Button>

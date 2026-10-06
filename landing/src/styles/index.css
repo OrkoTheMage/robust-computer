@@ -1,16 +1,17 @@
 /**
- * landing/src/index.css
+ * landing/src/styles/index.css
  *
- * Global reset + theme variables. Light by default, dark via the
- * `data-theme="dark"` attribute on <html> (set by the user toggle,
- * or by `prefers-color-scheme: dark` when no override is set).
+ * Global CSS — kept as small as possible. Per the Source of Truth
+ * audit, this file only carries:
+ *   - @font-face declarations (fonts can't be loaded from JS)
+ *   - body / html / element defaults (reset + base typography)
+ *   - global page behavior (scroll, focus, reduced motion)
+ *   - the `--page` max-width layout constant
  *
- * Fonts are self-hosted from /public/fonts so they load from the
- * same origin (no DNS / TLS round-trip to fonts.gstatic.com) and
- * are preloaded in index.html. With `font-display: optional` the
- * font must load within the 100ms block period to be used; the
- * preload guarantees that on a normal connection, so the slashed
- * IBM Plex Mono zero is always present on first paint.
+ * Brand colors live in `colors.js` and are consumed by styled
+ * components via `${colors.name}`. Font family names live as
+ * CSS variables (`--display`, `--mono`, `--body`) and are
+ * read by styled components via `var(--name)`.
  */
 
 @font-face {
@@ -81,16 +82,6 @@
 }
 
 :root {
-  --paper: #e2dbc8;
-  --ticket: #f1ecdd;
-  --gold: #d0c096;
-  --gold-deep: #a8935a;
-  --ink: #000000;
-  --tie: #14120e;
-  --desk: #efe9d9;
-  --desk-line: #14120e;
-  --desk-ink: #14120e;
-  --desk-soft: #5d5744;
   --display: 'Barlow', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
   --body: 'Newsreader', Georgia, serif;
@@ -101,22 +92,11 @@
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
-}
 
-:root[data-theme='dark'] {
-  --desk: #17150f;
-  --desk-ink: #e2dbc8;
-  --desk-line: #e2dbc8;
-  --desk-soft: #b3ab94;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --desk: #17150f;
-    --desk-ink: #e2dbc8;
-    --desk-line: #e2dbc8;
-    --desk-soft: #b3ab94;
-  }
+  /* Controls native form controls / scrollbars in dark mode.
+     Brand colors are now JS-driven (see colors.js), so there's no
+     color-scheme work to do here beyond the system-level toggle. */
+  color-scheme: light dark;
 }
 
 * {
@@ -128,10 +108,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Body + #root backgrounds / text color are hard-coded here (CSS
+   can't import from colors.js). They MUST stay in sync with
+   colors.paper and colors.tie — a brand reskin is a two-file
+   edit. */
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--desk-ink);
+  background: #e2dbc8;
+  color: #14120e;
   font-family: var(--body);
   font-size: 18px;
   line-height: 1.55;
@@ -141,7 +125,7 @@ body {
 #root {
   width: 100%;
   min-height: 100vh;
-  background: var(--paper);
+  background: #e2dbc8;
 }
 
 img,
@@ -167,7 +151,7 @@ select {
 }
 
 :focus-visible {
-  outline: 3px solid var(--gold-deep);
+  outline: 3px solid #a8935a;
   outline-offset: 3px;
 }
 

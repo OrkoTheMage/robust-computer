@@ -7,22 +7,23 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Developer from '../components/sections/Developer'
 import CTABand from '../components/sections/CTABand'
 import Footer from '../components/sections/Footer'
+import { SEO } from '../components/seo'
 import { developers, teamFacts } from '../data/copy'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const Page = styled.main`
   min-height: 100vh;
-  background: var(--paper);
+  background: ${colors.paper};
 `
 
 const FactsBand = styled.div`
-  background: var(--paper);
-  border-bottom: 3px solid #000;
+  background: ${colors.paper};
+  border-bottom: 3px solid ${colors.ink};
 `
 
 const Facts = styled.div`
@@ -39,9 +40,9 @@ const Facts = styled.div`
 
 const Fact = styled.div`
   padding: 22px 40px 24px 56px;
-  border-right: 3px solid #000;
+  border-right: 3px solid ${colors.ink};
   font-size: 18px;
-  color: #000;
+  color: ${colors.ink};
 
   &:last-child {
     border-right: 0;
@@ -49,7 +50,7 @@ const Fact = styled.div`
 
   @media (max-width: 760px) {
     border-right: 0;
-    border-bottom: 3px solid #000;
+    border-bottom: 3px solid ${colors.ink};
     padding: 22px 24px;
     &:last-child {
       border-bottom: 0;
@@ -155,25 +156,21 @@ const previewStyles = [
 ]
 
 export default function About() {
-  useDocumentTitle('About')
   return (
     <Page>
+      <SEO
+        title="About"
+        description="Meet the team at Robust Computer — a small studio where you work with the people who write the code."
+        path="/about"
+      />
       <Navbar />
       <PageHeader
         title="Meet the Team"
-        lead="Robust Computer is a small team. When you hire us, you work with the people who write the code."
-        badgeVariant="badgeCut"
+        lead="Robust Computer is a small team. When you hire us, you work with the people who write the code.
+        Here's who they are and what they bring to your project"
+        imageVariant="bannerAlt"
       />
-      <FactsBand>
-        <Facts>
-          {teamFacts.map((f) => (
-            <Fact key={f.big}>
-              <b>{f.big}</b>
-              {f.small}
-            </Fact>
-          ))}
-        </Facts>
-      </FactsBand>
+
       {developers.map((dev, i) => (
         <Developer
           key={dev.name + i}

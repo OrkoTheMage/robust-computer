@@ -63,8 +63,9 @@ const required = (key) => {
 // contact-form recipient. When migrating to a custom domain, change
 // BRAND_DOMAIN here AND flip the *URL env vars.
 const BRAND_NAME = 'Robust Computer'
-const BRAND_DOMAIN = 'robustcomputer.example'
+const BRAND_DOMAIN = 'robust.computer'
 const BRAND_EMAIL = `hello@${BRAND_DOMAIN}`
+const BRAND_TIMEZONE = 'America/Chicago'
 
 // ── Server-only constants (NOT mirrored) ────────────────────────────────────
 
@@ -106,6 +107,7 @@ const config = Object.freeze({
     name: BRAND_NAME,
     domain: BRAND_DOMAIN,
     email: BRAND_EMAIL,
+    timezone: BRAND_TIMEZONE,
   }),
 
   // ── Server-only ───────────────────────────────────────────────────────────

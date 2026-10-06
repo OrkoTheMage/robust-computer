@@ -20,7 +20,9 @@ import { Link } from 'react-router-dom'
 import pkg from '../../../../package.json'
 import { Button, Logo, Zer0Text } from '../ui'
 import { useLatestRss, formatPubDate } from '../../hooks/useLatestRss'
-import { ticketIn } from '../../animations'
+import { ticketIn } from '../../styles/animations'
+import { colors } from '../../styles/colors'
+import { hero } from '../../data/copy'
 
 /* Fills the opening viewport above the promises bar. The inner
    grid stays on --page, which keeps the ticket parked on the art. */
@@ -30,8 +32,8 @@ const Wrap = styled.section`
   min-height: 0;
   display: flex;
   align-items: center;
-  background: var(--paper);
-  border-bottom: 3px solid #000;
+  background: ${colors.paper};
+  border-bottom: 3px solid ${colors.ink};
 
   @media (max-width: 980px) {
     /* On mobile the Opening drops the 100dvh clamp, so the hero
@@ -66,14 +68,14 @@ const Headline = styled.h1`
   margin: 0 0 26px;
   text-transform: uppercase;
   letter-spacing: -0.015em;
-  color: #000;
+  color: ${colors.ink};
 `
 
 const Lead = styled.p`
   font-size: 22px;
   max-width: 26em;
   margin: 0 0 34px;
-  color: #000;
+  color: ${colors.ink};
 `
 
 const CTAs = styled.div`
@@ -111,12 +113,12 @@ const ArtImg = styled(Logo)`
   width: 960px;
   height: 960px;
   max-width: none;
-  filter: drop-shadow(16px 16px 0 #000);
+  filter: drop-shadow(16px 16px 0 ${colors.ink});
 
   @media (max-width: 980px) {
     width: 100%;
     height: auto;
-    filter: drop-shadow(8px 8px 0 #000);
+    filter: drop-shadow(8px 8px 0 ${colors.ink});
   }
 `
 
@@ -133,13 +135,13 @@ const Ticket = styled.div`
   left: -50px;
   bottom: 20px;
   width: 398px;
-  background: var(--ticket);
-  border: 4px solid #000;
-  box-shadow: 9px 9px 0 #000;
+  background: ${colors.ticket};
+  border: 4px solid ${colors.ink};
+  box-shadow: 9px 9px 0 ${colors.ink};
   padding: 18px 20px 20px;
   transform: rotate(-2.5deg);
   z-index: 2;
-  color: var(--ink);
+  color: ${colors.ink};
   animation: ${ticketIn} 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
   /* Hint the browser to promote the ticket to its own layer so
      the animation runs on the compositor (no layout/paint). */
@@ -151,7 +153,7 @@ const Ticket = styled.div`
     width: 100%;
     margin-top: -60px;
     border-width: 3px;
-    box-shadow: 6px 6px 0 #000;
+    box-shadow: 6px 6px 0 ${colors.ink};
     padding: 12px 14px 14px;
   }
 
@@ -170,11 +172,11 @@ const TicketTag = styled.div`
   letter-spacing: 0.05em;
   display: flex;
   justify-content: space-between;
-  border-bottom: 4px dashed var(--ink);
+  border-bottom: 4px dashed ${colors.ink};
   padding-bottom: 10px;
   margin-bottom: 13px;
   text-transform: uppercase;
-  color: var(--ink);
+  color: ${colors.ink};
 
   @media (max-width: 980px) {
     font-size: 11px;
@@ -190,7 +192,7 @@ const TicketBody = styled.pre`
   font-size: 18px;
   line-height: 1.55;
   white-space: pre-wrap;
-  color: var(--ink);
+  color: ${colors.ink};
 
   @media (max-width: 980px) {
     font-size: 13px;
@@ -200,8 +202,8 @@ const TicketBody = styled.pre`
 const TicketStamp = styled.span`
   margin-top: 13px;
   display: inline-block;
-  background: #000;
-  color: var(--paper);
+  background: ${colors.ink};
+  color: ${colors.paper};
   font-family: var(--mono);
   font-weight: 700;
   font-size: 15px;
@@ -220,8 +222,8 @@ const TicketStamp = styled.span`
     cursor: pointer;
     &:hover,
     &:focus-visible {
-      background: var(--gold);
-      color: #000;
+      background: ${colors.gold};
+      color: ${colors.ink};
     }
   `}
 `
@@ -239,11 +241,9 @@ const Hero = () => {
     <Wrap>
       <Inner>
         <div>
-          <Headline><Zer0Text>Custom software, built to last.</Zer0Text></Headline>
+          <Headline><Zer0Text>{hero.headline}</Zer0Text></Headline>
           <Lead>
-            Robust Computer is a small team of developers building bespoke
-            websites and software. From a single landing page to a full SaaS
-            platform, we design it, build it, and stay on after launch.
+            {hero.lead}
           </Lead>
           <CTAs>
             <Button as={Link} to="/contact">
@@ -256,7 +256,7 @@ const Hero = () => {
         </div>
         <Art>
           <ArtFrame>
-            <ArtImg variant="iconAlt" h={960} alt="The Robust Computer mascot" />
+            <ArtImg variant="bannerAlt" h={960} alt="The Robust Computer mascot" />
             <Ticket>
               <TicketTag>
                 <span><Zer0Text>Build log</Zer0Text></span>

@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url'
 import config from './config.js'
 import contactRoutes from './routes/contact.js'
 import newsletterRoutes from './routes/newsletter.js'
+import bugReportRoutes from './routes/bugReport.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -59,6 +60,7 @@ app.use('/api', (_req, _res, next) => {
 })
 app.use('/api/contact', contactRoutes)
 app.use('/api/newsletter', newsletterRoutes)
+app.use('/api/bug-report', bugReportRoutes)
 
 // ── 404 ─────────────────────────────────────────────────────────────────
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }))

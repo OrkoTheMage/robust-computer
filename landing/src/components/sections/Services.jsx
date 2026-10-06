@@ -7,13 +7,19 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
+import { services } from '../../data/copy'
 import { Container, Zer0Text } from '../ui'
+
+// Map icon-name strings from the data file to Lucide components.
+// Keeps the data file pure (no React/Lucide imports).
+const ICON_MAP = { MonitorSmartphone, Code2, Boxes, Workflow }
 
 const Section = styled.section`
   padding: 84px 56px 72px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
 
   @media (max-width: 980px) {
     padding: 56px 24px 48px;
@@ -26,7 +32,7 @@ const Head = styled.div`
   align-items: flex-start;
   margin-bottom: 34px;
   gap: 16px;
-  color: #000;
+  color: ${colors.ink};
 
   h2 {
     font-family: var(--display);
@@ -55,7 +61,7 @@ const Card = styled.article`
   grid-column: ${(p) => p.span};
   background: ${(p) => p.bg};
   color: ${(p) => p.fg};
-  border: 3px solid #000;
+  border: 3px solid ${colors.ink};
   padding: 30px 32px 32px;
   display: flex;
   flex-direction: column;
@@ -82,58 +88,16 @@ const Card = styled.article`
   }
 `
 
-const items = [
-  {
-    span: 7,
-    bg: '#000',
-    fg: 'var(--paper)',
-    icon: MonitorSmartphone,
-    title: 'Landing pages and sites',
-    body:
-      'Fast, clear marketing sites that explain what you do and get people to act.',
-  },
-  {
-    span: 5,
-    bg: 'var(--gold)',
-    fg: '#000',
-    icon: Code2,
-    title: 'Custom web apps',
-    body:
-      'Portals, dashboards and internal tools shaped around how your team works.',
-  },
-  {
-    span: 5,
-    bg: 'var(--paper)',
-    fg: '#000',
-    icon: Boxes,
-    title: 'SaaS platforms',
-    body:
-      'Accounts, billing and the product itself, built to scale.',
-  },
-  {
-    span: 7,
-    bg: 'var(--gold)',
-    fg: '#000',
-    icon: Workflow,
-    title: 'Integrations and APIs',
-    body:
-      'Connect the tools you already use so data moves without anyone retyping it.',
-  },
-]
-
 const Services = () => (
   <Section>
     <Container>
       <Head>
-        <h2><Zer0Text>What we build</Zer0Text></h2>
-        <p>
-          Every project is designed around the client&apos;s business, not a
-          template. Small or large, it gets the same care.
-        </p>
+        <h2><Zer0Text>{services.headline}</Zer0Text></h2>
+        <p>{services.lead}</p>
       </Head>
       <Grid>
-        {items.map((it) => {
-          const Icon = it.icon
+        {services.items.map((it) => {
+          const Icon = ICON_MAP[it.icon]
           return (
             <Card
               key={it.title}

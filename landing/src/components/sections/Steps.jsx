@@ -6,38 +6,28 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { Container, Zer0Text } from '../ui'
-import { steps } from '../../data/copy'
+import { steps, stepsHeadline, stepsLead } from '../../data/copy'
 
 const Section = styled.section`
-  background: var(--gold);
-  border-top: 3px solid #000;
-  border-bottom: 3px solid #000;
-  padding: 72px 56px;
+  background: ${colors.gold};
+  border-top: 3px solid ${colors.ink};
+  border-bottom: 3px solid ${colors.ink};
+  padding: 84px 56px 72px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
-  color: #000;
+  color: ${colors.ink};
 
   @media (max-width: 980px) {
-    padding: 48px 24px;
-  }
-
-  h2 {
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: clamp(36px, 4.5vw, 56px);
-    line-height: 1;
-    margin: 0 0 40px;
-    text-transform: uppercase;
-    letter-spacing: -0.005em;
+    padding: 56px 24px 48px;
   }
 `
 
 const Row = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 40px;
-  border: 3px solid #000;
-  background: var(--paper);
+  border: 3px solid ${colors.ink};
+  background: ${colors.paper};
 
   @media (max-width: 760px) {
     grid-template-columns: 1fr;
@@ -46,7 +36,7 @@ const Row = styled.div`
 
 const Step = styled.div`
   padding: 26px 26px 30px;
-  border-right: 3px solid #000;
+  border-right: 3px solid ${colors.ink};
 
   &:last-child {
     border-right: 0;
@@ -54,7 +44,7 @@ const Step = styled.div`
 
   @media (max-width: 760px) {
     border-right: 0;
-    border-bottom: 3px solid #000;
+    border-bottom: 3px solid ${colors.ink};
 
     &:last-child {
       border-bottom: 0;
@@ -84,10 +74,38 @@ const Step = styled.div`
   }
 `
 
+const Head = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 34px;
+  gap: 16px;
+  color: ${colors.ink};
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+
+  p {
+    max-width: 38em;
+    margin: 0;
+    font-size: 18px;
+  }
+`
+
 const Steps = () => (
   <Section>
     <Container>
-      <h2><Zer0Text>How a project runs</Zer0Text></h2>
+      <Head>
+        <h2><Zer0Text>{stepsHeadline}</Zer0Text></h2>
+        <p>{stepsLead}</p>
+      </Head>
       <Row>
         {steps.map((s, i) => (
           <Step key={s.title}>

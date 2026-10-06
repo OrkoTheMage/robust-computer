@@ -10,6 +10,7 @@
  */
 
 import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
 import { Button, Logo, Zer0Text } from '../ui'
 
 const Wrap = styled.section`
@@ -18,10 +19,10 @@ const Wrap = styled.section`
   gap: 56px;
   padding: 72px 56px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
   align-items: center;
-  background: ${(p) => (p.reversed ? 'var(--ticket)' : 'transparent')};
-  color: #000;
+  background: ${(p) => (p.reversed ? colors.ticket : 'transparent')};
+  color: ${colors.ink};
 
   @media (max-width: 980px) {
     grid-template-columns: 1fr;
@@ -47,9 +48,9 @@ const Id = styled.div`
   img {
     width: 104px;
     height: 104px;
-    border: 3px solid #000;
+    border: 3px solid ${colors.ink};
     border-radius: 50%;
-    background: var(--gold);
+    background: ${colors.gold};
     padding: 4px;
     /* Mirror the avatar on every other (reversed) developer
        section, so the icon "faces" the direction the preview
@@ -117,6 +118,23 @@ const Chips = styled.div`
   margin-bottom: 24px;
 `
 
+// Tech stack label — gold fill, no border, so it reads as a tag
+// rather than a button. The previous treatment (3px black
+// border + transparent fill) was visually indistinguishable
+// from the secondary Button's alt variant, which made the
+// non-interactive labels look clickable.
+const TechTag = styled.span`
+  display: inline-block;
+  background: ${colors.gold};
+  color: ${colors.ink};
+  padding: 7px 13px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+`
+
 const Links = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -163,19 +181,19 @@ const PreviewWrap = styled.div`
 `
 
 const Preview = styled.div`
-  border: 4px solid #000;
-  background: #000;
-  box-shadow: 10px 10px 0 var(--gold);
+  border: 4px solid ${colors.ink};
+  background: ${colors.ink};
+  box-shadow: 10px 10px 0 ${colors.gold};
 `
 
 const PreviewBar = styled.div`
   height: 34px;
-  background: var(--paper);
+  background: ${colors.paper};
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 0 12px;
-  border-bottom: 4px solid #000;
+  border-bottom: 4px solid ${colors.ink};
   /* Float above the PreviewImage so the image can extend up under
      the Bar (its top edge sits at the very top of the preview). */
   position: relative;
@@ -185,7 +203,7 @@ const PreviewBar = styled.div`
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    border: 2.5px solid #000;
+    border: 2.5px solid ${colors.ink};
     display: block;
   }
 
@@ -194,15 +212,15 @@ const PreviewBar = styled.div`
     font-family: var(--mono);
     font-weight: 600;
     font-size: 12px;
-    border: 2.5px solid #000;
+    border: 2.5px solid ${colors.ink};
     padding: 0 10px;
-    background: #fff8;
+    background: ${colors.inputBg};
   }
 `
 
 const Cap = styled.div`
-  background: #000;
-  color: var(--paper);
+  background: ${colors.ink};
+  color: ${colors.paper};
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -265,24 +283,11 @@ const Developer = ({ dev, preview, reversed }) => (
       <Body>{dev.bio}</Body>
       <Chips>
         {dev.stack.map((s) => (
-          <span
-            key={s}
-            style={{
-              border: '3px solid #000',
-              padding: '7px 13px',
-              fontFamily: 'var(--mono)',
-              fontWeight: 600,
-              fontSize: 14,
-              letterSpacing: '0.03em',
-              textTransform: 'uppercase',
-            }}
-          >
-            {s}
-          </span>
+          <TechTag key={s}>{s}</TechTag>
         ))}
       </Chips>
       <Links>
-        <Button as="a" href={dev.links?.portfolio || '#'}>
+        <Button as="a" href={dev.links?.portfolio || '#'} variant="alt">
           <Zer0Text>Visit portfolio</Zer0Text>
         </Button>
         {(dev.links?.github || dev.links?.linkedin) && (

@@ -1,5 +1,5 @@
 /**
- * landing/src/ScrollToTop.jsx
+ * landing/src/utils/ScrollToTop.jsx
  *
  * Watches the current pathname and snaps the window to the top of
  * the page on every navigation. React Router v6 keeps the same
