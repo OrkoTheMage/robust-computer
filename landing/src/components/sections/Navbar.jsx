@@ -458,12 +458,12 @@ const Navbar = () => {
         ariaLabel="Site menu"
       >
         <MenuBody>
-          <MenuHeader><Zer0Text>Menu</Zer0Text></MenuHeader>
-          <MenuSub><Zer0Text>Jump anywhere</Zer0Text></MenuSub>
+          <MenuHeader>Menu</MenuHeader>
+          <MenuSub>Jump anywhere</MenuSub>
 
           <List>
             <ListDivider>
-              <span><Zer0Text>Pages</Zer0Text></span>
+              <span>Pages</span>
             </ListDivider>
             {navbarPages.map((p) => {
               const { to, href, label, hint, icon, external } = p
@@ -488,7 +488,7 @@ const Navbar = () => {
                     <Icon size={20} strokeWidth={2.4} />
                   </RowIcon>
                   <RowBody>
-                    <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
+                    <RowLabel>{label}</RowLabel>
                     <RowHint>{hint}</RowHint>
                   </RowBody>
                   <RowMeta aria-hidden="true">{isExternal ? '↗' : '→'}</RowMeta>
@@ -497,7 +497,7 @@ const Navbar = () => {
             })}
 
             <ListDivider>
-              <span><Zer0Text>Connect</Zer0Text></span>
+              <span>Connect</span>
             </ListDivider>
             {navbarConnects.map(({ href, label, hint, external, icon }) => {
               const Icon = ICON_MAP[icon]
@@ -512,7 +512,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
+                  <RowLabel>{label}</RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>
@@ -521,7 +521,7 @@ const Navbar = () => {
             })}
 
             <ListDivider>
-              <span><Zer0Text>Elsewhere</Zer0Text></span>
+              <span>Elsewhere</span>
             </ListDivider>
             {navbarSocials.map(({ href, label, hint, external, icon }) => {
               const Icon = ICON_MAP[icon]
@@ -536,7 +536,7 @@ const Navbar = () => {
                   <Icon size={20} strokeWidth={2.4} />
                 </RowIcon>
                 <RowBody>
-                  <RowLabel><Zer0Text>{label}</Zer0Text></RowLabel>
+                  <RowLabel>{label}</RowLabel>
                   <RowHint>{hint}</RowHint>
                 </RowBody>
                 <RowMeta aria-hidden="true">{external ? '↗' : '→'}</RowMeta>

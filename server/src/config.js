@@ -75,19 +75,26 @@ const PORT = 5000
 // JWT.
 const JWT_EXPIRES_IN = '24h'
 
-// Transactional email via the Resend HTTPS API.
+// Email transport. Two branches selected by NODE_ENV:
 //
-// Why HTTPS, not SMTP: Railway's outbound network blocks (or fails
-// to DNS-resolve) the SMTP ports to Resend — both 465/SSL and
-// 587/STARTTLS hit a 5-second connection timeout. Port 443 is
-// virtually never blocked on PaaS platforms, so we use Resend's
-// REST API instead. Switching providers later means changing the
-// helper in `utils/email.js`; this file only knows about the API
-// key + the from address.
+//   NODE_ENV=production  → Resend HTTPS API (Railway blocks SMTP egress to
+//                          Resend on 465/587 — only 443 is reliably open)
+//   NODE_ENV=development → SMTP via nodemailer (mailpit on localhost:1025
+//   (or any other)        in local dev, real SMTP server in staging)
 //
-// `EMAIL_FROM` is derived from BRAND_DOMAIN so a domain migration
-// updates the envelope sender too.
-const EMAIL_FROM = `hello@${BRAND_DOMAIN}`
+// `MAIL_FROM` is derived from BRAND_DOMAIN so a domain migration
+// updates the envelope sender on both branches.
+const MAIL_FROM = `hello@${BRAND_DOMAIN}`
+const IS_PRODUCTION = NODE_ENV === 'production'
+
+// nodemailer's `secure` field is a boolean, but env values are
+// always strings. Parse the deployer's value here so the rest of
+// the file treats `config.email.smtp.secure` as a real boolean.
+const parseBool = (val, key) => {
+  if (val === 'true') return true
+  if (val === 'false') return false
+  throw new Error(`[${APP_NAME}] Invalid boolean for env var ${key}: ${val} (expected "true" or "false")`)
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Required env vars (deployer must set these — no fallback to constants)
@@ -126,10 +133,24 @@ const config = Object.freeze({
     expiresIn: JWT_EXPIRES_IN,
   }),
 
-  email: Object.freeze({
-    from: EMAIL_FROM,
-    resendApiKey: required('RESEND_API_KEY'),
-  }),
+  email: IS_PRODUCTION
+    ? Object.freeze({
+        from: MAIL_FROM,
+        resendApiKey: required('RESEND_API_KEY'),
+      })
+    : Object.freeze({
+        from: MAIL_FROM,
+        smtp: Object.freeze({
+          host: required('SMTP_HOST'),
+          port: parseInt(required('SMTP_PORT'), 10),
+          secure: parseBool(required('SMTP_SECURE'), 'SMTP_SECURE'),
+          // '' is allowed: mailpit accepts unauthenticated SMTP, so
+          // setting SMTP_USER='' and SMTP_PASS='' in .env.dev means
+          // "no auth header" rather than throwing at boot.
+          user: required('SMTP_USER'),
+          pass: required('SMTP_PASS'),
+        }),
+      }),
 })
 
 export default config
