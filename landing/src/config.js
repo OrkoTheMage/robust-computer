@@ -1,3 +1,5 @@
+import { BRAND_NAME, BRAND_DOMAIN, BRAND_EMAIL, BRAND_TIMEZONE } from './data/brand.js'
+
 /**
  * landing/src/config.js
  *
@@ -35,10 +37,7 @@ const required = (key) => {
 // Mirrored in server/src/config.js. Used as the landing's JSON-LD schema's
 // `name` and in contact-info copy. When migrating to a custom domain,
 // change BRAND_DOMAIN here AND flip the VITE_*_URL env vars.
-const BRAND_NAME = 'Robust Computer'
-const BRAND_DOMAIN = 'robust.computer'
-const BRAND_EMAIL = `hello@${BRAND_DOMAIN}`
-const BRAND_TIMEZONE = 'America/Chicago'
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Required env vars (deployer must set these — no fallback to constants)

@@ -1,3 +1,6 @@
+import { colors } from '../styles/colors'
+import { FIELD_NOTES_LEAD } from './brand.js'
+
 /**
  * landing/src/data/copy.js
  *
@@ -19,9 +22,6 @@
  * imports — keeps this file as pure data, no React/Lucide
  * coupling.
  */
-
-import { colors } from '../styles/colors'
-import { getLatestNewsPath } from './fieldNotes'
 
 // ── Brand ────────────────────────────────────────────────────────────────
 export const footerTagline = ''
@@ -144,7 +144,7 @@ export const industriesHeadline = 'Built across industries'
 export const fieldNotes = {
   headline: 'Field notes',
   indexTitle: 'Field notes',
-  lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
+  lead: FIELD_NOTES_LEAD,
   contactBox: {
     header: 'Field notes',
     sub: 'Short issues — updates frequently — on building software that lasts.',
@@ -173,12 +173,6 @@ export const navbarPages = [
   { to: '/', label: 'Home', hint: 'What we build', icon: 'Home' },
   { to: '/contact', label: 'Start a project', hint: 'Get in touch', icon: 'Send' },
   { to: '/about', label: 'Meet the Team', hint: 'About', icon: 'Users' },
-  // News goes to the Field Notes index page (not the latest
-  // individual issue) so the modal entry matches the main-nav
-  // entry. The per-issue deep link still works through the
-  // Hero "Shipped" stamp and the FieldNotes band's
-  // "Latest issue" line, both of which read from
-  // `useLatestRss`.
   { to: '/field-notes', label: 'News', hint: 'Field notes', icon: 'Newspaper' },
 ]
 
@@ -290,12 +284,6 @@ export const notFound = {
 }
 
 // ── Team (About page) ───────────────────────────────────────────────────
-export const teamFacts = [
-  { big: '4+ years', small: 'building for clients' },
-  { big: 'Small team', small: 'you talk to the people writing the code' },
-  { big: 'Every industry', small: 'from finance to healthcare' },
-]
-
 export const developers = [
   {
     name: 'Aeryn',
@@ -360,3 +348,123 @@ export const termsSections = [
   'Limitation of liability',
   'Changes to these Terms',
 ]
+
+export const topBar = {
+  nowWith: 'Now with —',
+  replies: 'Replies within 1-3 business day',
+}
+
+export const subscribeStatus = {
+  sending: 'Sending…',
+  subscribe: 'Subscribe',
+  success: 'Thanks — check your inbox.',
+  already: 'Already on the list. No new email sent.',
+  error: 'Something went wrong. Try again in a moment.',
+  optional: 'Optional. No spam.',
+  latestPrefix: 'Latest issue: ',
+  latestSuffix: ', read online.',
+  latestEmpty: 'Latest issue: placeholder title, read online.',
+}
+
+export const contactPage = {
+  seoTitle: 'Contact',
+  seoDescription: 'Start a project with Robust Computer. Send an enquiry straight to the team inbox — we reply within 1–3 business days.',
+  title: 'Start a project',
+  lead: "Tell us what you are building. A short message is fine, we will ask the right questions after that. Whether it's a rough idea or a detailed plan, you'll hear back from a developer.",
+  enquiryTitle: 'Project enquiry',
+  enquiryLead: 'Send an automatic enquiry straight to the team inbox.',
+  thankTitle: 'Enquiry sent',
+  thankBefore: "Thanks for the details — we'll reply within 1-3 business days from a real person at ",
+  thankAfter: '.',
+  preferEmailTitle: 'Prefer plain email?',
+  preferEmailBody: 'Write to us directly and we will reply from a real person.',
+  whatNextTitle: 'What happens next',
+  sending: 'Sending…',
+  send: 'Send enquiry',
+  errorFallback: 'Something went wrong. Please try again.',
+}
+
+export const bugReportPage = {
+  seoTitle: 'Report a bug',
+  seoDescription: 'File a bug report — tell us what broke, what you expected, and what actually happened.',
+  title: 'Report a bug',
+  sheetTitle: 'Report a bug',
+  sheetLead: 'Anonymous-friendly. Only the three repro fields are required.',
+  thankTitle: 'Report sent',
+  thankBody: "Thanks — the report is in the team's queue. If you left an email, we'll follow up there.",
+  sending: 'Sending…',
+  send: 'Send report',
+}
+
+export const aboutPage = {
+  seoTitle: 'About',
+  seoDescription: 'Meet the team at Robust Computer — a small studio where you work with the people who write the code.',
+  title: 'Meet the Team',
+  lead: "Robust Computer is a small team. When you hire us, you work with the people who write the code. Here's who they are and what they bring to your project",
+}
+
+export const privacyPage = {
+  seoTitle: 'Privacy',
+  seoDescription: 'Privacy policy for Robust Computer — what we collect when you visit the site, send an enquiry, or subscribe to Field Notes.',
+  title: 'Privacy Policy',
+  lead: 'What we collect when you contact us, and what we do with it.',
+}
+
+export const termsPage = {
+  seoTitle: 'Terms',
+  seoDescription: 'Terms of service for the Robust Computer website and any work we deliver.',
+  title: 'Terms of Service',
+  lead: 'The ground rules for using this site and working with us.',
+}
+
+export const fieldNotesPage = {
+  empty: "No posts yet — subscribe and you'll get the first one.",
+  published: 'Published',
+  prev: '‹ Prev',
+  next: 'Next ›',
+}
+
+export const fieldNotePage = {
+  notFoundTitle: 'Not found',
+  notFoundLead: 'No post at this URL.',
+  eyebrow: 'Field notes',
+  back: 'Back to home',
+  seoFallbackDescription: 'Field Notes from Robust Computer — short issues on building software that lasts.',
+}
+
+export const notFoundPage = {
+  seoTitle: 'Not found',
+  back: 'Back to home',
+}
+
+export const unsubscribePage = {
+  seoTitle: 'Unsubscribe',
+  seoDescription: 'Unsubscribe from Field Notes — the short-issue newsletter from Robust Computer.',
+  loading: 'Unsubscribing…',
+  successTitle: "You're off the list",
+  successLede: 'will no longer receive Field Notes. Changed your mind? You can resubscribe any time from the home page.',
+  errorTitle: "Couldn't unsubscribe",
+  errorFallback: 'Something went wrong on our end. Please try again in a moment.',
+  brokenTitle: 'This link is broken',
+  brokenLede: 'The unsubscribe link is missing the email address. Open the most recent Field Notes email and use the link at the bottom of that message.',
+  back: 'Back to home',
+}
+
+export const homePage = {
+  seoDescription: 'Custom software, built to last. Robust Computer is a small team of developers. We design it, build it, and stay on after launch.',
+}
+
+export const heroChrome = {
+  start: 'Start a project',
+  team: 'Meet the Team',
+  buildLog: 'Build log',
+  shipped: 'Shipped',
+  emptyTicket: '$ curl /latest.txt\n> (no issues yet)',
+}
+
+export const footerChrome = {
+  privacy: 'Privacy Policy',
+  terms: 'Terms of Service',
+  bug: 'Report a bug',
+  tagline: 'Custom software, built to last.',
+}

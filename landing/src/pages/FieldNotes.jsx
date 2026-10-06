@@ -1,3 +1,18 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import { Link } from 'react-router-dom'
+import Navbar from '../components/sections/Navbar'
+import PageHeader from '../components/sections/PageHeader'
+import Footer from '../components/sections/Footer'
+import { NewsletterBox } from '../components/sections/FieldNotes'
+import { SEO } from '../components/seo'
+import { fieldNotes as fieldNotesCopy, fieldNotesPage } from '../data/copy'
+import { FIELD_NOTES_PAGE_SIZE } from '../data/fieldNotes'
+import { formatPubDate } from '../utils/formatPubDate'
+import { getAllByDate } from '../utils/fieldNoteView'
+import { usePagination } from '../hooks/usePagination'
+import { useNewsletterForm } from '../hooks/useNewsletterForm'
+
 /**
  * FieldNotes index page
  *
@@ -23,19 +38,6 @@
  * /field-notes/:slug in App.jsx so the slug route doesn't
  * swallow this one).
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import { Link } from 'react-router-dom'
-import Navbar from '../components/sections/Navbar'
-import PageHeader from '../components/sections/PageHeader'
-import Footer from '../components/sections/Footer'
-import { NewsletterBox } from '../components/sections/FieldNotes'
-import { SEO } from '../components/seo'
-import { fieldNotes as fieldNotesCopy } from '../data/copy'
-import { fieldNotes } from '../data/fieldNotes'
-import { formatPubDate } from '../hooks/useLatestRss'
-import { usePagination } from '../hooks/usePagination'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -249,22 +251,10 @@ const Box = styled.div`
   max-width: 560px;
 `
 
-// The data file is already sorted by helpers (`getLatest`),
-// but the index page wants a stable, full list. Sort a
-// clone so the source array isn't mutated in place.
-const sortByPubDateDesc = (notes) =>
-  [...notes].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-
-// Number of posts rendered per page on the index. Held as
-// a const (not a prop) because the page is the only
-// consumer and the design is tuned for this count. Bump
-// it to 10 once the list grows past 30 or so and the cards
-// start to dominate the page.
-const PAGE_SIZE = 5
-
 export default function FieldNotes() {
-  const posts = sortByPubDateDesc(fieldNotes)
-  const pager = usePagination(posts, PAGE_SIZE)
+  const posts = getAllByDate()
+  const pager = usePagination(posts, FIELD_NOTES_PAGE_SIZE)
+  const newsletter = useNewsletterForm()
 
   return (
     <Page>
@@ -281,7 +271,7 @@ export default function FieldNotes() {
       />
       <List>
         {pager.pageItems.length === 0 ? (
-          <p>No posts yet — subscribe and you&apos;ll get the first one.</p>
+          <p>{fieldNotesPage.empty}</p>
         ) : (
           pager.pageItems.map((note) => (
             <Card key={note.slug} to={`/field-notes/${note.slug}`}>
@@ -290,7 +280,7 @@ export default function FieldNotes() {
                 <Title>{note.title}</Title>
                 <Description>{note.description}</Description>
               </Body>
-              <DateChip>Published {formatPubDate(note.pubDate)}</DateChip>
+              <DateChip>{fieldNotesPage.published} {formatPubDate(note.pubDate)}</DateChip>
             </Card>
           ))
         )}
@@ -303,7 +293,7 @@ export default function FieldNotes() {
             disabled={!pager.hasPrev}
             aria-label="Previous page"
           >
-            ‹ Prev
+            {fieldNotesPage.prev}
           </PageBtn>
           {Array.from({ length: pager.totalPages }, (_, i) => i + 1).map((p) => (
             <PageBtn
@@ -323,7 +313,7 @@ export default function FieldNotes() {
             disabled={!pager.hasNext}
             aria-label="Next page"
           >
-            Next ›
+            {fieldNotesPage.next}
           </PageBtn>
         </Pagination>
       )}
@@ -334,6 +324,12 @@ export default function FieldNotes() {
             sub={fieldNotesCopy.subscribeBox.sub}
             bg={colors.gold}
             fg={colors.ink}
+            email={newsletter.email}
+            onChange={newsletter.handleChange}
+            onSubmit={newsletter.handleSubmit}
+            submitting={newsletter.submitting}
+            status={newsletter.status}
+            errorMessage={newsletter.errorMessage}
           />
         </Box>
       </Subscribe>

@@ -1,3 +1,16 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import { Link, useParams } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import Navbar from '../components/sections/Navbar'
+import PageHeader from '../components/sections/PageHeader'
+import Footer from '../components/sections/Footer'
+import FieldNoteBody from '../components/sections/FieldNoteBody'
+import { SEO } from '../components/seo'
+import { formatPubDate } from '../utils/formatPubDate'
+import { getIssueBySlug } from '../utils/fieldNoteView'
+import { fieldNotePage } from '../data/copy'
+
 /**
  * FieldNote
  *
@@ -7,75 +20,15 @@
  * `data/fieldNotes.js` — the page looks up the post whose slug
  * matches the route's `:slug` segment.
  *
- * The post body is split on blank lines into blocks. The
- * first block is the Lede (the deck/summary of the post, with
- * its own pull-quote styling). Every remaining block goes
- * inside a single QuoteField — the whole post body sits in
- * one "field" with the input-field aesthetic, so the body
- * reads as a single lifted-out surface rather than a string
- * of loose paragraphs.
- *
- * If the post has an `author`, an `AuthorFoot` is rendered at
- * the bottom of the Sheet (between the body and the back
- * link) as a "signed by" byline. Omit `author` from the data
- * entry to skip the foot.
- *
- * When a richer content store (markdown, CMS, …) is wired
- * up, this block-parsing logic would be replaced by
- * rendering the post body directly.
- *
- * Mobile: the Lede (28px), QuoteSection (18px text + 56px
- * decorative quote marks), and AuthorStamp (24px + 6px
- * border + 8.7° rotation) were all sized for the desktop
- * Sheet (760px wide). Below 760px they dwarf the
- * viewport, so each has a mobile pass that uses `clamp()`
- * for fluid typography and a `@media (max-width: 760px)`
- * block for the layout pieces. The Sheet and HeaderBox
- * already had mobile padding/margins before this pass.
+ * The body itself is rendered by `FieldNoteBody`, which
+ * walks `parseMarkdownBlocks` (lede, then prose / quote /
+ * code in source order). An `author` renders a stamp above
+ * the back link. Omit `author` to skip the stamp.
  *
  * Route: /field-notes/:slug  (items live at /field-notes/<slug>;
  * single-segment slug for now — see the App.jsx comment if a
  * multi-segment slug is ever needed).
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import { Fragment } from 'react'
-import Navbar from '../components/sections/Navbar'
-import PageHeader from '../components/sections/PageHeader'
-import Footer from '../components/sections/Footer'
-import { SEO } from '../components/seo'
-import { useRssItem, formatPubDate } from '../hooks/useRssItem'
-import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import css from 'highlight.js/lib/languages/css'
-import xml from 'highlight.js/lib/languages/xml'
-import markdown from 'highlight.js/lib/languages/markdown'
-import plaintext from 'highlight.js/lib/languages/plaintext'
-import '../styles/highlight.css'
-
-// Register only the languages the FieldNotes content needs.
-// Each language is a small separate file, so the bundle
-// stays slim even with multiple languages available.
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('js', javascript)
-hljs.registerLanguage('jsx', javascript)
-hljs.registerLanguage('python', python)
-hljs.registerLanguage('py', python)
-hljs.registerLanguage('css', css)
-hljs.registerLanguage('html', xml)
-hljs.registerLanguage('xml', xml)
-hljs.registerLanguage('markdown', markdown)
-hljs.registerLanguage('md', markdown)
-hljs.registerLanguage('plaintext', plaintext)
-hljs.registerLanguage('text', plaintext)
-hljs.registerLanguage('txt', plaintext)
 
 const Page = styled.main`
   min-height: 100vh;
@@ -183,198 +136,6 @@ const HeaderBox = styled.div`
 // dominate the phone viewport. The left border thins to
 // 4px and the bottom margin shrinks so the lede doesn't
 // push the first body section halfway down the screen.
-const Lede = styled.p`
-  font-family: var(--body);
-  font-size: clamp(21px, 5vw, 28px);
-  font-weight: 700;
-  line-height: 1.45;
-  color: ${colors.ink};
-  padding: 4px 0 4px 24px;
-  margin: 0 0 54px;
-  border-left: 5px solid ${colors.ink};
-
-  /* Inline markdown from marked.parseInline: links + code. */
-  a {
-    color: ${colors.ink};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-  a:hover {
-    color: ${colors.goldDeep};
-  }
-  /* Inline code: same dark surface as the code blocks
-     (colors.tie) so a code snippet reads as a chip of the
-     same material as the code block. Mono font, paper
-     foreground, no border (the dark bg already separates it
-     from the cream body). A small inset line at the bottom
-     gives it a pressed feel, like the ink on the
-     code-block chip. */
-  code {
-    font-family: var(--mono);
-    background: ${colors.tie};
-    color: ${colors.paper};
-    padding: 2px 6px;
-    font-size: 0.9em;
-    box-shadow: inset 0 -1px 0 ${colors.ink};
-  }
-  u {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-
-  @media (max-width: 760px) {
-    padding: 2px 0 2px 16px;
-    margin: 0 0 32px;
-    border-left-width: 4px;
-  }
-`
-
-// TextSection. A regular prose paragraph — no background, no
-// border, just serif text flowing in the normal document
-// flow. Multiple TextSections can appear in a post,
-// interleaved with QuoteSections and CodeBlocks in any
-// order. The chrome (kicker, code blocks, inline code,
-// author stamp, back link) keeps the mono treatment; the
-// prose gets the readable Georgia serif.
-const TextSection = styled.div`
-  font-size: 17px;
-  line-height: 1.65;
-  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
-  color: ${colors.ink};
-  margin: 0 0 20px;
-
-  /* Inline markdown from marked.parseInline: links + code.
-     Direct child selectors (not p a / p code) because the
-     section's only child is the span renderInline returns. */
-  a {
-    color: ${colors.ink};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-  a:hover {
-    color: ${colors.goldDeep};
-  }
-  code {
-    font-family: var(--mono);
-    background: ${colors.tie};
-    color: ${colors.paper};
-    padding: 2px 6px;
-    font-size: 0.9em;
-    box-shadow: inset 0 -1px 0 ${colors.ink};
-  }
-  u {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-`
-
-// QuoteSection. A ">" prefixed block — a pull-quote with its
-// own bordered "field" surface and decorative open/close
-// quote marks at the corners. The bordered white surface
-// (colors.paper) makes the quote stand out from the
-// surrounding prose without changing the typography family
-// (still Georgia serif, just italic). The opening mark
-// (Unicode 201C) sits at the top-left, the closing mark
-// (Unicode 201D, the typographic mirror) at the bottom-right.
-//
-// Mobile: the 56px decorative quotes dwarf the body text
-// on a phone, so they drop to 32px (still readable, still
-// decorative, no longer competing with the prose). Padding
-// tightens to 28px/20px and the quote marks tuck closer
-// to the border corners so the field still feels like a
-// framed box rather than a paragraph with floating marks.
-const QuoteSection = styled.div`
-  position: relative;
-  width: 100%;
-  border: 3px solid ${colors.ink};
-  background: ${colors.paper};
-  color: ${colors.ink};
-  padding: 36px 40px;
-  font-size: 18px;
-  line-height: 1.6;
-  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
-  font-style: italic;
-  margin: 0 0 24px;
-
-  /* Decorative opening quote — top-left, slightly inset from
-     the border so it sits inside the field. */
-  &::before {
-    content: '\u201C';
-    position: absolute;
-    top: 4px;
-    left: 16px;
-    font-family: var(--display);
-    font-size: 56px;
-    font-weight: 800;
-    line-height: 1;
-    color: ${colors.ink};
-    pointer-events: none;
-  }
-
-  /* Decorative closing quote — bottom-right, the typographic
-     mirror of the opening (right: matches the opening's left:
-     so the two marks sit at mirrored distances from their
-     respective edges). */
-  &::after {
-    content: '\u201D';
-    position: absolute;
-    bottom: 4px;
-    right: 16px;
-    font-family: var(--display);
-    font-size: 56px;
-    font-weight: 800;
-    line-height: 1;
-    color: ${colors.ink};
-    pointer-events: none;
-  }
-
-  /* Same inline-markdown styling as TextSection so links and
-     code work the same inside a quote. */
-  a {
-    color: ${colors.ink};
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-  a:hover {
-    color: ${colors.goldDeep};
-  }
-  code {
-    font-family: var(--mono);
-    background: ${colors.tie};
-    color: ${colors.paper};
-    padding: 2px 6px;
-    font-size: 0.9em;
-    box-shadow: inset 0 -1px 0 ${colors.ink};
-  }
-  u {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 2px;
-  }
-
-  @media (max-width: 760px) {
-    padding: 28px 20px 24px;
-    font-size: 16px;
-
-    &::before {
-      top: 0;
-      left: 10px;
-      font-size: 32px;
-    }
-
-    &::after {
-      bottom: 0;
-      right: 10px;
-      font-size: 32px;
-    }
-  }
-`
-
 const BackLink = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -435,64 +196,6 @@ const BackLink = styled(Link)`
 // layout. The <code> inside <pre> is the actual highlighted
 // output from highlight.js; the <pre> wrapper preserves
 // whitespace and gives us the overflow-x: auto.
-const CodeBlock = styled.div`
-  border: 3px solid ${colors.ink};
-  background: ${colors.tie};
-  color: ${colors.paper};
-  margin: 0 0 16px;
-  overflow: hidden;
-`
-
-// Container for code blocks rendered outside the QuoteField
-// (Removed — the old "group all code blocks together" container
-// is no longer needed now that each section (text, quote,
-// code) is rendered as its own modular element. The CodeBlock
-// styled component below still carries its own margin.)
-
-const CodeHeader = styled.div`
-  background: ${colors.gold};
-  color: ${colors.ink};
-  padding: 6px 14px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-bottom: 3px solid ${colors.ink};
-
-  @media (max-width: 760px) {
-    padding: 5px 12px;
-    font-size: 11px;
-  }
-`
-
-const CodeBody = styled.pre`
-  margin: 0;
-  padding: 16px 20px;
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
-  overflow-x: auto;
-  color: ${colors.paper};
-
-  /* Reset the inline-<code> styling (background, border, etc.)
-     since the block is already inside a bordered surface and
-     the highlight.js output adds its own <span> wrappers. */
-  code {
-    font-family: var(--mono);
-    background: transparent;
-    color: inherit;
-    padding: 0;
-    border: 0;
-    font-size: inherit;
-  }
-
-  @media (max-width: 760px) {
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-`
-
 const AuthorFoot = styled.div`
   margin-top: 48px;
   display: flex;
@@ -558,134 +261,22 @@ const AuthorStamp = styled.div`
 //   **bold *italic* bold**  (nesting)
 //   <https://example.com>  (autolink)
 //
-// Links are opened in a new tab via a post-processing step
-// (target="_blank" rel="noopener noreferrer"). The span
-// wrapper is the React child boundary — marked produces
-// inline HTML only (no <p>, no <h1>, etc.), so it nests
-// correctly inside the Lede's <p> and the QuoteField's
-// paragraphs.
-const renderInline = (text) => {
-  let html = marked.parseInline(text)
-  // Open external links in a new tab; noopener prevents the
-  // new page from accessing window.opener, noreferrer
-  // prevents the Referer header from leaking.
-  html = html.replace(
-    /<a /g,
-    '<a target="_blank" rel="noopener noreferrer" '
-  )
-  const clean = DOMPurify.sanitize(html)
-  return <span dangerouslySetInnerHTML={{ __html: clean }} />
-}
-
-// Fenced code block parser. Takes a parsed block of shape
-// `{ type: 'code', content, lang }` from `parseMarkdownBlocks`.
-// The language may be empty (no tag in the opening fence) or
-// an unknown id — both fall back to `plaintext` (no
-// highlighting). The highlighted HTML goes through DOMPurify
-// as a belt-and-suspenders measure even though highlight.js
-// output is trusted. Content is rendered verbatim, including
-// blank lines inside the fence.
-const renderCodeBlock = (block) => {
-  const requested = block.lang || 'plaintext'
-  const code = block.content
-  let highlighted
-  try {
-    const language = hljs.getLanguage(requested)
-      ? requested
-      : 'plaintext'
-    highlighted = hljs.highlight(code, { language }).value
-  } catch {
-    highlighted = code
-  }
-  return (
-    <CodeBlock>
-      <CodeHeader>{requested}</CodeHeader>
-      <CodeBody>
-        <code
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlighted) }}
-        />
-      </CodeBody>
-    </CodeBlock>
-  )
-}
-
-// Block → JSX renderer. Consumes the structured block list
-// from `parseMarkdownBlocks`. The first block is the Lede (the
-// deck/summary of the post, with its own pull-quote styling).
-// Each remaining block is rendered as its own modular
-// section — TextSection, QuoteSection, or CodeBlock — so they
-// can be interleaved in any order, and any type can appear
-// more than once.
-//
-// Text blocks go through renderInline so the author can use
-// *italic*, **bold**, [links](urls), and `inline code` inside
-// the body. Quote blocks have the `> ` prefix already
-// stripped by the parser (multi-line quotes are joined with
-// spaces per CommonMark soft-break semantics). Code blocks go
-// through renderCodeBlock which pipes the code through
-// highlight.js.
-//
-// The shared parser handles fenced code blocks opaquely (a
-// blank line inside a code fence never breaks the fence), so
-// `parseMarkdownBlocks` is the single source of block
-// boundaries — used here and by the feed.txt builder.
-const renderContent = (raw) => {
-  const blocks = parseMarkdownBlocks(raw)
-  if (blocks.length === 0) return null
-
-  const [lede, ...bodyBlocks] = blocks
-
-  return (
-    <>
-      <Lede>{renderInline(lede.content)}</Lede>
-      {bodyBlocks.map((block, i) => {
-        if (block.type === 'code') {
-          return <Fragment key={i}>{renderCodeBlock(block)}</Fragment>
-        }
-        if (block.type === 'quote') {
-          return (
-            <QuoteSection key={i}>{renderInline(block.content)}</QuoteSection>
-          )
-        }
-        return (
-          <TextSection key={i}>{renderInline(block.content)}</TextSection>
-        )
-      })}
-    </>
-  )
-}
-
 const FieldNote = () => {
   const { slug = '' } = useParams()
-  const { item, loading } = useRssItem(slug)
-
-  // SEO is always rendered first so the title and meta tags are
-  // set immediately, even before the RSS fetch resolves (the
-  // component renders nothing, so it doesn't affect layout).
-  const seoTitle = loading ? 'Field note' : item ? item.title : 'Field note not found'
-  const seoDescription = item ? item.description : 'Field Notes from Robust Computer — short issues on building software that lasts.'
-
-  if (loading) {
-    return (
-      <Page>
-        <SEO title={seoTitle} description={seoDescription} path={`/field-notes/${slug}`} type="article" />
-        <Navbar />
-        <PageHeader title="Field note" lead="Loading…" image={false} />
-        <Footer />
-      </Page>
-    )
-  }
+  const item = getIssueBySlug(slug)
+  const seoTitle = item ? item.title : fieldNotePage.notFoundTitle
+  const seoDescription = item ? item.description : fieldNotePage.seoFallbackDescription
 
   if (!item) {
     return (
       <Page>
         <SEO title={seoTitle} description={seoDescription} path={`/field-notes/${slug}`} type="article" />
         <Navbar />
-        <PageHeader title="Not found" lead="No post at this URL." image={false} />
+        <PageHeader title={fieldNotePage.notFoundTitle} lead={fieldNotePage.notFoundLead} image={false} />
         <Sheet>
           <BackLink to="/">
             <ArrowLeft size={18} strokeWidth={2.4} aria-hidden="true" />
-            Back to home
+            {fieldNotePage.back}
           </BackLink>
         </Sheet>
         <Footer />
@@ -703,7 +294,7 @@ const FieldNote = () => {
       />
       <Navbar />
       <PageHeader
-        eyebrow="Field notes"
+        eyebrow={fieldNotePage.eyebrow}
         lead={item.channelDescription}
         imageVariant="bannerAlt"
       />
@@ -713,7 +304,7 @@ const FieldNote = () => {
         <div className="date">Published {formatPubDate(item.pubDate)}</div>
       </HeaderBox>
       <Sheet>
-        {renderContent(item.raw)}
+        <FieldNoteBody raw={item.raw} />
         {item.author && (
           <AuthorFoot>
             <AuthorStamp>{`— ${item.author}`}</AuthorStamp>
@@ -721,7 +312,7 @@ const FieldNote = () => {
         )}
         <BackLink to="/">
           <ArrowLeft size={18} strokeWidth={2.4} aria-hidden="true" />
-          Back to home
+          {fieldNotePage.back}
         </BackLink>
       </Sheet>
       <Footer />

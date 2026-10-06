@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { api, ApiError } from '../api'
+
 /**
  * useContactForm
  *
@@ -7,9 +10,6 @@
  *
  * Returns a single binding object the page destructures directly.
  */
-
-import { useState } from 'react'
-import { api, ApiError } from '../api'
 
 const PROJECT_TYPES = [
   { value: 'landing', label: 'Landing page' },

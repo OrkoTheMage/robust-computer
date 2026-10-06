@@ -85,6 +85,15 @@
   --display: 'Barlow', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
   --body: 'Newsreader', Georgia, serif;
+  --prose: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
+  --sans: system-ui, Arial, sans-serif;
+  --paper: #e2dbc8;
+  --tie: #14120e;
+  --gold: #d0c096;
+  --gold-deep: #a8935a;
+  --hl-string: #a8d5a8;
+  --hl-number: #e8c170;
+  --hl-comment: #7a7260;
   /* Content stays inside --page. Band backgrounds are not capped;
      they run the full viewport. Gutters default to paper. */
   --page: 1750px;
@@ -108,14 +117,12 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Body + #root backgrounds / text color are hard-coded here (CSS
-   can't import from colors.js). They MUST stay in sync with
-   colors.paper and colors.tie — a brand reskin is a two-file
-   edit. */
+/* Body colors use the :root variables above. Those hex values
+   must stay in sync with colors.js — CSS cannot import it. */
 body {
   margin: 0;
-  background: #e2dbc8;
-  color: #14120e;
+  background: var(--paper);
+  color: var(--tie);
   font-family: var(--body);
   font-size: 18px;
   line-height: 1.55;
@@ -125,7 +132,7 @@ body {
 #root {
   width: 100%;
   min-height: 100vh;
-  background: #e2dbc8;
+  background: var(--paper);
 }
 
 img,
@@ -151,7 +158,7 @@ select {
 }
 
 :focus-visible {
-  outline: 3px solid #a8935a;
+  outline: 3px solid var(--gold-deep);
   outline-offset: 3px;
 }
 

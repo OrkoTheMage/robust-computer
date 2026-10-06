@@ -1,3 +1,5 @@
+import { useCallback, useMemo, useState } from 'react'
+
 /**
  * usePagination
  *
@@ -29,8 +31,6 @@
  * `useState` for `useSearchParams` — the rest of the hook
  * doesn't need to change.
  */
-
-import { useCallback, useMemo, useState } from 'react'
 
 export function usePagination(items, pageSize) {
   const [page, setPage] = useState(1)

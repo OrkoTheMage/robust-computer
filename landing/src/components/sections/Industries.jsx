@@ -1,3 +1,9 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { industriesHeadline } from '../../data/copy'
+import { Chip } from '../ui'
+import { Zer0Text } from '../brand'
+
 /**
  * Industries
  *
@@ -5,11 +11,6 @@
  * "chip" pills on the right. Static — the chips are content, not
  * interactive filters (the user can always change them later).
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { industriesHeadline } from '../../data/copy'
-import { Container, Chip, Zer0Text } from '../ui'
 
 const Bar = styled.section`
   background: ${colors.ink};

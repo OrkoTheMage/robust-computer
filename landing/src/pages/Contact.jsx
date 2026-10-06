@@ -1,24 +1,25 @@
-/**
- * Contact page
- *
- * Two-column: the project enquiry sheet on the left, three boxes on
- * the right (plain email, "what happens next" steps, newsletter).
- * The form state is owned by `useContactForm`; the newsletter box
- * reuses the FieldNotes hook.
- */
-
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../components/ui'
+import { Zer0Text } from '../components/brand'
 import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
+import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { NewsletterBox } from '../components/sections/FieldNotes'
-import { Zer0Text } from '../components/ui'
 import { SEO } from '../components/seo'
 import config from '../config'
-import { contactWhatHappens, fieldNotes } from '../data/copy'
+import { contactWhatHappens, fieldNotes, contactPage } from '../data/copy'
+
+/**
+ * Contact page
+ *
+ * Two-column: the project enquiry sheet on the left, three boxes on
+ * the right (plain email, "what happens next" steps, newsletter).
+ * Enquiry state is owned by `useContactForm`. Subscribe state
+ * is owned by `useNewsletterForm` and passed into the box.
+ */
 
 const Page = styled.main`
   min-height: 100vh;
@@ -183,161 +184,154 @@ const Thank = styled.div`
   }
 `
 
-const ContactForm = () => {
-  const c = useContactForm()
-  if (c.submitted) {
-    return (
-      <Thank>
-        <h2><Zer0Text>Enquiry sent</Zer0Text></h2>
-        <p>
-          Thanks for the details — we&apos;ll reply within 1-3 business days
-          from a real person at <strong>{config.brand.email}</strong>.
-        </p>
-      </Thank>
-    )
-  }
+const ChipButton = styled.button`
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+`
 
-  return (
-    <Sheet onSubmit={c.handleSubmit}>
-      <h3><Zer0Text>Project enquiry</Zer0Text></h3>
-      <p>Send an automatic enquiry straight to the team inbox.</p>
-
-      <Two>
-        <FieldGroup label="Your name" error={c.fieldErrors.name}>
-          <InputControl
-            type="text"
-            name="name"
-            placeholder="Full name"
-            value={c.formData.name}
-            onChange={c.handleChange}
-            disabled={c.submitting}
-            required
-          />
-        </FieldGroup>
-        <FieldGroup label="Email" error={c.fieldErrors.email}>
-          <InputControl
-            type="email"
-            name="email"
-            placeholder="you@company.com"
-            value={c.formData.email}
-            onChange={c.handleChange}
-            disabled={c.submitting}
-            required
-          />
-        </FieldGroup>
-      </Two>
-
-      <FieldGroup label="Company or project" error={c.fieldErrors.company}>
-        <InputControl
-          type="text"
-          name="company"
-          placeholder="Optional"
-          value={c.formData.company}
-          onChange={c.handleChange}
-          disabled={c.submitting}
-        />
-      </FieldGroup>
-
-      <Lab><Zer0Text>What are you building?</Zer0Text></Lab>
-      <Chips>
-        {PROJECT_TYPES.map((p) => (
-          <button
-            key={p.value}
-            type="button"
-            onClick={() => c.handleChip('projectType', p.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-            }}
-          >
-            <Chip on={c.formData.projectType === p.value}>{p.label}</Chip>
-          </button>
-        ))}
-      </Chips>
-
-      <Lab><Zer0Text>Rough budget</Zer0Text></Lab>
-      <Chips>
-        {BUDGETS.map((b) => (
-          <button
-            key={b.value}
-            type="button"
-            onClick={() => c.handleChip('budget', b.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-            }}
-          >
-            <Chip on={c.formData.budget === b.value}>{b.label}</Chip>
-          </button>
-        ))}
-      </Chips>
-
-      <FieldGroup label="Tell us more" error={c.fieldErrors.message}>
-        <TextareaControl
-          name="message"
-          placeholder="What problem should it solve, and who will use it?"
-          value={c.formData.message}
-          onChange={c.handleChange}
-          disabled={c.submitting}
-          required
-        />
-      </FieldGroup>
-
-      {c.error && (
-        <p style={{ color: colors.error, fontFamily: 'var(--mono)', fontSize: 14, marginTop: 0 }}>
-          {c.error}
-        </p>
-      )}
-
-      <Button type="submit" disabled={c.submitting} variant="gold" style={{ marginTop: 6 }}>
-        {c.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Send enquiry</Zer0Text>}
-      </Button>
-    </Sheet>
-  )
-}
-
-const SubscribeBox = () => (
-  <NewsletterBox
-    header={fieldNotes.contactBox.header}
-    sub={fieldNotes.contactBox.sub}
-  />
-)
+const ErrorText = styled.p`
+  color: ${colors.error};
+  font-family: var(--mono);
+  font-size: 14px;
+  margin-top: 0;
+`
 
 export default function Contact() {
+  const c = useContactForm()
+  const newsletter = useNewsletterForm()
+
   return (
     <Page>
       <SEO
-        title="Contact"
-        description="Start a project with Robust Computer. Send an enquiry straight to the team inbox — we reply within 1–3 business days."
+        title={contactPage.seoTitle}
+        description={contactPage.seoDescription}
         path="/contact"
       />
       <Navbar />
       <PageHeader
-        title="Start a project"
-        lead="Tell us what you are building. A short message is fine, we will ask the right questions after that. Whether it's a rough idea or a detailed plan, you'll hear back from a developer."
+        title={contactPage.title}
+        lead={contactPage.lead}
         imageVariant="bannerAlt"
       />
       <Grid>
-        <ContactForm />
+        {c.submitted ? (
+          <Thank>
+            <h2><Zer0Text>{contactPage.thankTitle}</Zer0Text></h2>
+            <p>
+              {contactPage.thankBefore}<strong>{config.brand.email}</strong>{contactPage.thankAfter}
+            </p>
+          </Thank>
+        ) : (
+          <Sheet onSubmit={c.handleSubmit}>
+            <h3><Zer0Text>{contactPage.enquiryTitle}</Zer0Text></h3>
+            <p>{contactPage.enquiryLead}</p>
+
+            <Two>
+              <FieldGroup label="Your name" error={c.fieldErrors.name}>
+                <InputControl
+                  type="text"
+                  name="name"
+                  placeholder="Full name"
+                  value={c.formData.name}
+                  onChange={c.handleChange}
+                  disabled={c.submitting}
+                  required
+                />
+              </FieldGroup>
+              <FieldGroup label="Email" error={c.fieldErrors.email}>
+                <InputControl
+                  type="email"
+                  name="email"
+                  placeholder="you@company.com"
+                  value={c.formData.email}
+                  onChange={c.handleChange}
+                  disabled={c.submitting}
+                  required
+                />
+              </FieldGroup>
+            </Two>
+
+            <FieldGroup label="Company or project" error={c.fieldErrors.company}>
+              <InputControl
+                type="text"
+                name="company"
+                placeholder="Optional"
+                value={c.formData.company}
+                onChange={c.handleChange}
+                disabled={c.submitting}
+              />
+            </FieldGroup>
+
+            <Lab><Zer0Text>What are you building?</Zer0Text></Lab>
+            <Chips>
+              {PROJECT_TYPES.map((p) => (
+                <ChipButton
+                  key={p.value}
+                  type="button"
+                  onClick={() => c.handleChip('projectType', p.value)}
+                >
+                  <Chip on={c.formData.projectType === p.value}>{p.label}</Chip>
+                </ChipButton>
+              ))}
+            </Chips>
+
+            <Lab><Zer0Text>Rough budget</Zer0Text></Lab>
+            <Chips>
+              {BUDGETS.map((b) => (
+                <ChipButton
+                  key={b.value}
+                  type="button"
+                  onClick={() => c.handleChip('budget', b.value)}
+                >
+                  <Chip on={c.formData.budget === b.value}>{b.label}</Chip>
+                </ChipButton>
+              ))}
+            </Chips>
+
+            <FieldGroup label="Tell us more" error={c.fieldErrors.message}>
+              <TextareaControl
+                name="message"
+                placeholder="What problem should it solve, and who will use it?"
+                value={c.formData.message}
+                onChange={c.handleChange}
+                disabled={c.submitting}
+                required
+              />
+            </FieldGroup>
+
+            {c.error && <ErrorText>{c.error}</ErrorText>}
+
+            <Button type="submit" disabled={c.submitting} variant="gold">
+              {c.submitting ? <Zer0Text>{contactPage.sending}</Zer0Text> : <Zer0Text>{contactPage.send}</Zer0Text>}
+            </Button>
+          </Sheet>
+        )}
         <Side>
           <Box bg={colors.ink} fg={colors.paper}>
-            <h3><Zer0Text>Prefer plain email?</Zer0Text></h3>
-            <p>Write to us directly and we will reply from a real person.</p>
+            <h3><Zer0Text>{contactPage.preferEmailTitle}</Zer0Text></h3>
+            <p>{contactPage.preferEmailBody}</p>
             <Mail>{config.brand.email}</Mail>
           </Box>
           <Box fg={colors.ink}>
-            <h3><Zer0Text>What happens next</Zer0Text></h3>
+            <h3><Zer0Text>{contactPage.whatNextTitle}</Zer0Text></h3>
             <ol>
               {contactWhatHappens.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>
           </Box>
-          <SubscribeBox />
+          <NewsletterBox
+            header={fieldNotes.contactBox.header}
+            sub={fieldNotes.contactBox.sub}
+            email={newsletter.email}
+            onChange={newsletter.handleChange}
+            onSubmit={newsletter.handleSubmit}
+            submitting={newsletter.submitting}
+            status={newsletter.status}
+            errorMessage={newsletter.errorMessage}
+          />
         </Side>
       </Grid>
       <Footer />

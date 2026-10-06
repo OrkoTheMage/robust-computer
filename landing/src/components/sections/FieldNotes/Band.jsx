@@ -1,3 +1,10 @@
+import styled from '@emotion/styled'
+import { colors } from '../../../styles/colors'
+import { Link } from 'react-router-dom'
+import { Button, InputControl, FieldGroup } from '../../ui'
+import { Zer0Text } from '../../brand'
+import { fieldNotes, subscribeStatus } from '../../../data/copy'
+
 /**
  * FieldNotes/Band
  *
@@ -7,22 +14,14 @@
  * just renders the bindings.
  *
  * The small line under the form shows the latest issue
- * title from `data/fieldNotes.js`, linked through to the
- * post. Shared with the Hero ticket via
- * `hooks/useLatestRss.js`.
+ * title, linked through to the post. The page passes that
+ * issue in so this section does not fetch it itself.
  *
  * Sibling of `NewsletterBox.jsx` in this same directory —
  * the Band is the large two-column home-page module, the
  * Box is the small reusable subscribe widget used on the
  * Contact sidebar and on the new /field-notes index page.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../../styles/colors'
-import { Link } from 'react-router-dom'
-import { Button, InputControl, FieldGroup, Zer0Text } from '../../ui'
-import { useLatestRss } from '../../../hooks/useLatestRss'
-import { fieldNotes } from '../../../data/copy'
 
 const Band = styled.section`
   background: ${colors.ink};
@@ -102,19 +101,12 @@ const Row = styled.div`
   }
 `
 
-const SubscribeBtn = styled(Button)`
-  background: ${colors.gold};
-  color: ${colors.ink};
-  box-shadow: 6px 6px 0 ${colors.paper};
-  padding: 0 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50px;
-`
+// Subscribe uses the standard <Button variant="gold"> (chunk 13).
+// Earlier this section styled a `styled(Button)` override with the
+// same colors; collapsing it onto the primitive keeps the audit's
+// "no custom overrides" rule honest.
 
-const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage }) => {
-  const latest = useLatestRss()
+const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage, latest }) => {
   return (
     <Band>
       <div>
@@ -134,30 +126,30 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessag
                 onChange={onChange}
                 disabled={submitting}
               />
-              <SubscribeBtn type="submit" disabled={submitting}>
-                {submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
-              </SubscribeBtn>
+              <Button type="submit" variant="gold" disabled={submitting}>
+                {submitting ? <Zer0Text>{subscribeStatus.sending}</Zer0Text> : <Zer0Text>{subscribeStatus.subscribe}</Zer0Text>}
+              </Button>
             </Row>
           </FieldGroup>
         </div>
         <small>
           {status === 'success'
-            ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
+            ? <Zer0Text>{subscribeStatus.success}</Zer0Text>
             : status === 'already'
-            ? <Zer0Text>Already on the list. No new email sent.</Zer0Text>
+            ? <Zer0Text>{subscribeStatus.already}</Zer0Text>
             : status === 'error'
-            ? <Zer0Text>{errorMessage || 'Something went wrong. Try again in a moment.'}</Zer0Text>
+            ? <Zer0Text>{errorMessage || subscribeStatus.error}</Zer0Text>
             : latest
               ? (
                 <>
-                  <Zer0Text>Latest issue: </Zer0Text>
+                  <Zer0Text>{subscribeStatus.latestPrefix}</Zer0Text>
                   {latest.to
                     ? <Link to={latest.to}><Zer0Text>{latest.title}</Zer0Text></Link>
                     : <Zer0Text>{latest.title}</Zer0Text>}
-                  <Zer0Text>, read online.</Zer0Text>
+                  <Zer0Text>{subscribeStatus.latestSuffix}</Zer0Text>
                 </>
               )
-              : <Zer0Text>Latest issue: placeholder title, read online.</Zer0Text>}
+              : <Zer0Text>{subscribeStatus.latestEmpty}</Zer0Text>}
         </small>
       </Form>
     </Band>

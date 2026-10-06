@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import config from '../../config'
+
 /**
  * landing/src/components/seo/SEO.jsx
  *
@@ -29,9 +32,6 @@
  * the canonical URL. Omit it for the home page (defaults to
  * the site root).
  */
-
-import { useEffect } from 'react'
-import config from '../../config'
 
 const BASE = 'Robust Computer'
 const SEP = ' | '

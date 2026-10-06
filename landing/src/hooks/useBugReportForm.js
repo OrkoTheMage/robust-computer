@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { api, ApiError } from '../api'
+
 /**
  * useBugReportForm
  *
@@ -9,9 +12,6 @@
  * what happened) are required. Mirrors the useContactForm API
  * (returns one binding object the page destructures).
  */
-
-import { useState } from 'react'
-import { api, ApiError } from '../api'
 
 export function useBugReportForm() {
   const [formData, setFormData] = useState({

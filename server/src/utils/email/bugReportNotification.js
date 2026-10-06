@@ -1,3 +1,5 @@
+import { wrapHtml, wrapText, emailTokens } from './layout.js'
+
 /**
  * server/src/utils/email/bugReportNotification.js
  *
@@ -11,8 +13,6 @@
  *
  * Returns { subject, html, text }. No SMTP here.
  */
-
-import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 const { COLOR, FONT, escape, zer0Html } = emailTokens
 
@@ -31,7 +31,7 @@ const bugField = ({ label: fieldLabel, value }) => `
     <div style="font-family:${FONT.mono}; font-weight:700; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; color:${COLOR.ink}; margin:0 0 6px;">
       ${zer0Html(fieldLabel)}
     </div>
-    <div style="border:3px solid ${COLOR.ink}; background:#fff8; padding:6px; font-family:${FONT.mono}; font-weight:400; font-size:17px; line-height:1.5; color:${COLOR.ink}; white-space:pre-line; overflow:hidden;">${value}</div>
+    <div style="border:3px solid ${COLOR.ink}; background:${COLOR.inputBg}; padding:6px; font-family:${FONT.mono}; font-weight:400; font-size:17px; line-height:1.5; color:${COLOR.ink}; white-space:pre-line; overflow:hidden;">${value}</div>
   </div>
 `
 

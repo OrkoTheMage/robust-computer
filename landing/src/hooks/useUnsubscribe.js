@@ -1,3 +1,8 @@
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { api, ApiError } from '../api'
+import { unsubscribePage } from '../data/copy'
+
 /**
  * useUnsubscribe
  *
@@ -25,9 +30,36 @@
  * them is reassuring).
  */
 
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { api, ApiError } from '../api'
+const viewFor = ({ status, email, errorMessage }) => {
+  if (status === 'success') {
+    return {
+      headline: unsubscribePage.successTitle,
+      lede: `${email} ${unsubscribePage.successLede}`,
+      showHome: true,
+    }
+  }
+  if (status === 'error') {
+    const detail = errorMessage || unsubscribePage.errorFallback
+    const who = email ? ` Trying to unsubscribe ${email}.` : ''
+    return {
+      headline: unsubscribePage.errorTitle,
+      lede: `${detail}${who}`,
+      showHome: true,
+    }
+  }
+  if (status === 'idle') {
+    return {
+      headline: unsubscribePage.brokenTitle,
+      lede: unsubscribePage.brokenLede,
+      showHome: true,
+    }
+  }
+  return {
+    headline: unsubscribePage.loading,
+    lede: null,
+    showHome: false,
+  }
+}
 
 export function useUnsubscribe() {
   const [searchParams] = useSearchParams()
@@ -68,5 +100,5 @@ export function useUnsubscribe() {
     }
   }, [email])
 
-  return { email, status, errorMessage }
+  return { email, status, errorMessage, ...viewFor({ status, email, errorMessage }) }
 }

@@ -1,3 +1,14 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import Navbar from '../components/sections/Navbar'
+import PageHeader from '../components/sections/PageHeader'
+import Footer from '../components/sections/Footer'
+import { Button, FieldGroup, InputControl, TextareaControl } from '../components/ui'
+import { Zer0Text } from '../components/brand'
+import { SEO } from '../components/seo'
+import { useBugReportForm } from '../hooks/useBugReportForm'
+import { bugReportLead, bugReportPage } from '../data/copy'
+
 /**
  * BugReport
  *
@@ -11,16 +22,6 @@
  * (what you were doing / what you expected / what happened) are
  * required.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import Navbar from '../components/sections/Navbar'
-import PageHeader from '../components/sections/PageHeader'
-import Footer from '../components/sections/Footer'
-import { Button, FieldGroup, InputControl, TextareaControl, Zer0Text } from '../components/ui'
-import { SEO } from '../components/seo'
-import { useBugReportForm } from '../hooks/useBugReportForm'
-import { bugReportLead } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -99,24 +100,39 @@ const Two = styled.div`
   }
 `
 
-const ReportForm = () => {
+const ErrorText = styled.p`
+  color: ${colors.error};
+  font-family: var(--mono);
+  font-size: 14px;
+  margin-top: 0;
+`
+
+export default function BugReport() {
   const b = useBugReportForm()
-  if (b.submitted) {
-    return (
-      <Thank>
-        <h2><Zer0Text>Report sent</Zer0Text></h2>
-        <p>
-          Thanks — the report is in the team&apos;s queue. If you left
-          an email, we&apos;ll follow up there.
-        </p>
-      </Thank>
-    )
-  }
 
   return (
-    <Sheet onSubmit={b.handleSubmit}>
-      <h3><Zer0Text>Report a bug</Zer0Text></h3>
-      <p>Anonymous-friendly. Only the three repro fields are required.</p>
+    <Page>
+      <SEO
+        title={bugReportPage.seoTitle}
+        description={bugReportPage.seoDescription}
+        path="/bug-report"
+      />
+      <Navbar />
+      <PageHeader
+        title={bugReportPage.title}
+        lead={bugReportLead}
+        imageVariant="bannerAlt"
+      />
+      <Grid>
+        {b.submitted ? (
+          <Thank>
+            <h2><Zer0Text>{bugReportPage.thankTitle}</Zer0Text></h2>
+            <p>{bugReportPage.thankBody}</p>
+          </Thank>
+        ) : (
+          <Sheet onSubmit={b.handleSubmit}>
+            <h3><Zer0Text>{bugReportPage.sheetTitle}</Zer0Text></h3>
+            <p>{bugReportPage.sheetLead}</p>
 
       <Two>
         <FieldGroup label="Your name" error={b.fieldErrors.name}>
@@ -185,35 +201,13 @@ const ReportForm = () => {
         />
       </FieldGroup>
 
-      {b.error && (
-        <p style={{ color: colors.error, fontFamily: 'var(--mono)', fontSize: 14, marginTop: 0 }}>
-          {b.error}
-        </p>
-      )}
+            {b.error && <ErrorText>{b.error}</ErrorText>}
 
-      <Button type="submit" disabled={b.submitting} variant="gold" style={{ marginTop: 6 }}>
-        {b.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Send report</Zer0Text>}
-      </Button>
-    </Sheet>
-  )
-}
-
-export default function BugReport() {
-  return (
-    <Page>
-      <SEO
-        title="Report a bug"
-        description="File a bug report — tell us what broke, what you expected, and what actually happened."
-        path="/bug-report"
-      />
-      <Navbar />
-      <PageHeader
-        title="Report a bug"
-        lead={bugReportLead}
-        imageVariant="bannerAlt"
-      />
-      <Grid>
-        <ReportForm />
+            <Button type="submit" disabled={b.submitting} variant="gold">
+              {b.submitting ? <Zer0Text>{bugReportPage.sending}</Zer0Text> : <Zer0Text>{bugReportPage.send}</Zer0Text>}
+            </Button>
+          </Sheet>
+        )}
       </Grid>
       <Footer />
     </Page>

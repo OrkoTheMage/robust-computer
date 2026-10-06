@@ -1,3 +1,9 @@
+import { useEffect, useRef } from 'react'
+import { colors } from '../../styles/colors'
+import { createPortal } from 'react-dom'
+import styled from '@emotion/styled'
+import { X } from 'lucide-react'
+
 /**
  * Modal
  *
@@ -15,16 +21,10 @@
  * hard offset shadow, mono uppercase close button.
  */
 
-import { useEffect, useRef } from 'react'
-import { colors } from '../../styles/colors'
-import { createPortal } from 'react-dom'
-import styled from '@emotion/styled'
-import { X } from 'lucide-react'
-
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: ${colors.scrim};
   display: flex;
   align-items: center;
   justify-content: center;

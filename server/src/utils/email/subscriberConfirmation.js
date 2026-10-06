@@ -1,3 +1,6 @@
+import config from '../../config.js'
+import { wrapHtml, wrapText, emailTokens } from './layout.js'
+
 /**
  * server/src/utils/email/subscriberConfirmation.js
  *
@@ -9,9 +12,6 @@
  * Returns { subject, html, text } — the caller (email.js) attaches
  * the recipient and sends. No SMTP here.
  */
-
-import config from '../../config.js'
-import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 const { COLOR, FONT, escape } = emailTokens
 

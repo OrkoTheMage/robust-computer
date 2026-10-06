@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 /**
  * useChromeHeight
  *
@@ -11,8 +13,6 @@
  * to a sensible estimate on the server and on the first render,
  * which keeps the layout from jumping once the real value lands.
  */
-
-import { useEffect, useState } from 'react'
 
 const FALLBACK = 145
 

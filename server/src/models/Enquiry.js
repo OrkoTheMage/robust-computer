@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 /**
  * server/src/models/Enquiry.js
  *
@@ -5,8 +7,6 @@
  * Stored in Mongo for the team to read + reply, plus an email is sent
  * to the configured SMTP_FROM address so nothing is lost.
  */
-
-import mongoose from 'mongoose'
 
 const EnquirySchema = new mongoose.Schema(
   {

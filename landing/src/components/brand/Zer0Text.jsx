@@ -1,3 +1,7 @@
+import { Fragment } from 'react'
+import styled from '@emotion/styled'
+import { zer0 } from '../../utils/zer0'
+
 /**
  * landing/src/components/ui/Zer0Text.jsx
  *
@@ -16,10 +20,6 @@
  * adds the rendering concern: wrapping each 0 in a span that
  * uses Plex Mono.
  */
-
-import { Fragment } from 'react'
-import styled from '@emotion/styled'
-import { zer0 } from '../../utils/zer0'
 
 // Plex Mono is the mono font. We also turn on its OpenType
 // "zero" feature (slashed zero) when the font supports it, so

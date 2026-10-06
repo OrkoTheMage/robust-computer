@@ -1,15 +1,17 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { Link } from 'react-router-dom'
+import { Button } from '../ui'
+import { Zer0Text } from '../brand'
+import { heroChrome } from '../../data/copy'
+import { ctaBand } from '../../data/copy'
+
 /**
  * CTABand
  *
  * Closing black band with the "Work with the team" headline and a
  * gold CTA button. Reused on the about page.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { Link } from 'react-router-dom'
-import { Button, Zer0Text } from '../ui'
-import { ctaBand } from '../../data/copy'
 
 const Band = styled.section`
   background: ${colors.ink};
@@ -51,7 +53,7 @@ const CTABand = () => (
       <p>{ctaBand.lead}</p>
     </div>
     <Button as={Link} to="/contact" variant="gold">
-      <Zer0Text>Start a project</Zer0Text>
+      <Zer0Text>{heroChrome.start}</Zer0Text>
     </Button>
   </Band>
 )

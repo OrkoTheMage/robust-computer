@@ -1,3 +1,8 @@
+import dotenv from 'dotenv'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { BRAND_NAME, BRAND_DOMAIN, BRAND_EMAIL, BRAND_TIMEZONE } from '../../landing/src/data/brand.js'
+
 /**
  * server/src/config.js
  *
@@ -15,10 +20,6 @@
  * docstring → required() helper → code constants → required env vars →
  * config object → export). Server-only fields live in this file only.
  */
-
-import dotenv from 'dotenv'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -62,18 +63,10 @@ const required = (key) => {
 // Mirrored in landing/src/config.js. Used in email body copy and as the
 // contact-form recipient. When migrating to a custom domain, change
 // BRAND_DOMAIN here AND flip the *URL env vars.
-const BRAND_NAME = 'Robust Computer'
-const BRAND_DOMAIN = 'robust.computer'
-const BRAND_EMAIL = `hello@${BRAND_DOMAIN}`
-const BRAND_TIMEZONE = 'America/Chicago'
-
 // ── Server-only constants (NOT mirrored) ────────────────────────────────────
 
 // Server lifecycle.
 const PORT = 5000
-
-// JWT.
-const JWT_EXPIRES_IN = '24h'
 
 // Email transport. Two branches selected by NODE_ENV:
 //
@@ -127,11 +120,6 @@ const config = Object.freeze({
   port: process.env.PORT ? parseInt(process.env.PORT, 10) : PORT,
 
   mongoUri: required('MONGODB_URI'),
-
-  jwt: Object.freeze({
-    secret: required('JWT_SECRET'),
-    expiresIn: JWT_EXPIRES_IN,
-  }),
 
   email: IS_PRODUCTION
     ? Object.freeze({

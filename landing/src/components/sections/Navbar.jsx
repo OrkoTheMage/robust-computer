@@ -1,3 +1,7 @@
+import styled from '@emotion/styled'
+import { NavLink, Link } from 'react-router-dom'
+import {
+
 /**
  * Navbar
  *
@@ -15,10 +19,6 @@
  * is the "start a project" call.
  */
 
-import styled from '@emotion/styled'
-import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
-import {
   Github,
   Linkedin,
   Facebook,
@@ -30,17 +30,20 @@ import {
   Users,
   Send,
   Newspaper,
-  Languages,
   Menu,
   X,
 } from 'lucide-react'
-import { Button, Logo, Modal, Zer0Text } from '../ui'
+import { Button } from '../ui'
+import { Logo, Zer0Text } from '../brand'
+import { Modal } from '../modals'
 import { colors } from '../../styles/colors'
-import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, languages } from '../../data/copy'
-import { getLatestNewsPath } from '../../data/fieldNotes'
+import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials } from '../../data/copy'
+import { useNavbar } from '../../hooks/useNavbar'
+import IconLink from './IconLink'
+import LanguageButton from './LanguageButton'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper, Languages }
+const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper }
 
 const Sticky = styled.div`
   position: sticky;
@@ -50,7 +53,7 @@ const Sticky = styled.div`
 
 const Bar = styled.nav`
   background: ${colors.paper};
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,7 +94,7 @@ const BrandStack = styled.div`
   letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 1;
-  color: #000;
+  color: ${colors.ink};
 
   @media (max-width: 760px) {
     display: none;
@@ -119,9 +122,9 @@ const MenuBtn = styled.button`
   flex: none;
   align-items: center;
   justify-content: center;
-  border: 3px solid #000;
+  border: 3px solid ${colors.ink};
   background: ${colors.ticket};
-  color: #000;
+  color: ${colors.ink};
   padding: 0;
 
   @media (max-width: 760px) {
@@ -135,7 +138,7 @@ const Panel = styled.div`
   gap: 0;
   padding: 4px 18px 18px;
   background: ${colors.paper};
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
 
   @media (min-width: 761px) {
     display: none;
@@ -147,10 +150,10 @@ const PanelLink = styled(NavLink)`
   font-weight: 700;
   font-size: 16px;
   letter-spacing: 0.04em;
-  color: #000;
+  color: ${colors.ink};
   text-decoration: none;
   padding: 14px 8px;
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
 
   &.active {
     background: ${colors.gold};
@@ -160,7 +163,7 @@ const PanelLink = styled(NavLink)`
 const Scrim = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: ${colors.scrimSoft};
   z-index: 25;
   /* Visual only. Pointers pass through so the page underneath
      keeps its native scroll (including touch momentum). */
@@ -180,7 +183,7 @@ const NavA = styled(NavLink)`
   text-decoration: none;
   padding: 6px 0;
   border-bottom: 3px solid transparent;
-  color: #000;
+  color: ${colors.ink};
   transition: color 180ms cubic-bezier(0.22, 1, 0.36, 1),
               border-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -224,66 +227,6 @@ const IconLinks = styled.div`
   }
 `
 
-const IconLink = styled.a`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border: 3px solid #000;
-  background: ${colors.paper};
-  color: #000;
-  flex: none;
-  text-decoration: none;
-  transition: background 80ms ease, color 80ms ease;
-
-  &:hover,
-  &:active {
-    background: ${colors.ink};
-    color: ${colors.paper};
-  }
-  &[aria-expanded='true'] {
-    background: ${colors.ink};
-    color: ${colors.paper};
-  }
-  &:focus-visible {
-    outline: 3px solid ${colors.goldDeep};
-    outline-offset: 3px;
-  }
-
-  /* Custom hover tooltip. Reads data-tooltip on the element
-     and renders a brand-styled label below the icon. Native
-     title is removed in favor of this so the browser's
-     default tooltip does not double up. */
-  &::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: ${colors.ink};
-    color: ${colors.paper};
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 5px 8px;
-    border: 2px solid #000;
-    box-shadow: 3px 3px 0 ${colors.gold};
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 80ms ease;
-    z-index: 50;
-  }
-
-  &:hover:not([aria-expanded='true'])::after,
-  &:focus-visible:not([aria-expanded='true'])::after {
-    opacity: 1;
-  }
-`
 
 const PanelCTA = styled(CTA)`
   width: 100%;
@@ -301,190 +244,8 @@ const PanelIcons = styled.div`
   justify-content: center;
   gap: 10px;
   padding: 18px 0 14px;
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid ${colors.ink};
 `
-
-// Languages dropdown — wraps the icon so the menu can anchor
-// against it. The wrapper is the only thing that needs
-// position: relative; the menu is absolute-positioned and
-// drops below the icon.
-const LanguageWrap = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`
-
-const LanguageMenu = styled.div`
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  min-width: 200px;
-  background: ${colors.paper};
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0 ${colors.gold};
-  z-index: 50;
-`
-
-const LanguageItem = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 12px 16px;
-  background: ${colors.paper};
-  color: #000;
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border: 0;
-  border-bottom: 3px solid #000;
-  cursor: pointer;
-  text-align: left;
-  white-space: nowrap;
-  line-height: 1;
-
-  &:last-child {
-    border-bottom: 0;
-  }
-
-  &:hover:not(:disabled),
-  &:focus-visible:not(:disabled) {
-    background: ${colors.ticket};
-    outline: 0;
-  }
-
-  &:active:not(:disabled) {
-    background: ${colors.gold};
-  }
-
-  &:disabled {
-    color: #5d5744;
-    cursor: not-allowed;
-  }
-
-  &[aria-current='true'] {
-    background: ${colors.gold};
-  }
-`
-
-const LanguageItemHint = styled.span`
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  color: #5d5744;
-  margin-left: 12px;
-`
-
-// Static-positioned wrapper for the language list when rendered
-// inside the centered Modal (mobile). Reuses the same
-// LanguageItem rows as the dropdown so the "current / disabled /
-// coming soon" states look identical across desktop and mobile.
-// The wrapper provides only the padding inside the Modal card
-// (the card itself has no padding, per the MenuBody pattern
-// used elsewhere in this file).
-const LanguageModalList = styled.div`
-  padding: 12px 0;
-  min-width: 320px;
-`
-
-// ── LanguageButton ───────────────────────────────────────────────────
-// Self-contained: owns the open state, the close-on-outside-click
-// effect, and the close-on-Escape effect. Used twice (main bar +
-// mobile panel); each instance manages its own dropdown.
-// `onAfterSelect` is fired after the user picks a row — used by
-// the mobile panel to also dismiss itself.
-//
-// `variant="dropdown"` (default): desktop, renders a custom menu
-// anchored below the icon.
-// `variant="modal"`: mobile, renders the same list inside a
-// centered Modal dialog (the Modal primitive handles backdrop
-// and Escape; its built-in close button is hidden for this
-// case via the hideCloseButton prop).
-const LanguageButton = ({ variant = 'dropdown', onAfterSelect }) => {
-  const [open, setOpen] = useState(false)
-  const wrapRef = useRef(null)
-  const isModal = variant === 'modal'
-
-  // The Modal handles its own Escape / backdrop dismissal, so
-  // the document-level close listeners are only needed for the
-  // dropdown variant.
-  useEffect(() => {
-    if (!open || isModal) return
-    const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    const onClick = (e) => {
-      if (wrapRef.current?.contains(e.target)) return
-      setOpen(false)
-    }
-    document.addEventListener('keydown', onKey)
-    document.addEventListener('click', onClick)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.removeEventListener('click', onClick)
-    }
-  }, [open, isModal])
-
-  const renderItems = () =>
-    languages.map(({ code, label, available, active }) => (
-      <LanguageItem
-        key={code}
-        role="menuitem"
-        disabled={!available}
-        aria-current={active ? 'true' : undefined}
-        onClick={() => {
-          if (available) {
-            // future: persist language choice
-          }
-          setOpen(false)
-          onAfterSelect?.()
-        }}
-      >
-        <span>{label}</span>
-        {!available && <LanguageItemHint>(coming soon)</LanguageItemHint>}
-      </LanguageItem>
-    ))
-
-  return (
-    <LanguageWrap ref={wrapRef} data-language-wrap>
-      <IconLink
-        as="button"
-        type="button"
-        onClick={(e) => {
-          e.preventDefault()
-          setOpen((o) => !o)
-        }}
-        aria-label="Language"
-        aria-haspopup={isModal ? 'dialog' : 'menu'}
-        aria-expanded={open}
-        data-tooltip="Language"
-      >
-        <Languages size={26} strokeWidth={2.4} />
-      </IconLink>
-      {open && isModal && (
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          ariaLabel="Language"
-          hideCloseButton
-        >
-          <LanguageModalList role="menu" aria-label="Language">
-            {renderItems()}
-          </LanguageModalList>
-        </Modal>
-      )}
-      {open && !isModal && (
-        <LanguageMenu role="menu" aria-label="Language">
-          {renderItems()}
-        </LanguageMenu>
-      )}
-    </LanguageWrap>
-  )
-}
 
 // ── Modal content ───────────────────────────────────────────────────────
 //
@@ -505,7 +266,7 @@ const MenuHeader = styled.h2`
   text-transform: uppercase;
   margin: 0 22px 6px;
   letter-spacing: -0.005em;
-  color: #000;
+  color: ${colors.ink};
   padding-right: 50px;
 `
 
@@ -515,7 +276,7 @@ const MenuSub = styled.p`
   font-size: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #5d5744;
+  color: ${colors.deskSoft};
   margin: 0 22px 4px;
 `
 
@@ -536,7 +297,7 @@ const ListDivider = styled.div`
     content: '';
     flex: 1;
     height: 2px;
-    background: #000;
+    background: ${colors.ink};
   }
 
   span {
@@ -545,7 +306,7 @@ const ListDivider = styled.div`
     font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #000;
+    color: ${colors.ink};
   }
 `
 
@@ -562,7 +323,7 @@ const Row = styled.a`
   padding: 10px 22px;
   text-align: left;
   cursor: pointer;
-  color: #000;
+  color: ${colors.ink};
   font: inherit;
   text-decoration: none;
   transition: background 60ms ease;
@@ -585,9 +346,9 @@ const RowIcon = styled.span`
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: 2.5px solid #000;
+  border: 2.5px solid ${colors.ink};
   background: ${colors.paper};
-  color: #000;
+  color: ${colors.ink};
   flex: none;
 `
 
@@ -603,7 +364,7 @@ const RowLabel = styled.span`
   font-weight: 800;
   font-size: 17px;
   text-transform: uppercase;
-  color: #000;
+  color: ${colors.ink};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -613,7 +374,7 @@ const RowHint = styled.span`
   font-family: var(--mono);
   font-weight: 500;
   font-size: 12px;
-  color: #5d5744;
+  color: ${colors.deskSoft};
   margin-top: 2px;
   text-transform: lowercase;
   letter-spacing: 0.02em;
@@ -623,7 +384,7 @@ const RowMeta = styled.span`
   font-family: var(--mono);
   font-weight: 700;
   font-size: 18px;
-  color: #000;
+  color: ${colors.ink};
   flex: none;
   line-height: 1;
 `
@@ -631,48 +392,15 @@ const RowMeta = styled.span`
 // ── Component ────────────────────────────────────────────────────────────
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const stickyRef = useRef(null)
-  // (pathname / isHome were used by the old same-page scroll
-  // handler; <ScrollToTop> now handles all same-page snaps
-  // globally, so the local state isn't needed here anymore.)
-
-  // Closing the menu is the only side effect of clicking a row
-  // in the modal — the Link handles the navigation, and
-  // <ScrollToTop> handles the scroll-to-top on same-page clicks
-  // (so we don't preventDefault or scroll manually here anymore).
-  const onHomeClick = () => {
-    setMenuOpen(false)
-  }
-
-  useEffect(() => {
-    if (!mobileOpen) return
-    const onKey = (e) => {
-      if (e.key === 'Escape') setMobileOpen(false)
-    }
-    // The scrim does not take hits, so an outside press both
-    // dismisses the panel and would otherwise activate whatever
-    // sits under the dim. Swallow that one click.
-    const onPointerDown = (e) => {
-      if (stickyRef.current?.contains(e.target)) return
-      setMobileOpen(false)
-      const swallow = (ev) => {
-        ev.preventDefault()
-        ev.stopPropagation()
-        document.removeEventListener('click', swallow, true)
-      }
-      document.addEventListener('click', swallow, true)
-    }
-    document.addEventListener('keydown', onKey)
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.removeEventListener('pointerdown', onPointerDown)
-    }
-  }, [mobileOpen])
-
-  const closeMobile = () => setMobileOpen(false)
+  const {
+    menuOpen,
+    mobileOpen,
+    stickyRef,
+    openMenu,
+    closeMenu,
+    toggleMobile,
+    closeMobile,
+  } = useNavbar()
 
   return (
     <>
@@ -680,10 +408,7 @@ const Navbar = () => {
         <Bar data-chrome="nav">
           <Brand
             type="button"
-            onClick={() => {
-              setMobileOpen(false)
-              setMenuOpen(true)
-            }}
+            onClick={openMenu}
             aria-label="Open site menu"
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
@@ -721,7 +446,7 @@ const Navbar = () => {
           </Links>
           <MenuBtn
             type="button"
-            onClick={() => setMobileOpen((open) => !open)}
+            onClick={toggleMobile}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
@@ -768,7 +493,7 @@ const Navbar = () => {
 
       <Modal
         open={menuOpen}
-        onClose={() => setMenuOpen(false)}
+        onClose={closeMenu}
         ariaLabel="Site menu"
       >
         <MenuBody>
@@ -783,7 +508,6 @@ const Navbar = () => {
               const { to, href, label, hint, icon, external } = p
               const Icon = ICON_MAP[icon]
               const isExternal = Boolean(href)
-              const isHomeRow = !isExternal && to === '/'
               return (
                 <Row
                   key={to || href}
@@ -792,11 +516,7 @@ const Navbar = () => {
                   href={isExternal ? href : undefined}
                   target={isExternal && external ? '_blank' : undefined}
                   rel={isExternal && external ? 'noopener noreferrer' : undefined}
-                  onClick={isExternal
-                    ? undefined
-                    : isHomeRow
-                      ? onHomeClick
-                      : () => setMenuOpen(false)}
+                  onClick={isExternal ? undefined : closeMenu}
                 >
                   <RowIcon>
                     <Icon size={20} strokeWidth={2.4} />

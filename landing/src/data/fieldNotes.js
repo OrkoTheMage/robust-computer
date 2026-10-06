@@ -1,3 +1,6 @@
+import { BRAND_DOMAIN, BRAND_NAME, FIELD_NOTES_LEAD } from './brand.js'
+import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
+
 /**
  * landing/src/data/fieldNotes.js
  *
@@ -5,8 +8,8 @@
  * Hero ticket, the Field Notes band's "Latest issue" line, the
  * per-post page, and the static /public/rss.xml all read from
  * this array. Adding FN-002 is now an array push; the
- * Navbar/Footer "News" links, the latest-issue banner, and the
- * feed all pick it up automatically.
+ * latest-issue surfaces and the feed pick it up. News links
+ * in the nav and footer stay on the index.
  *
  * Each note has the shape:
  *   {
@@ -26,8 +29,8 @@
  *                   <pubDate> by `buildRss`
  *     description — one-sentence excerpt. Used by the Hero ticket
  *                   and the Field Notes band's "Latest issue" line
- *     body        — full post content. Paragraphs separated by
- *                   blank lines. Rendered on the per-post page and
+ *     body        — full post markdown. Rendered on the per-post
+ *                   page and
  *                   used as the RSS <description> so feed readers
  *                   get the full text
  *     author      — the byline. Rendered as a signed footer on the
@@ -39,8 +42,7 @@
  * Selectors:
  *   getLatest()           — most recent post, sorted by pubDate desc
  *   getBySlug(slug)       — the post whose slug matches, or null
- *   getLatestNewsPath()   — "/field-notes/<latest-slug>", or
- *                           "/field-notes" if the array is empty
+ *   getAllByDate()        — every post, newest first
  *   getChannelDescription — the RSS <channel><description> text,
  *                           used as the lead in the per-post page
  *                           header and on the Field Notes band
@@ -55,11 +57,8 @@
  * and /public/feed.txt so feed readers, autodiscoverers, and
  * plain-text consumers don't have to ship a build step.
  *
- * `BRAND_DOMAIN` mirrors `landing/src/config.js#BRAND_DOMAIN`.
- * The data file is intentionally self-contained — it does not
- * import from `config.js` — so the regen script can load the
- * module in raw Node (where `import.meta.env` is undefined).
- * Update both files if the brand domain changes.
+ * Brand strings come from `data/brand.js`, which has no Vite
+ * APIs, so the regen script can still load this module in raw Node.
  *
  * Markdown block parsing is delegated to the shared
  * `utils/parseMarkdownBlocks.js` helper — same parser the
@@ -69,44 +68,15 @@
  * fences as opaque and never splits on the inner blank).
  */
 
-const BRAND_DOMAIN = 'robust.computer'
-const BRAND_NAME = 'Robust Computer'
+export const FIELD_NOTES_PAGE_SIZE = 5
 
-// Import the shared markdown-block parser. This file already
-// imports zero other modules — it's intentionally self-
-// contained so `scripts/build-rss.mjs` can load it in raw
-// Node without Vite. Importing a sibling util keeps that
-// contract (the util is plain ES module JS, no Vite/React
-// dependencies). The parser lives in utils/ because both
-// consumers (this file + the React FieldNote page) need it,
-// and per PROJECT-CONVENTIONS.md §4 utils/ is the home for
-// pure helpers.
-import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
-
-// Channel-level metadata for the RSS feed. The lead copy matches
-// what the Field Notes section band on the home page renders
-// (also driven by `data/copy.js`); keeping it here means the
-// feed and the page both pull from the same source, and there
-// is no risk of a feed/page drift if the section copy is
-// updated in only one of the two places.
-//
-// Channel title and description use the "Field Notes" name
-// (the user-facing brand) on purpose — the feed delivers the
-// content series, not the subscription product, so the
-// channel reads as a Field Notes feed. The subscription
-// product ("newsletter" — the technical/backend name) is a
-// different surface and lives in
-// `data/copy.js#fieldNotes.contactBox` / `subscribeBox`.
 const CHANNEL_TITLE = `${BRAND_NAME} — Field Notes`
-const CHANNEL_DESCRIPTION =
-  'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.'
+const CHANNEL_DESCRIPTION = FIELD_NOTES_LEAD
 const CHANNEL_LANGUAGE = 'en-us'
 
-// ── Source array ──────────────────────────────────────────────────────────
-// Add new posts here. No other file in the project should hardcode
-// field-note slugs — the Navbar/Footer "News" link, the Hero
-// ticket, and the Field Notes band's latest-issue line all read
-// from this array.
+// Add new posts here. Nav and footer News links go to the index
+// (`/field-notes`). The Hero ticket and the band's latest-issue
+// line read the newest post from this array.
 
 export const fieldNotes = [
   {
@@ -158,10 +128,7 @@ export const getLatest = () => {
 export const getBySlug = (slug) =>
   fieldNotes.find((n) => n.slug === slug) || null
 
-export const getLatestNewsPath = () => {
-  const latest = getLatest()
-  return latest ? `/field-notes/${latest.slug}` : '/field-notes'
-}
+export const getAllByDate = () => sortByPubDateDesc(fieldNotes)
 
 export const getChannelDescription = () => CHANNEL_DESCRIPTION
 
@@ -320,7 +287,7 @@ const renderBodyAsPlainText = (raw) => {
 
 // Format a YYYY-MM-DD date as "Mon DD, YYYY" in local time
 // (so the date matches the typed day, mirroring
-// `useLatestRss#formatPubDate`). Shared between the
+// `utils/formatPubDate.js`). Shared between the
 // per-post header and the channel "Build" line.
 const formatHumanDate = (raw) => {
   if (!raw) return ''

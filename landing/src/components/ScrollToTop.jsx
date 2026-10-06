@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+
 /**
- * landing/src/utils/ScrollToTop.jsx
+ * landing/src/components/ScrollToTop.jsx
  *
  * Snaps the window to the top of the page on every navigation —
  * including clicks on a link to the page the user is already on.
@@ -26,9 +29,6 @@
  * viewport to the top rather than snap. Hash anchors continue to
  * use the browser's native jump (also smooth, via the same CSS).
  */
-
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 
 const ScrollToTop = () => {
   const location = useLocation()

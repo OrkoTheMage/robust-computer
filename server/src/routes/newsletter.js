@@ -1,3 +1,9 @@
+import { Router } from 'express'
+import { body, validationResult } from 'express-validator'
+import Subscriber from '../models/Subscriber.js'
+import { sendSubscriberConfirmation } from '../utils/email.js'
+import { newsletterLimiter } from '../middleware/rateLimit.js'
+
 /**
  * server/src/routes/newsletter.js
  *
@@ -17,12 +23,6 @@
  *                            way so a stale link in an old email
  *                            never produces a user-visible error.
  */
-
-import { Router } from 'express'
-import { body, validationResult } from 'express-validator'
-import Subscriber from '../models/Subscriber.js'
-import { sendSubscriberConfirmation } from '../utils/email.js'
-import { newsletterLimiter } from '../middleware/rateLimit.js'
 
 const router = Router()
 

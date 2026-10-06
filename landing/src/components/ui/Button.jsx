@@ -1,3 +1,6 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+
 /**
  * Button
  *
@@ -12,9 +15,6 @@
  *
  * Hover is suppressed when the button is disabled.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
 
 const base = `
   display: inline-flex;

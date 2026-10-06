@@ -1,3 +1,10 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
+import { services } from '../../data/copy'
+import { Container } from '../ui'
+import { Zer0Text } from '../brand'
+
 /**
  * Services
  *
@@ -10,12 +17,6 @@
  * file is just the layout and the icon-name → Lucide-component
  * map. See ICON_MAP below.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
-import { services } from '../../data/copy'
-import { Container, Zer0Text } from '../ui'
 
 // Map icon-name strings from the data file to Lucide components.
 // Keeps the data file pure (no React/Lucide imports).

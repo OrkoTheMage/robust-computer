@@ -1,10 +1,10 @@
+import styled from '@emotion/styled'
+
 /**
  * Container
  *
  * Page-width wrapper. Same on every page so layout is consistent.
  */
-
-import styled from '@emotion/styled'
 
 const Container = styled.div`
   width: 100%;

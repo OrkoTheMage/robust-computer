@@ -1,3 +1,8 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { Button } from '../ui'
+import { Logo, Zer0Text } from '../brand'
+
 /**
  * Developer
  *
@@ -8,10 +13,6 @@
  * (`preview.image`) or a live iframe (`preview.url`); otherwise
  * the abstract placeholder content under `preview.children` is used.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { Button, Logo, Zer0Text } from '../ui'
 
 const Wrap = styled.section`
   display: grid;
@@ -233,7 +234,7 @@ const Cap = styled.div`
 const PreviewBody = styled.div`
   background: ${(p) => p.bg};
   color: ${(p) => p.fg};
-  font-family: ${(p) => (p.font === 'serif' ? 'Georgia, serif' : 'system-ui, Arial, sans-serif')};
+  font-family: ${(p) => (p.font === 'serif' ? 'var(--prose)' : 'var(--sans)')};
   height: 340px;
   position: relative;
   overflow: hidden;
@@ -267,7 +268,7 @@ const PreviewImage = styled.img`
   display: block;
   object-fit: cover;
   object-position: top center;
-  background: #fff;
+  background: ${colors.white};
 `
 
 const Developer = ({ dev, preview, reversed }) => (

@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { api, ApiError } from '../api'
+
 /**
  * useNewsletterForm
  *
@@ -20,9 +23,6 @@
  * they're rendered verbatim instead of being bucketed into a
  * generic "Something went wrong" string.
  */
-
-import { useState } from 'react'
-import { api, ApiError } from '../api'
 
 export function useNewsletterForm() {
   const [email, setEmail] = useState('')

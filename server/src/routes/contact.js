@@ -1,3 +1,9 @@
+import { Router } from 'express'
+import { body, validationResult } from 'express-validator'
+import Enquiry from '../models/Enquiry.js'
+import { sendEnquiryNotification } from '../utils/email.js'
+import { enquiryLimiter } from '../middleware/rateLimit.js'
+
 /**
  * server/src/routes/contact.js
  *
@@ -5,12 +11,6 @@
  * page. Validates with express-validator, persists to Mongo, fires an
  * email notification. Returns a generic 200 on success.
  */
-
-import { Router } from 'express'
-import { body, validationResult } from 'express-validator'
-import Enquiry from '../models/Enquiry.js'
-import { sendEnquiryNotification } from '../utils/email.js'
-import { enquiryLimiter } from '../middleware/rateLimit.js'
 
 const router = Router()
 
