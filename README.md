@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.8.2**
+**Version 0.8.3**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -150,6 +150,6 @@ Every variables listed below is required by the code. `NODE_ENV` and `PORT` defa
 | Project | Environment Variables |
 |---|---|
 | **Vercel — Landing** | `VITE_API_URL`, `VITE_PORTAL_URL`, `VITE_LANDING_URL` |
-| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `SMTP_HOST`,`SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `LANDING_URL`, `API_URL` |
+| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `LANDING_URL`, `API_URL` |
 
 > NOTE: Each project owns their own `config.js` which is their own processor for envs.
