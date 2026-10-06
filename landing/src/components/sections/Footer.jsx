@@ -282,7 +282,7 @@ const Footer = () => {
       <span className="sep" aria-hidden="true">|</span>
       <Link to="/terms">Terms of Service</Link>
       <span className="sep" aria-hidden="true">|</span>
-      <Link to="/bugreport">Report a bug</Link>
+      <Link to="/bug-report">Report a bug</Link>
     </Legal>
     <Small>
       <span>{config.brand.name}</span>

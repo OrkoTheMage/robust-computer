@@ -2,7 +2,7 @@
  * server/src/routes/bugReport.js
  *
  * POST /api/bug-report — bug report from the landing site's
- * /bugreport page. Validates with express-validator, persists
+ * /bug-report page. Validates with express-validator, persists
  * to Mongo, fires an email notification. Returns a generic
  * 200 on success.
  *
