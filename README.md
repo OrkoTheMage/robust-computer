@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.10.4**
+**Version 0.10.5**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -32,12 +32,10 @@ cp .env.example .env.prod
 ```
 
 The server selects between these via `NODE_ENV` (set by the
-`scripts/dev.js` wrapper). Both Vite apps point `envDir` at the
-repo root and read whichever file the wrapper chose.
+`scripts/dev.js` wrapper). The Vite app points `envDir` at the
+repo root and reads whichever file the wrapper chose.
 
-The file is shared by all three projects (server selects `.env.dev` or
-`.env.prod` based on `NODE_ENV`; both Vite apps point `envDir` at the
-repo root).
+The file is shared by the server and `landing/`.
 
 - **`.env.dev`** — local development values.
 - **`.env.prod`** — reference / production-side script use. Real values live
@@ -48,8 +46,8 @@ repo root).
 ### Switching env at boot
 
 ```bash
-yarn dev          # default — loads .env.dev for all three (dev DB)
-yarn dev:prod     # loads .env.prod for all three (prod DB, prod URLs)
+yarn dev          # default — loads .env.dev (dev DB)
+yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
 
 ## Project Structure
@@ -59,23 +57,25 @@ robust-computer/
 ├── landing/                # Marketing site (React + Vite, port 3000)
 │   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, feed.txt, robots.txt, ...)
 │   ├── src/
-│   │   ├── api/                 # fetch wrapper (index.js exports api + ApiError)
+│   │   ├── api.js               # fetch wrapper (api + ApiError)
 │   │   ├── components/
+│   │   │   ├── brand/           # Logo, Zer0Text
+│   │   │   ├── modals/          # Modal
 │   │   │   ├── sections/        # Page-level shells
-│   │   │   └── ui/              # Reusable primitives
-│   │   ├── data/                # copy.js, jokes.js
-│   │   ├── hooks/               # useEffects + State
-│   │   ├── pages/               # Routes: Home, About, Contact, Privacy, Terms, NotFound
-│   │   ├── styles/              # index.css, animations.js; colors.js, typography, ...
-│   │   └── utils/               # Helpers & Reusable logic
+│   │   │   └── ui/              # Generic primitives
+│   │   ├── data/                # copy.js, jokes.js, fieldNotes.js, brand.js
+│   │   ├── hooks/               # State + effects
+│   │   ├── pages/               # Home, About, Contact, Field Notes, Bug report, Unsubscribe, Privacy, Terms, NotFound
+│   │   ├── styles/              # index.css, colors.js, animations.js, highlight.css
+│   │   └── utils/               # Pure helpers
 │   └── vite.config.js
 │
 │
 ├── server/                 # API server (Express + MongoDB, port 5000)
 │   └── src/
 │       ├── middleware/          # rateLimit.js
-│       ├── models/              # Enquiry, Subscriber
-│       ├── routes/              # contact, newsletter
+│       ├── models/              # Enquiry, Subscriber, BugReport
+│       ├── routes/              # contact, newsletter, bug-report
 │       └── utils/
 │           ├── email/           # layout, email templates
 │
@@ -150,6 +150,6 @@ Every variables listed below is required by the code. `NODE_ENV` and `PORT` defa
 | Project | Environment Variables |
 |---|---|
 | **Vercel — Landing** | `VITE_API_URL`, `VITE_LANDING_URL` |
-| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `RESEND_API_KEY`, `LANDING_URL`, `API_URL` |
+| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `RESEND_API_KEY`, `LANDING_URL`, `API_URL`, `PORT` |
 
 > NOTE: Each project owns their own `config.js` which is their own processor for envs.

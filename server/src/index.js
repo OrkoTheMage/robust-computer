@@ -1,10 +1,3 @@
-/**
- * server/src/index.js
- *
- * Express + MongoDB API. Boots middleware, mounts routers, listens.
- * Same error handler across the whole app — never leaks internals.
- */
-
 import express from 'express'
 import mongoose from 'mongoose'
 import helmet from 'helmet'
@@ -17,6 +10,13 @@ import config from './config.js'
 import contactRoutes from './routes/contact.js'
 import newsletterRoutes from './routes/newsletter.js'
 import bugReportRoutes from './routes/bugReport.js'
+
+/**
+ * server/src/index.js
+ *
+ * Express + MongoDB API. Boots middleware, mounts routers, listens.
+ * Same error handler across the whole app — never leaks internals.
+ */
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

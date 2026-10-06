@@ -1,3 +1,9 @@
+import { colors } from '../../styles/colors'
+import styled from '@emotion/styled'
+import { Zer0Text } from '../brand'
+import { useTopBarJoke } from '../../hooks/useTopBarJoke'
+import { topBar } from '../../data/copy'
+
 /**
  * TopBar
  *
@@ -5,14 +11,6 @@
  * cell carries a random software-dev tagline picked from
  * `data/jokes.js` at mount.
  */
-
-import { useState } from 'react'
-import { colors } from '../../styles/colors'
-import styled from '@emotion/styled'
-import { jokes } from '../../data/jokes'
-import { Zer0Text } from '../ui'
-
-const pickJoke = () => jokes[Math.floor(Math.random() * jokes.length)]
 
 const Bar = styled.div`
   background: ${colors.ink};
@@ -45,15 +43,13 @@ const Dot = styled.span`
 `
 
 const TopBar = () => {
-  // Picked once per mount. SSR-safe: the lazy initializer runs
-  // on the client only, so Math.random is fine.
-  const [joke] = useState(pickJoke)
+  const joke = useTopBarJoke()
 
   return (
     <Bar data-chrome="top">
-      <span><Zer0Text>{`Now with — ${joke}`}</Zer0Text></span>
+      <span><Zer0Text>{`${topBar.nowWith} ${joke}`}</Zer0Text></span>
       <Dot />
-      <span><Zer0Text>Replies within 1-3 business day</Zer0Text></span>
+      <span><Zer0Text>{topBar.replies}</Zer0Text></span>
     </Bar>
   )
 }

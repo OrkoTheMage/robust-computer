@@ -1,3 +1,9 @@
+import nodemailer from 'nodemailer'
+import config from '../config.js'
+import { subscriberConfirmation as renderSubscriber } from './email/subscriberConfirmation.js'
+import { enquiryNotification as renderEnquiry } from './email/enquiryNotification.js'
+import { bugReportNotification as renderBugReport } from './email/bugReportNotification.js'
+
 /**
  * server/src/utils/email.js
  *
@@ -10,7 +16,7 @@
  *                 in dev, real SMTP server in staging)
  *
  * One helper per template; each pulls rendered
- * { subject, html, text } from the templates/ directory and hands
+ * { subject, html, text } from `utils/email/` and hands
  * it to `sendViaProvider`. The provider returns a normalised
  * `{ messageId, id }` shape so the success log line works for both
  * branches.
@@ -20,12 +26,6 @@
  * for the contact and bug-report paths, and a missed welcome
  * email is recoverable (the user can re-subscribe).
  */
-
-import nodemailer from 'nodemailer'
-import config from '../config.js'
-import { subscriberConfirmation as renderSubscriber } from './email/subscriberConfirmation.js'
-import { enquiryNotification as renderEnquiry } from './email/enquiryNotification.js'
-import { bugReportNotification as renderBugReport } from './email/bugReportNotification.js'
 
 // "Robust Computer <hello@robust.computer>" — the brand name in
 // front of the address is what shows in the recipient's inbox.

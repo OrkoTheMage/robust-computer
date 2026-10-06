@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 'use strict'
 
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+
 /**
  * Regenerate the Field Notes feed files from the array in
  * `landing/src/data/fieldNotes.js`. By default writes all four:
@@ -41,10 +45,6 @@
  * raw Node without needing the Vite-specific `import.meta.env`
  * shim.
  */
-
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')

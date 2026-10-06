@@ -26,20 +26,22 @@ export const colors = Object.freeze({
   tie: '#14120e',
   desk: '#efe9d9',
 
-  // Desk surface / text variants — were --desk-line, --desk-ink,
-  // --desk-soft in the old index.css. Kept here for any future
-  // dark-mode work (today nothing imports them — included for
-  // parity with the old CSS).
-  deskLine: '#14120e',
-  deskInk: '#14120e',
   deskSoft: '#5d5744',
 
   // Form input surfaces
   inputBg: '#fff8',
+  white: '#ffffff',
   placeholderLight: '#6b6450',
   placeholderOnInk: '#7a7260',
 
-  // Form error / validation red — used by Field error slot and
-  // the inline error message under form submit buttons.
+  // Overlay dim. Modal uses the heavier scrim; the mobile nav
+  // uses a lighter one because the panel itself is the surface.
+  scrim: 'rgba(0, 0, 0, 0.65)',
+  scrimSoft: 'rgba(0, 0, 0, 0.45)',
+
+  // Syntax colors that have to read on `tie`. Not brand surfaces.
+  highlightString: '#a8d5a8',
+  highlightNumber: '#e8c170',
+
   error: '#b00020',
 })

@@ -1,30 +1,16 @@
 /*
  * landing/src/styles/highlight.css
  *
- * Custom highlight.js theme for code blocks. Designed to sit on
- * the colors.tie (#14120e) background of the CodeBlock styled
- * component — the theme's `background` is `transparent` so the
- * block's background shows through.
- *
- * Colors mirror the brand palette (see colors.js):
- *   paper  #e2dbc8 → base text + variables
- *   gold   #d0c096 → keywords, tags, function names
- *   ink    #000000 → n/a (background is transparent)
- * plus a light-green for strings and a warm-yellow for numbers,
- * picked to read on the dark tie background without clashing
- * with the rest of the brand.
- *
- * This file is imported by FieldNote.jsx so Vite bundles it
- * with the page chunk. highlight.js adds the .hljs-* classes
- * to the highlighted code; this file provides the visual
- * treatment for those classes.
+ * highlight.js theme for code blocks on the tie surface.
+ * Hex lives on :root in index.css (CSS cannot import colors.js).
+ * Those variables must stay in sync with colors.js.
  */
 
 .hljs {
   display: block;
   overflow-x: auto;
   background: transparent;
-  color: #e2dbc8;
+  color: var(--paper);
   font-family: var(--mono);
 }
 
@@ -35,7 +21,7 @@
 .hljs-builtin-name,
 .hljs-tag,
 .hljs-name {
-  color: #d0c096;
+  color: var(--gold);
   font-weight: 700;
 }
 
@@ -44,28 +30,28 @@
 .hljs-symbol,
 .hljs-bullet,
 .hljs-addition {
-  color: #a8d5a8;
+  color: var(--hl-string);
 }
 
 .hljs-comment,
 .hljs-quote,
 .hljs-deletion,
 .hljs-meta {
-  color: #7a7260;
+  color: var(--hl-comment);
   font-style: italic;
 }
 
 .hljs-number,
 .hljs-regexp,
 .hljs-link {
-  color: #e8c170;
+  color: var(--hl-number);
 }
 
 .hljs-function,
 .hljs-title,
 .hljs-class .hljs-title,
 .hljs-attr {
-  color: #d0c096;
+  color: var(--gold);
 }
 
 .hljs-variable,
@@ -73,7 +59,7 @@
 .hljs-type,
 .hljs-params,
 .hljs-attribute {
-  color: #e2dbc8;
+  color: var(--paper);
 }
 
 .hljs-emphasis {

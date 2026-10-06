@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 /**
  * server/src/models/Subscriber.js
  *
@@ -5,8 +7,6 @@
  * subscribe twice; resubscribing after an unsubscribe is fine because
  * we re-`save()` and clear the unsubscribed flag.
  */
-
-import mongoose from 'mongoose'
 
 const SubscriberSchema = new mongoose.Schema(
   {

@@ -1,14 +1,15 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { Container } from '../ui'
+import { Zer0Text } from '../brand'
+import { steps, stepsHeadline, stepsLead } from '../../data/copy'
+
 /**
  * Steps
  *
  * "How a project runs" — gold band with a 4-step row. Numbers are
  * huge, body copy is small. Static content lives in `data/copy.js`.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { Container, Zer0Text } from '../ui'
-import { steps, stepsHeadline, stepsLead } from '../../data/copy'
 
 const Section = styled.section`
   background: ${colors.gold};

@@ -1,3 +1,13 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import { Link } from 'react-router-dom'
+import Navbar from '../components/sections/Navbar'
+import Footer from '../components/sections/Footer'
+import { Button } from '../components/ui'
+import { Logo, Zer0Text } from '../components/brand'
+import { SEO } from '../components/seo'
+import { notFound, notFoundPage } from '../data/copy'
+
 /**
  * NotFound
  *
@@ -5,15 +15,6 @@
  * navigation context. The 404 illustration (`icon-var-404.svg`)
  * carries the visual; the headline underneath is plain copy.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import { Link } from 'react-router-dom'
-import Navbar from '../components/sections/Navbar'
-import Footer from '../components/sections/Footer'
-import { Button, Logo, Zer0Text } from '../components/ui'
-import { SEO } from '../components/seo'
-import { notFound } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -66,7 +67,7 @@ export default function NotFound() {
   return (
     <Page>
       <SEO
-        title="Not found"
+        title={notFoundPage.seoTitle}
         description={notFound.lede}
         type="website"
       />
@@ -76,7 +77,7 @@ export default function NotFound() {
         <Headline><Zer0Text>{notFound.headline}</Zer0Text></Headline>
         <Lede>{notFound.lede}</Lede>
         <Button as={Link} to="/">
-          <Zer0Text>{'Back\u00A0to\u00A0home'}</Zer0Text>
+          <Zer0Text>{notFoundPage.back.replace(/ /g, '\u00A0')}</Zer0Text>
         </Button>
       </Inner>
       <Footer />

@@ -1,3 +1,9 @@
+import { Router } from 'express'
+import { body, validationResult } from 'express-validator'
+import BugReport from '../models/BugReport.js'
+import { sendBugReportNotification } from '../utils/email.js'
+import { bugReportLimiter } from '../middleware/rateLimit.js'
+
 /**
  * server/src/routes/bugReport.js
  *
@@ -10,12 +16,6 @@
  * email and the browser/device line are optional (the form is
  * anonymous-friendly).
  */
-
-import { Router } from 'express'
-import { body, validationResult } from 'express-validator'
-import BugReport from '../models/BugReport.js'
-import { sendBugReportNotification } from '../utils/email.js'
-import { bugReportLimiter } from '../middleware/rateLimit.js'
 
 const router = Router()
 

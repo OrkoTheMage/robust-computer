@@ -1,12 +1,12 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+
 /**
  * Field
  *
  * Form field with label, input/textarea, and inline error slot.
  * Pure visual — the page owns the value + change handler.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
 
 const Wrap = styled.label`
   display: block;

@@ -1,12 +1,12 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+
 /**
  * Chip
  *
  * Tag-style pill used in industries, developer skill lists, work cards.
  * `on` flips the color (selected state in the contact form).
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
 
 const Chip = styled.span`
   display: inline-block;

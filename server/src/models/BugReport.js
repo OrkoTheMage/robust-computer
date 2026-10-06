@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 /**
  * server/src/models/BugReport.js
  *
@@ -9,8 +11,6 @@
  * not want to identify themselves). The three repro fields are
  * required and the actual bug content.
  */
-
-import mongoose from 'mongoose'
 
 // collection: 'bug-reports' — explicit override of Mongoose's default
 // pluralization (BugReport → bugreports). Pinned to match the new

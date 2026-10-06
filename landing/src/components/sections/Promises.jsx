@@ -1,3 +1,11 @@
+import styled from '@emotion/styled'
+import { Fragment } from 'react'
+import { Zer0Text } from '../brand'
+import { marqueeLr } from '../../styles/animations'
+import { repeat } from '../../utils/repeat'
+import { colors } from '../../styles/colors'
+import { promisesItems } from '../../data/copy'
+
 /**
  * Promises
  *
@@ -13,13 +21,6 @@
  * which fills any reasonable viewport at t=0 and keeps the
  * loop seam invisible at any scroll position.
  */
-
-import styled from '@emotion/styled'
-import { Fragment } from 'react'
-import { Zer0Text } from '../ui'
-import { marqueeLr } from '../../styles/animations'
-import { colors } from '../../styles/colors'
-import { promisesItems } from '../../data/copy'
 
 const Bar = styled.div`
   background: ${colors.ink};
@@ -72,9 +73,10 @@ const Dot = styled.b`
   flex: none;
 `
 
+const COPIES = 6
+
 const Promises = () => {
-  // Build COPIES copies of the items list, flattened.
-  const repeated = Array.from({ length: 6 }, () => promisesItems).flat()
+  const repeated = repeat(promisesItems, COPIES)
   return (
     <Bar aria-label={promisesItems.join(' · ')}>
       <Track>

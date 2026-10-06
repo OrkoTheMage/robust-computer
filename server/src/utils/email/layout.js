@@ -1,3 +1,8 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+import config from '../../config.js'
+
 /**
  * server/src/utils/email/layout.js
  *
@@ -41,11 +46,6 @@
  * `box-shadow` in email clients).
  */
 
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
-import config from '../../config.js'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -82,9 +82,11 @@ const plexMono700B64 = readFileSync(
 
 // ── Brand tokens (mirrored from landing/src/index.css) ──────────────────────
 const COLOR = {
-  paper: '#e2dbc8',     // --paper (header strip + footer strip)
-  ticket: '#f1ecdd',    // --ticket (sheet body)
-  ink: '#000000',       // --ink
+  paper: '#e2dbc8',
+  ticket: '#f1ecdd',
+  ink: '#000000',
+  white: '#ffffff',
+  inputBg: '#fff8',
 }
 
 // Font stacks mirror landing/src/index.css. The brand faces
@@ -240,7 +242,7 @@ const ticketLogHtml = (log) => {
   return `
     <table role="presentation" width="260" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:260px;">
       <tr>
-        <td style="background:#ffffff; border:3px solid ${COLOR.ink};">
+        <td style="background:${COLOR.white}; border:3px solid ${COLOR.ink};">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; font-family:${FONT.mono}; font-size:11px; line-height:1.5; color:${COLOR.ink};">
             <tr>
               <td style="padding:8px 12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">
@@ -367,7 +369,7 @@ export const wrapHtml = ({
   unsubscribeUrl,
 } = {}) => {
   const previewHtml = preview
-    ? `<div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">${escape(preview)}</div>`
+    ? `<div style="display:none; font-size:1px; color:${COLOR.white}; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">${escape(preview)}</div>`
     : ''
 
   // @font-face is inlined as a data: URL so the brand font ships
@@ -404,9 +406,9 @@ export const wrapHtml = ({
   ${styleBlock}
   <title>${escape(config.brand.name)}</title>
 </head>
-<body style="margin:0; padding:0; background:#ffffff; -webkit-font-smoothing:antialiased;">
+<body style="margin:0; padding:0; background:${COLOR.white}; -webkit-font-smoothing:antialiased;">
   ${previewHtml}
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${COLOR.white};">
     <tr>
       <td align="center" style="padding:0;">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; border-collapse:collapse;">

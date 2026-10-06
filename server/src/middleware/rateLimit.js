@@ -1,3 +1,5 @@
+import rateLimit from 'express-rate-limit'
+
 /**
  * server/src/middleware/rateLimit.js
  *
@@ -5,8 +7,6 @@
  * store is fine at this scale — for a multi-instance deploy, swap in
  * `rate-limit-redis` here.
  */
-
-import rateLimit from 'express-rate-limit'
 
 export const enquiryLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

@@ -1,17 +1,3 @@
-/**
- * Home page
- *
- * Composes the public home route: TopBar + Navbar + Hero + Promises
- * + Services + Industries + Steps + FieldNotes + Footer.
- * No state here — the FieldNotes section gets its bindings from
- * the page-local `useNewsletterForm` hook.
- *
- * On desktop, Promises sits inside the hero's viewport (pinned to
- * the bottom) so the sections below start at the fold. On mobile
- * the stacked layout is taller than a screen, so both Hero and
- * Promises flow normally and the chrome-height clamp is skipped.
- */
-
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
 import TopBar from '../components/sections/TopBar'
@@ -26,6 +12,23 @@ import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
+import { formatPubDate } from '../utils/formatPubDate'
+import { getLatestIssue } from '../utils/fieldNoteView'
+import { heroChrome, homePage } from '../data/copy'
+
+/**
+ * Home page
+ *
+ * Composes the public home route: TopBar + Navbar + Hero + Promises
+ * + Services + Industries + Steps + FieldNotes + Footer.
+ * No state here — the FieldNotes section gets its bindings from
+ * the page-local `useNewsletterForm` hook.
+ *
+ * On desktop, Promises sits inside the hero's viewport (pinned to
+ * the bottom) so the sections below start at the fold. On mobile
+ * the stacked layout is taller than a screen, so both Hero and
+ * Promises flow normally and the chrome-height clamp is skipped.
+ */
 
 const Page = styled.main`
   min-height: 100vh;
@@ -50,17 +53,21 @@ const Opening = styled.div`
 export default function Home() {
   const newsletter = useNewsletterForm()
   const chrome = useChromeHeight()
+  const latest = getLatestIssue()
+  const ticketBody = latest
+    ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
+    : heroChrome.emptyTicket
 
   return (
     <Page>
       <SEO
-        description="Custom software, built to last. Robust Computer is a small team of developers. We design it, build it, and stay on after launch."
+        description={homePage.seoDescription}
         path="/"
       />
       <TopBar />
       <Navbar />
       <Opening style={{ '--chrome': `${chrome}px` }}>
-        <Hero />
+        <Hero latest={latest} ticketBody={ticketBody} />
         <Promises />
       </Opening>
       <Services />
@@ -74,6 +81,7 @@ export default function Home() {
           submitting={newsletter.submitting}
           status={newsletter.status}
           errorMessage={newsletter.errorMessage}
+          latest={latest}
         />
       </div>
       <Footer />

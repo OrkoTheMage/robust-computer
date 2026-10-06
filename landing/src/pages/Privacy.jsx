@@ -1,3 +1,11 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import Navbar from '../components/sections/Navbar'
+import PageHeader from '../components/sections/PageHeader'
+import Footer from '../components/sections/Footer'
+import { SEO } from '../components/seo'
+import { privacySections, privacyPage } from '../data/copy'
+
 /**
  * Privacy Policy
  *
@@ -6,14 +14,6 @@
  * that need real values (company name, jurisdiction, retention
  * period, etc.) instead of plausible defaults.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import Navbar from '../components/sections/Navbar'
-import PageHeader from '../components/sections/PageHeader'
-import Footer from '../components/sections/Footer'
-import { SEO } from '../components/seo'
-import { privacySections } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -70,14 +70,14 @@ const Privacy = () => {
   return (
   <Page>
     <SEO
-      title="Privacy"
-      description="Privacy policy for Robust Computer — what we collect when you visit the site, send an enquiry, or subscribe to Field Notes."
+      title={privacyPage.seoTitle}
+      description={privacyPage.seoDescription}
       path="/privacy"
     />
     <Navbar />
     <PageHeader
-      title="Privacy Policy"
-      lead="What we collect when you contact us, and what we do with it."
+      title={privacyPage.title}
+      lead={privacyPage.lead}
       imageVariant="bannerAlt"
     />
     <Body>

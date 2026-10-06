@@ -1,17 +1,16 @@
+import styled from '@emotion/styled'
+
 /**
  * Logo
  *
  * Renders the appropriate SVG asset for a given slot:
  *   - "icon"   → square mascot icon, used in nav + favicon
  *   - "badge"  → round badge, used in hero & page headers
- *   - "wordmark" → brand wordmark
  *   - "avatar" → square headshot, dev cards
  *
  * Sizes are controlled by the consumer — pass `height` (the SVG is
  * viewBox-driven so width auto-scales).
  */
-
-import styled from '@emotion/styled'
 
 const Img = styled.img`
   display: block;
@@ -31,7 +30,6 @@ const variantToSrc = {
   iconVarUnsub: '/icon-var-unsub.svg',
   badge: '/badge.svg',
   badgeAlt: '/badge-cut.svg',
-  wordmark: '/wordmark.svg',
   poster: '/poster.svg',
   banner: '/banner.svg',
   bannerAlt: '/banner-cut.svg',
@@ -52,7 +50,6 @@ const variantToAlt = {
   iconVarUnsub: 'Unsubscribed',
   badge: 'Robust Computer badge',
   badgeAlt: 'Robust Computer badge',
-  wordmark: 'Robust Computer',
   poster: 'Robust Computer',
   banner: 'Robust Computer',
   banner2: 'Robust Computer',

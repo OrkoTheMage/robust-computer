@@ -13,8 +13,8 @@
  *     → the small subscribe widget (Contact sidebar + index page)
  *
  * Lives at `sections/FieldNotes/` (not `ui/`) because both
- * pieces own their own state via `useNewsletterForm` /
- * `useLatestRss` — neither is a generic UI primitive.
+ * pieces are page shells, not generic primitives. Form state
+ * is owned by the page and passed in.
  */
 
 export { default } from './Band'

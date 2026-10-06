@@ -1,3 +1,12 @@
+import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
+import pkg from '../../../../package.json'
+import { Button } from '../ui'
+import { Logo, Zer0Text } from '../brand'
+import { ticketIn } from '../../styles/animations'
+import { colors } from '../../styles/colors'
+import { hero, heroChrome } from '../../data/copy'
+
 /**
  * Hero
  *
@@ -14,16 +23,6 @@
  *     renders its title, pub date, and one-sentence excerpt. If
  *     the array is empty, it shows a placeholder.
  */
-
-import { useEffect, useState } from 'react'
-import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
-import pkg from '../../../../package.json'
-import { Button, Logo, Zer0Text } from '../ui'
-import { useLatestRss, formatPubDate } from '../../hooks/useLatestRss'
-import { ticketIn } from '../../styles/animations'
-import { colors } from '../../styles/colors'
-import { hero } from '../../data/copy'
 
 /* Fills the opening viewport above the promises bar. The inner
    grid stays on --page, which keeps the ticket parked on the art. */
@@ -229,16 +228,7 @@ const TicketStamp = styled.span`
   `}
 `
 
-// Field Notes data + date formatting live in
-// `hooks/useLatestRss.js` (backed by `data/fieldNotes.js`) so the
-// Field Notes section can show the same latest issue.
-
-const Hero = () => {
-  const latest = useLatestRss()
-  const ticketBody = latest
-    ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
-    : '$ curl /latest.txt\n> (no issues yet)'
-
+const Hero = ({ latest, ticketBody }) => {
   return (
     <Wrap>
       <Inner>
@@ -249,10 +239,10 @@ const Hero = () => {
           </Lead>
           <CTAs>
             <Button as={Link} to="/contact">
-              <Zer0Text>Start a project</Zer0Text>
+              <Zer0Text>{heroChrome.start}</Zer0Text>
             </Button>
             <Button as={Link} to="/about" variant="alt">
-              <Zer0Text>Meet the Team</Zer0Text>
+              <Zer0Text>{heroChrome.team}</Zer0Text>
             </Button>
           </CTAs>
         </div>
@@ -261,7 +251,7 @@ const Hero = () => {
             <ArtImg variant="bannerAlt" h={960} alt="The Robust Computer mascot" />
             <Ticket>
               <TicketTag>
-                <span><Zer0Text>Build log</Zer0Text></span>
+                <span><Zer0Text>{heroChrome.buildLog}</Zer0Text></span>
                 <span><Zer0Text>{`Release ${pkg.version}`}</Zer0Text></span>
               </TicketTag>
               <TicketBody>{ticketBody}</TicketBody>
@@ -272,10 +262,10 @@ const Hero = () => {
                   $link
                   aria-label={`Read ${latest.title}`}
                 >
-                  <Zer0Text>Shipped</Zer0Text>
+                  <Zer0Text>{heroChrome.shipped}</Zer0Text>
                 </TicketStamp>
               ) : (
-                <TicketStamp><Zer0Text>Shipped</Zer0Text></TicketStamp>
+                <TicketStamp><Zer0Text>{heroChrome.shipped}</Zer0Text></TicketStamp>
               )}
             </Ticket>
           </ArtFrame>

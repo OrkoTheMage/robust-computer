@@ -1,3 +1,9 @@
+import styled from '@emotion/styled'
+import { colors } from '../../../styles/colors'
+import { Button, FieldGroup, InputControl } from '../../ui'
+import { Zer0Text } from '../../brand'
+import { subscribeStatus } from '../../../data/copy'
+
 /**
  * FieldNotes/NewsletterBox
  *
@@ -17,11 +23,6 @@
  * (/field-notes) surface. Defaults match the Contact page's
  * gold card.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../../styles/colors'
-import { Button, FieldGroup, InputControl, Zer0Text } from '../../ui'
-import { useNewsletterForm } from '../../../hooks/useNewsletterForm'
 
 const Box = styled.div`
   border: 3px solid ${colors.ink};
@@ -53,41 +54,51 @@ const FieldNote = styled.small`
   color: ${(p) => p.$fg};
 `
 
-const NewsletterBox = ({ header, sub, bg = colors.gold, fg = colors.ink }) => {
-  const n = useNewsletterForm()
+const NewsletterBox = ({
+  header,
+  sub,
+  bg = colors.gold,
+  fg = colors.ink,
+  email,
+  onChange,
+  onSubmit,
+  submitting,
+  status,
+  errorMessage,
+}) => {
   return (
     <Box $bg={bg} $fg={fg}>
       <h3><Zer0Text>{header}</Zer0Text></h3>
       <p>{sub}</p>
-      <form onSubmit={n.handleSubmit} style={{ marginBottom: 12 }}>
+      <form onSubmit={onSubmit}>
         <FieldGroup label="Email address">
           <InputControl
             type="email"
             name="email"
             required
             placeholder="you@company.com"
-            value={n.email}
-            onChange={n.handleChange}
-            disabled={n.submitting}
+            value={email}
+            onChange={onChange}
+            disabled={submitting}
           />
         </FieldGroup>
       </form>
       <Button
         type="button"
         variant="alt"
-        onClick={n.handleSubmit}
-        disabled={n.submitting}
+        onClick={onSubmit}
+        disabled={submitting}
       >
-        {n.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
+        {submitting ? <Zer0Text>{subscribeStatus.sending}</Zer0Text> : <Zer0Text>{subscribeStatus.subscribe}</Zer0Text>}
       </Button>
       <FieldNote $fg={fg}>
-        {n.status === 'success'
-          ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
-          : n.status === 'already'
-          ? <Zer0Text>Already on the list. No new email sent.</Zer0Text>
-          : n.status === 'error'
-          ? <Zer0Text>{n.errorMessage || 'Something went wrong. Try again in a moment.'}</Zer0Text>
-          : <Zer0Text>Optional. No spam.</Zer0Text>}
+        {status === 'success'
+          ? <Zer0Text>{subscribeStatus.success}</Zer0Text>
+          : status === 'already'
+          ? <Zer0Text>{subscribeStatus.already}</Zer0Text>
+          : status === 'error'
+          ? <Zer0Text>{errorMessage || subscribeStatus.error}</Zer0Text>
+          : <Zer0Text>{subscribeStatus.optional}</Zer0Text>}
       </FieldNote>
     </Box>
   )

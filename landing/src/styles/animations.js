@@ -1,27 +1,13 @@
+import { keyframes } from '@emotion/react'
+
 /**
  * landing/src/styles/animations.js
  *
- * Shared CSS keyframes. Two flavors live here:
- *
- * 1. JavaScript `keyframes` objects (the default). Returned by
- *    emotion's `keyframes()` factory — interpolating one into a
- *    styled-component template gives you a generated class name
- *    that references the keyframes block. This is the recommended
- *    way to share animations between components, since the
- *    keyframes are defined once and Emotion deduplicates the
- *    output.
- *
- * 2. Plain CSS keyframes (only when needed). The `marqueeLrCss`
- *    string is the raw CSS — use it in a `css\`...\`` helper or
- *    inside a `Global` style when you need a `@keyframes` block
- *    that isn't owned by a single component.
- *
- * Both are `@media (prefers-reduced-motion: reduce)` aware at the
- * call site (the consumer is expected to disable the animation
- * when the user prefers reduced motion).
+ * Shared CSS keyframes. Emotion's `keyframes()` factory
+ * returns a class name so the same animation can be used from
+ * more than one styled component. Call sites disable the
+ * animation when the user prefers reduced motion.
  */
-
-import { keyframes } from '@emotion/react'
 
 // Ticket comes up from below the art and settles into its
 // tilted position. The base `transform: rotate(-2.5deg)` lives

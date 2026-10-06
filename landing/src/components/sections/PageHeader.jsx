@@ -1,3 +1,7 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { Logo, Zer0Text } from '../brand'
+
 /**
  * PageHeader
  *
@@ -9,7 +13,7 @@
  *
  * `imageVariant` is forwarded to the `Logo` component, which
  * accepts any of the brand assets (badge, badgeAlt, bannerAlt,
- * wordmark, …). Most pages use the round badge ("badgeAlt") but
+ * poster, …). Most pages use the round badge ("badgeAlt") but
  * the Field Notes post page uses the square mascot ("bannerAlt").
  *
  * `eyebrow` is an optional second header above the main title,
@@ -25,10 +29,6 @@
  * section label. Styled as a small black-on-paper mono tag so
  * it reads as a metadata chip, not another header.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { Logo, Zer0Text } from '../ui'
 
 const Wrap = styled.header`
   padding: 60px 56px 52px;

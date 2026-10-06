@@ -1,11 +1,11 @@
+import config from './config'
+
 /**
- * landing/src/api/index.js
+ * landing/src/api.js
  *
  * JSON `fetch` wrapper. One file, one shape. Pages and hooks consume
  * `api.get/post/put/del` and an `ApiError` class for typed catches.
  */
-
-import config from '../config'
 
 class ApiError extends Error {
   constructor(message, status, data) {

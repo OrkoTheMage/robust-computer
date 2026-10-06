@@ -1,3 +1,8 @@
+import styled from '@emotion/styled'
+import { colors } from '../../styles/colors'
+import { Link } from 'react-router-dom'
+import {
+
 /**
  * Footer
  *
@@ -7,14 +12,9 @@
  * / build line.
  */
 
-import styled from '@emotion/styled'
-import { colors } from '../../styles/colors'
-import { Link, useLocation } from 'react-router-dom'
-import {
   Home,
   Users,
   Send,
-  Rss,
   Github,
   Linkedin,
   Facebook,
@@ -24,11 +24,12 @@ import {
   Newspaper,
 } from 'lucide-react'
 import config from '../../config'
-import { Logo, Zer0Text } from '../ui'
-import { footerTagline, footerSections } from '../../data/copy'
+import { Logo, Zer0Text } from '../brand'
+import { footerTagline, footerSections, footerChrome } from '../../data/copy'
+import { useHomeLinkClick } from '../../hooks/useHomeLinkClick'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Home, Users, Send, Rss, Github, Linkedin, Facebook, Instagram, Twitter, Mail, Newspaper }
+const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, Twitter, Mail, Newspaper }
 
 const Foot = styled.footer`
   background: ${colors.ink};
@@ -215,17 +216,7 @@ const Legal = styled.nav`
 `
 
 const Footer = () => {
-  const { pathname } = useLocation()
-  const isHome = pathname === '/'
-  // If we're already on home, smooth-scroll to the top instead of
-  // doing a no-op navigate. The <Link> still gets a `to="/"` so
-  // SSR and the no-JS fallback both land on the home page.
-  const onHomeClick = (e) => {
-    if (isHome) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
+  const { onHomeClick } = useHomeLinkClick()
 
   return (
     <Foot>
@@ -278,15 +269,15 @@ const Footer = () => {
       </Col>
     </Cols>
     <Legal aria-label="Legal">
-      <Link to="/privacy">Privacy Policy</Link>
+      <Link to="/privacy">{footerChrome.privacy}</Link>
       <span className="sep" aria-hidden="true">|</span>
-      <Link to="/terms">Terms of Service</Link>
+      <Link to="/terms">{footerChrome.terms}</Link>
       <span className="sep" aria-hidden="true">|</span>
-      <Link to="/bug-report">Report a bug</Link>
+      <Link to="/bug-report">{footerChrome.bug}</Link>
     </Legal>
     <Small>
       <span>{config.brand.name}</span>
-      <span><Zer0Text>Custom software, built to last.</Zer0Text></span>
+      <span><Zer0Text>{footerChrome.tagline}</Zer0Text></span>
     </Small>
   </Foot>
   )

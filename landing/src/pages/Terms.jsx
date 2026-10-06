@@ -1,3 +1,11 @@
+import styled from '@emotion/styled'
+import { colors } from '../styles/colors'
+import Navbar from '../components/sections/Navbar'
+import PageHeader from '../components/sections/PageHeader'
+import Footer from '../components/sections/Footer'
+import { SEO } from '../components/seo'
+import { termsSections, termsPage } from '../data/copy'
+
 /**
  * Terms of Service
  *
@@ -6,14 +14,6 @@
  * that need real values (jurisdiction, governing law, etc.)
  * instead of plausible defaults.
  */
-
-import styled from '@emotion/styled'
-import { colors } from '../styles/colors'
-import Navbar from '../components/sections/Navbar'
-import PageHeader from '../components/sections/PageHeader'
-import Footer from '../components/sections/Footer'
-import { SEO } from '../components/seo'
-import { termsSections } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -70,14 +70,14 @@ const Terms = () => {
   return (
   <Page>
     <SEO
-      title="Terms"
-      description="Terms of service for the Robust Computer website and any work we deliver."
+      title={termsPage.seoTitle}
+      description={termsPage.seoDescription}
       path="/terms"
     />
     <Navbar />
     <PageHeader
-      title="Terms of Service"
-      lead="The ground rules for using this site and working with us."
+      title={termsPage.title}
+      lead={termsPage.lead}
       imageVariant="bannerAlt"
     />
     <Body>

@@ -1,3 +1,14 @@
+import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
+import { colors } from '../styles/colors'
+import Navbar from '../components/sections/Navbar'
+import Footer from '../components/sections/Footer'
+import { Button } from '../components/ui'
+import { Logo, Zer0Text } from '../components/brand'
+import { SEO } from '../components/seo'
+import { useUnsubscribe } from '../hooks/useUnsubscribe'
+import { unsubscribePage } from '../data/copy'
+
 /**
  * Unsubscribe
  *
@@ -16,15 +27,6 @@
  * so no drop-shadow is applied (the same reasoning as the
  * NotFound illustration — see the comment there).
  */
-
-import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
-import { colors } from '../styles/colors'
-import Navbar from '../components/sections/Navbar'
-import Footer from '../components/sections/Footer'
-import { Button, Logo, Zer0Text } from '../components/ui'
-import { SEO } from '../components/seo'
-import { useUnsubscribe } from '../hooks/useUnsubscribe'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -68,53 +70,13 @@ const Lede = styled.p`
 `
 
 const Unsubscribe = () => {
-  const { email, status, errorMessage } = useUnsubscribe()
-
-  // One render path per status — same shell, different copy.
-  // Loading drops the lede + button (transient state); the
-  // three terminal states all render icon + headline + lede +
-  // back-to-home button so the page ends consistently.
-
-  let headline = 'Unsubscribing…'
-  let lede = null
-  let showHome = false
-
-  if (status === 'success') {
-    headline = "You're off the list"
-    lede = (
-      <>
-        <strong>{email}</strong> will no longer receive Field Notes.
-        Changed your mind? You can resubscribe any time from the home page.
-      </>
-    )
-    showHome = true
-  } else if (status === 'error') {
-    headline = "Couldn't unsubscribe"
-    lede = (
-      <>
-        {errorMessage ||
-          'Something went wrong on our end. Please try again in a moment.'}
-        {email && (
-          <>
-            {' '}
-            Trying to unsubscribe <strong>{email}</strong>.
-          </>
-        )}
-      </>
-    )
-    showHome = true
-  } else if (status === 'idle') {
-    headline = 'This link is broken'
-    lede =
-      'The unsubscribe link is missing the email address. Open the most recent Field Notes email and use the link at the bottom of that message.'
-    showHome = true
-  }
+  const { headline, lede, showHome } = useUnsubscribe()
 
   return (
     <Page>
       <SEO
-        title="Unsubscribe"
-        description="Unsubscribe from Field Notes — the short-issue newsletter from Robust Computer."
+        title={unsubscribePage.seoTitle}
+        description={unsubscribePage.seoDescription}
         path="/unsubscribe"
       />
       <Navbar />
@@ -130,7 +92,7 @@ const Unsubscribe = () => {
                 button is a flex container and was collapsing the
                 regular spaces between "to" and "home" once the
                 text was zero'd, producing "BACK TOH0ME". */}
-            <Zer0Text>{'Back\u00A0to\u00A0home'}</Zer0Text>
+            <Zer0Text>{unsubscribePage.back.replace(/ /g, '\u00A0')}</Zer0Text>
           </Button>
         )}
       </Inner>
