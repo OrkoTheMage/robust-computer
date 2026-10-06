@@ -51,8 +51,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Generated from the root `package.json` by `scripts/sync-version.mjs`
-// at server startup (see `--import` in the `start`/`dev` scripts). Bump
-// the root version and restart.
+// (the `postinstall` hook in server/package.json). Bump the root
+// version and redeploy.
 
 // Read both IBM Plex Mono weights we ship (400 + 700) at module
 // load so we can inline them as data: URLs. Inlining (rather

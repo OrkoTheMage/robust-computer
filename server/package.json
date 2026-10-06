@@ -4,8 +4,9 @@
   "description": "Robust Computer API — Express + MongoDB.",
   "type": "module",
   "scripts": {
-    "dev": "node --import ./scripts/sync-version.mjs --watch src/index.js",
-    "start": "node --import ./scripts/sync-version.mjs src/index.js"
+    "postinstall": "node scripts/sync-version.mjs",
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
   },
   "dependencies": {
     "compression": "^1.7.4",
