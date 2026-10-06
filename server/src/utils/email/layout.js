@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import config from '../../config.js'
-import { VERSION } from '../../version.js'
 
 /**
  * server/src/utils/email/layout.js
@@ -50,9 +49,12 @@ import { VERSION } from '../../version.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Generated from the root `package.json` by `scripts/sync-version.mjs`
-// (the `postinstall` hook in server/package.json). Bump the root
-// version and redeploy.
+// Read the version from the server's own package.json — can't reach
+// the monorepo root because the Railway deploy is rooted at `server/`.
+// Bump the root `package.json#version` and mirror it here on release.
+const VERSION = JSON.parse(
+  readFileSync(path.join(__dirname, '../../../package.json'), 'utf8')
+).version
 
 // Read both IBM Plex Mono weights we ship (400 + 700) at module
 // load so we can inline them as data: URLs. Inlining (rather
