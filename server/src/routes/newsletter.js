@@ -3,7 +3,7 @@
  *
  * Two endpoints, both mounted under `/api` from src/index.js:
  *
- *   POST /api/newsletter   — subscribe an email to Field Notes.
+ *   POST /api/newsletter   — subscribe an email to the newsletter.
  *                            Idempotent: re-subscribing an already-
  *                            subscribed address returns 200 with
  *                            `alreadySubscribed: true`, no duplicate

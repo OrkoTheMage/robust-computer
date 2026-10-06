@@ -269,13 +269,13 @@ export default function FieldNotes() {
   return (
     <Page>
       <SEO
-        title="Field notes"
+        title={fieldNotesCopy.indexTitle}
         description={fieldNotesCopy.lead}
         path="/field-notes"
       />
       <Navbar />
       <PageHeader
-        title="Field notes"
+        title={fieldNotesCopy.indexTitle}
         lead={fieldNotesCopy.lead}
         imageVariant="bannerAlt"
       />
