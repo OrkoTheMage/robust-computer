@@ -65,7 +65,11 @@ app.use('/api', (_req, _res, next) => {
   next()
 })
 app.use('/api/contact', contactRoutes)
-app.use('/api/newsletter', newsletterRoutes)
+// newsletterRoutes owns both /api/newsletter (subscribe) and
+// /api/unsubscribe (idempotent unsubscribe) — the file splits
+// them by relative path, so the mount point has to be the
+// shared parent.
+app.use('/api', newsletterRoutes)
 app.use('/api/bug-report', bugReportRoutes)
 
 // ── 404 ─────────────────────────────────────────────────────────────────
