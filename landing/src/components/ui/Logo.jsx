@@ -55,7 +55,6 @@ const variantToAlt = {
   wordmark: 'Robust Computer',
   poster: 'Robust Computer',
   banner: 'Robust Computer',
-  bannerAlt: 'Robust Computer',
   banner2: 'Robust Computer',
   banner2Alt: 'Robust Computer',
 }

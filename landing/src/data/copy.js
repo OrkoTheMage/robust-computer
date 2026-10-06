@@ -21,6 +21,7 @@
  */
 
 import { colors } from '../styles/colors'
+import { getLatestNewsPath } from './fieldNotes'
 
 // ── Brand ────────────────────────────────────────────────────────────────
 export const footerTagline = ''
@@ -138,10 +139,10 @@ export const navbarPages = [
   { to: '/contact', label: 'Start a project', hint: 'Get in touch', icon: 'Send' },
   { to: '/about', label: 'Meet the Team', hint: 'About', icon: 'Users' },
   // News goes straight to the latest issue, not to a (not-yet-built)
-  // /field-notes index. Hardcoded to the current latest slug; will
-  // move to the field-notes SSOT (Chunk 9) so this stays in sync
-  // when a new post is published.
-  { to: '/field-notes/issue-001', label: 'News', hint: 'Field notes', icon: 'Newspaper' },
+  // /field-notes index. `getLatestNewsPath()` reads from
+  // `data/fieldNotes.js` so adding FN-002 to the array auto-updates
+  // this link — no second file to edit.
+  { to: getLatestNewsPath(), label: 'News', hint: 'Field notes', icon: 'Newspaper' },
   { to: '/language', label: 'Language', hint: 'Coming soon', icon: 'Languages' },
 ]
 
@@ -228,10 +229,10 @@ export const footerSections = {
     { to: '/about', label: 'About', icon: 'Users' },
     { to: '/contact', label: 'Contact', icon: 'Send' },
     // News goes straight to the latest issue, not to a (not-yet-built)
-    // /field-notes index. Hardcoded to the current latest slug; will
-    // move to the field-notes SSOT (Chunk 9) so this stays in sync
-    // when a new post is published.
-    { to: '/field-notes/issue-001', label: 'News', icon: 'Newspaper' },
+    // /field-notes index. `getLatestNewsPath()` reads from
+    // `data/fieldNotes.js` so adding FN-002 to the array auto-updates
+    // this link — no second file to edit.
+    { to: getLatestNewsPath(), label: 'News', icon: 'Newspaper' },
   ],
   connect: [
     { href: 'https://github.com/robust-computer', label: 'GitHub', icon: 'Github' },

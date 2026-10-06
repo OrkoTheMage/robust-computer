@@ -30,9 +30,10 @@ yarn-error.log*
 
 # ── scratch / temp ──────────────────────────────────────────────────────
 # `*.txt` is broad on purpose: catches any stray notes/checklists dropped
-# at the repo root. Whitelist the one .txt the app actually ships.
+# at the repo root. Whitelist the .txt files the app actually ships.
 *.txt
 !landing/public/robots.txt
+!landing/public/feed.txt
 PROJECT-CONVENTIONS.md
 
 # ── downloaded Mailpit binary (used by `yarn mail`) ────────────────────
