@@ -102,16 +102,10 @@ const Row = styled.div`
   }
 `
 
-const SubscribeBtn = styled(Button)`
-  background: ${colors.gold};
-  color: ${colors.ink};
-  box-shadow: 6px 6px 0 ${colors.paper};
-  padding: 0 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50px;
-`
+// Subscribe uses the standard <Button variant="gold"> (chunk 13).
+// Earlier this section styled a `styled(Button)` override with the
+// same colors; collapsing it onto the primitive keeps the audit's
+// "no custom overrides" rule honest.
 
 const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage }) => {
   const latest = useLatestRss()
@@ -134,9 +128,9 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessag
                 onChange={onChange}
                 disabled={submitting}
               />
-              <SubscribeBtn type="submit" disabled={submitting}>
+              <Button type="submit" variant="gold" disabled={submitting}>
                 {submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
-              </SubscribeBtn>
+              </Button>
             </Row>
           </FieldGroup>
         </div>
