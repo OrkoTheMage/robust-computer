@@ -91,7 +91,7 @@ robust-computer/
 | Folder | Purpose |
 |---|---|
 | `pages/`    | Route-level components. Page-specific styled components live at the top, then a default export with hook calls → clean JSX return |
-| `sections/` | Page-level shells composed of `ui/` primitives (landing: `Hero`, `Navbar`, `Footer`, `FieldNotes`; portal: `AppShell`, `AuthShell`) |
+| `sections/` | Page-level shells composed of `ui/` primitives (landing: `Hero`, `Navbar`, `Footer`, `FieldNotes`) |
 | `ui/`       | Reusable primitives. Must be generic — no project-specific knowledge |
 
 
@@ -149,7 +149,7 @@ Every variables listed below is required by the code. `NODE_ENV` and `PORT` defa
 
 | Project | Environment Variables |
 |---|---|
-| **Vercel — Landing** | `VITE_API_URL`, `VITE_PORTAL_URL`, `VITE_LANDING_URL` |
+| **Vercel — Landing** | `VITE_API_URL`, `VITE_LANDING_URL` |
 | **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `RESEND_API_KEY`, `LANDING_URL`, `API_URL` |
 
 > NOTE: Each project owns their own `config.js` which is their own processor for envs.
