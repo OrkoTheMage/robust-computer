@@ -81,7 +81,7 @@ const BRAND_NAME = 'Robust Computer'
 // consumers (this file + the React FieldNote page) need it,
 // and per PROJECT-CONVENTIONS.md §4 utils/ is the home for
 // pure helpers.
-import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks'
+import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
 
 // Channel-level metadata for the RSS feed. The lead copy matches
 // what the Field Notes section band on the home page renders
@@ -123,10 +123,10 @@ We will keep each issue tight. If it cannot fit in a few minutes of reading, it 
 Check out our \u0060RSS\u0060 feed for the first issue:
 
 \u0060\u0060\u0060bash
-// This will fetch the raw RSS feed asfor the first issue
+// This will fetch the raw RSS feed, as XML - for your RSS reader
 curl -sL "https://www.robust.computer/rss.xml"
 
-// This will fetch the raw feed content in the terminal
+// This will fetch the raw RSS feed as plain text - for your terminal
 curl -sL "https://www.robust.computer/feed.txt"
 \u0060\u0060\u0060
 `,

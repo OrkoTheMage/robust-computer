@@ -15,19 +15,17 @@
       <description>
 Welcome to the first issue of Field Notes
 
-> I thought this was a **cool idea** — So I built it and now here we are. 
-
-> This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one. 
+> I thought this was a **cool idea** — So I built it and now here we are. This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one. 
 
 We will keep each issue tight. If it cannot fit in a few minutes of reading, it does not belong here. *No bull*****, no marketing copy disguised as engineering wisdom — just the work, the mistakes, and the small victories.
 
 Check out our `RSS` feed for the first issue:
 
 ```bash
-// This will fetch the raw RSS feed asfor the first issue
+// This will fetch the raw RSS feed, as XML - for your RSS reader
 curl -sL "https://www.robust.computer/rss.xml"
 
-// This will fetch the raw feed content in the terminal
+// This will fetch the raw RSS feed as plain text - for your terminal
 curl -sL "https://www.robust.computer/feed.txt"
 ```
 </description>
