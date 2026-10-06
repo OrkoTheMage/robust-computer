@@ -21,13 +21,14 @@ import {
   Instagram,
   Twitter,
   Mail,
+  Newspaper,
 } from 'lucide-react'
 import config from '../../config'
 import { Logo, Zer0Text } from '../ui'
 import { footerTagline, footerSections } from '../../data/copy'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Home, Users, Send, Rss, Github, Linkedin, Facebook, Instagram, Twitter, Mail }
+const ICON_MAP = { Home, Users, Send, Rss, Github, Linkedin, Facebook, Instagram, Twitter, Mail, Newspaper }
 
 const Foot = styled.footer`
   background: ${colors.ink};
