@@ -21,10 +21,27 @@ const transport = nodemailer.createTransport({
   host: config.smtp.host,
   port: config.smtp.port,
   secure: config.smtp.secure,
+  // Fail fast on connection issues — nodemailer default is 120s,
+  // which is long enough to make a 502 look like a hang.
+  connectionTimeout: 5_000,
+  // Same for individual socket operations after connect.
+  socketTimeout: 10_000,
   auth: config.smtp.user
     ? { user: config.smtp.user, pass: config.smtp.pass }
     : undefined,
 })
+
+// One-line transport summary at module load so the runtime log
+// proves the right env vars are wired in (host, port, secure,
+// whether auth is set, and the from address). If a deploy
+// doesn't print this, the module wasn't loaded. If the values
+// don't match the deployer's intent, the env vars didn't take
+// effect.
+console.log(
+  `[email] transport ready: host=${config.smtp.host} ` +
+    `port=${config.smtp.port} secure=${config.smtp.secure} ` +
+    `auth=${config.smtp.user ? 'set' : 'none'} from=${config.smtp.from}`
+)
 
 // Sender name in the From header — small touch, but matters for
 // inbox recognition. Nodemailer accepts "Name <addr@host>".
@@ -40,9 +57,10 @@ const fromAddress = `"${config.brand.name}" <${config.smtp.from}>`
  */
 export const sendEnquiryNotification = async (enquiry) => {
   const { subject, html, text } = renderEnquiry(enquiry)
+  console.log(`[email] sending enquiry notification to ${config.smtp.from} (subject: ${subject})`)
 
   try {
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: fromAddress,
       to: config.smtp.from,
       replyTo: enquiry.email,
@@ -50,6 +68,7 @@ export const sendEnquiryNotification = async (enquiry) => {
       html,
       text,
     })
+    console.log(`[email] enquiry notification sent: messageId=${info.messageId}`)
   } catch (err) {
     // Log but don't throw — the API response shouldn't depend on SMTP.
     console.error('[email] enquiry notification failed:', err.message)
@@ -64,15 +83,17 @@ export const sendEnquiryNotification = async (enquiry) => {
  */
 export const sendSubscriberConfirmation = async (email) => {
   const { subject, html, text } = renderSubscriber(email)
+  console.log(`[email] sending subscriber confirmation to ${email} (subject: ${subject})`)
 
   try {
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: fromAddress,
       to: email,
       subject,
       html,
       text,
     })
+    console.log(`[email] subscriber confirmation sent: messageId=${info.messageId}`)
   } catch (err) {
     console.error('[email] subscriber confirmation failed:', err.message)
   }
