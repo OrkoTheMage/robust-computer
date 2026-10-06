@@ -90,9 +90,13 @@ import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
 // is no risk of a feed/page drift if the section copy is
 // updated in only one of the two places.
 //
-// Chunk 12 will resolve the cross-page "Field Notes /
-// Newsletter / News" naming taxonomy. For now the lead stays in
-// sync with `data/copy.js#fieldNotes.lead` by hand.
+// Channel title and description use the "Field Notes" name
+// (the user-facing brand) on purpose — the feed delivers the
+// content series, not the subscription product, so the
+// channel reads as a Field Notes feed. The subscription
+// product ("newsletter" — the technical/backend name) is a
+// different surface and lives in
+// `data/copy.js#fieldNotes.contactBox` / `subscribeBox`.
 const CHANNEL_TITLE = `${BRAND_NAME} — Field Notes`
 const CHANNEL_DESCRIPTION =
   'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.'

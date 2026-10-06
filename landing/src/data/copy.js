@@ -114,15 +114,37 @@ export const steps = [
 // ── Industries ──────────────────────────────────────────────────────────
 export const industriesHeadline = 'Built across industries'
 
-// ── Field Notes ──────────────────────────────────────────────────────────
+// ── Field Notes ───────────────────────────────────────────────────────────
+//
+// One product, three labels — picked by context, not by surface:
+//
+//   - "newsletter"  = the backend / technical name. Used in API
+//                     routes, model names, function names, and
+//                     code comments on the server.
+//
+//   - "News"        = the frontend link label. Used wherever the
+//                     user clicks to reach the subscription
+//                     surface (Navbar main row, Navbar modal,
+//                     Footer site column).
+//
+//   - "Field notes" = the user-facing brand. Used wherever the
+//                     thing is mentioned, advertised, or titled
+//                     — the home-page Band h2, the per-post
+//                     eyebrow, the NewsletterBox headers, the
+//                     /field-notes index page title, and the
+//                     email content (subject, body, log type).
+//                     Sentence case in the UI; CSS uppercases
+//                     it via `text-transform`.
+//
+// The two `NewsletterBox` call sites share the form
+// (email input + subscribe button + status caption) but
+// differ in framing. Both pairs of strings live here so
+// the two pages stay in sync on the only thing they
+// actually differ on.
 export const fieldNotes = {
   headline: 'Field notes',
+  indexTitle: 'Field notes',
   lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
-  // The two `NewsletterBox` call sites share the form
-  // (email input + subscribe button + status caption) but
-  // differ in framing. Both pairs of strings live here so
-  // the two pages stay in sync on the only thing they
-  // actually differ on.
   contactBox: {
     header: 'Field notes',
     sub: 'Short issues — updates frequently — on building software that lasts.',

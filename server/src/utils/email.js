@@ -171,7 +171,7 @@ export const sendEnquiryNotification = async (enquiry) => {
 /**
  * sendSubscriberConfirmation
  *
- * Greets the new Field Notes subscriber. Best-effort: never blocks
+ * Greets the new newsletter subscriber. Best-effort: never blocks
  * the API response.
  */
 export const sendSubscriberConfirmation = async (email) => {
