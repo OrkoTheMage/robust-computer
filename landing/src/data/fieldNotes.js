@@ -116,7 +116,7 @@ export const fieldNotes = [
     body: `
 Welcome to the first issue of Field Notes
 
-> I thought this was a **cool idea** — So I built it and now here we are. This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one. 
+> I thought this was a **cool idea** — So I built it and now here we are. This will be our newsletter to you, our *'News'*. Short, **practical** updates from our build log. New post land when there is something worth talking about: **shipped projects**, **lessons learned**, **tech discovered**, or **tools we built** — like this one.
 
 We will keep each issue tight. If it cannot fit in a few minutes of reading, it does not belong here. *No bull*****, no marketing copy disguised as engineering wisdom — just the work, the mistakes, and the small victories.
 
@@ -182,7 +182,7 @@ export const buildRss = (notes = fieldNotes) => {
   const lastBuildDate = latest
     ? toRfc822(latest.pubDate)
     : toRfc822(new Date().toISOString())
-  const items = notes.map(buildItem).join('\n\n')
+  const items = sorted.map(buildItem).join('\n\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -356,7 +356,7 @@ export const buildFeedTxt = (notes = fieldNotes) => {
     '',
   ].join('\n')
 
-  const blocks = notes.map((note) => {
+  const blocks = sorted.map((note) => {
     // The meta block ends with two blanks so the post's body
     // opens on its own paragraph after a visual breath —
     // the rule above the body should not look glued to the

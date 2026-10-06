@@ -34,6 +34,7 @@ yarn-error.log*
 *.txt
 !landing/public/robots.txt
 !landing/public/feed.txt
+!landing/public/latest.txt
 PROJECT-CONVENTIONS.md
 
 # ── downloaded Mailpit binary (used by `yarn mail`) ────────────────────

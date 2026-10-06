@@ -9,17 +9,16 @@
 
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
-import { useState } from 'react'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../components/ui'
 import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
-import { useNewsletterForm } from '../hooks/useNewsletterForm'
+import { NewsletterBox } from '../components/sections/FieldNotes'
 import { Zer0Text } from '../components/ui'
 import { SEO } from '../components/seo'
 import config from '../config'
-import { contactWhatHappens } from '../data/copy'
+import { contactWhatHappens, fieldNotes } from '../data/copy'
 
 const Page = styled.main`
   min-height: 100vh;
@@ -184,20 +183,6 @@ const Thank = styled.div`
   }
 `
 
-// Matches the <small> caption under the Field Notes form so
-// "Optional. No spam." sits on the same baseline as
-// "Latest issue: {issue}, read online.".
-const FieldNote = styled.small`
-  display: block;
-  margin-top: 12px;
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: ${colors.ink};
-`
-
 const ContactForm = () => {
   const c = useContactForm()
   if (c.submitted) {
@@ -315,45 +300,12 @@ const ContactForm = () => {
   )
 }
 
-const NewsletterBox = () => {
-  const n = useNewsletterForm()
-  return (
-    <Box bg={colors.gold} fg={colors.ink}>
-      <h3><Zer0Text>Field notes</Zer0Text></h3>
-      <p>Short issues — updates frequently — on building software that lasts.</p>
-      <form onSubmit={n.handleSubmit} style={{ marginBottom: 12 }}>
-        <FieldGroup label="Email address">
-          <InputControl
-            type="email"
-            name="email"
-            required
-            placeholder="you@company.com"
-            value={n.email}
-            onChange={n.handleChange}
-            disabled={n.submitting}
-          />
-        </FieldGroup>
-      </form>
-      <Button
-        type="button"
-        variant="alt"
-        onClick={n.handleSubmit}
-        disabled={n.submitting}
-      >
-        {n.submitting ? <Zer0Text>Sending…</Zer0Text> : <Zer0Text>Subscribe</Zer0Text>}
-      </Button>
-      <FieldNote>
-        {n.status === 'success'
-          ? <Zer0Text>Thanks — check your inbox.</Zer0Text>
-          : n.status === 'already'
-          ? <Zer0Text>Already on the list. No new email sent.</Zer0Text>
-          : n.status === 'error'
-          ? <Zer0Text>{n.errorMessage || 'Something went wrong. Try again in a moment.'}</Zer0Text>
-          : <Zer0Text>Optional. No spam.</Zer0Text>}
-      </FieldNote>
-    </Box>
-  )
-}
+const SubscribeBox = () => (
+  <NewsletterBox
+    header={fieldNotes.contactBox.header}
+    sub={fieldNotes.contactBox.sub}
+  />
+)
 
 export default function Contact() {
   return (
@@ -385,7 +337,7 @@ export default function Contact() {
               ))}
             </ol>
           </Box>
-          <NewsletterBox />
+          <SubscribeBox />
         </Side>
       </Grid>
       <Footer />

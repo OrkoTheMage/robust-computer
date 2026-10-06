@@ -10,6 +10,7 @@
     "dev:server": "cd server && yarn dev",
     "mail": "node scripts/mailpit.js",
     "feeds:build": "node scripts/build-rss.mjs",
+    "feeds:latest": "node scripts/build-rss.mjs --latest-only",
     "install:all": "yarn install && cd landing && yarn install && cd ../server && yarn install"
   },
   "engines": {

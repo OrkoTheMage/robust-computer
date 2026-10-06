@@ -17,7 +17,7 @@
 
 import styled from '@emotion/styled'
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link, useLocation } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
   Github,
   Linkedin,
@@ -37,7 +37,6 @@ import {
 import { Button, Logo, Modal, Zer0Text } from '../ui'
 import { colors } from '../../styles/colors'
 import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, languages } from '../../data/copy'
-import { getLatestNewsPath } from '../../data/fieldNotes'
 
 // Map icon-name strings from the data file to Lucide components.
 const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper, Languages }
@@ -634,17 +633,15 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const stickyRef = useRef(null)
-  const { pathname } = useLocation()
-  const isHome = pathname === '/'
+  // (pathname / isHome were used by the old same-page scroll
+  // handler; <ScrollToTop> now handles all same-page snaps
+  // globally, so the local state isn't needed here anymore.)
 
-  // If we're already on home, the Home row in the modal should
-  // smooth-scroll to the top instead of doing a no-op navigate.
-  // Anywhere else, let the Link navigate normally.
-  const onHomeClick = (e) => {
-    if (isHome) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+  // Closing the menu is the only side effect of clicking a row
+  // in the modal — the Link handles the navigation, and
+  // <ScrollToTop> handles the scroll-to-top on same-page clicks
+  // (so we don't preventDefault or scroll manually here anymore).
+  const onHomeClick = () => {
     setMenuOpen(false)
   }
 
@@ -698,7 +695,7 @@ const Navbar = () => {
           </Brand>
           <Links>
             <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
-            <NavA to={getLatestNewsPath()}><Zer0Text>News</Zer0Text></NavA>
+            <NavA to="/field-notes"><Zer0Text>News</Zer0Text></NavA>
             <IconLinks>
               <LanguageButton />
               {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
