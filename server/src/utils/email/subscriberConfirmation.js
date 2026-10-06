@@ -28,7 +28,7 @@ const buildHtml = (email) => {
       Short issues &mdash; updates frequently &mdash; on building software that lasts. Practical, no spam, unsubscribe any time.
     </p>
     <p style="margin:0; font-family:${FONT.body}; font-size:18px; line-height:1.55; color:${COLOR.ink};">
-      The first one lands in your inbox at the start of next month. In the meantime, have a look around <a href="${escape(config.landingUrl)}" style="color:${COLOR.ink}; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:2px;">${escape(config.landingUrl.replace(/^https?:\/\//, ''))}</a>.
+      The next issue lands in your inbox when there&apos;s something new to share. In the meantime, have a look around <a href="${escape(config.landingUrl)}" style="color:${COLOR.ink}; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:2px;">${escape(config.landingUrl.replace(/^https?:\/\//, ''))}</a>.
     </p>
   `
 
@@ -58,7 +58,7 @@ const buildText = (email) => {
     'Short issues — updates frequently — on building software that',
     'lasts. Practical, no spam, unsubscribe any time.',
     '',
-    `The first one lands in your inbox at the start of next month.`,
+    `The next issue lands in your inbox when there's something new to share.`,
     `In the meantime, have a look around ${config.landingUrl}.`,
   ].join('\n')
 
