@@ -16,6 +16,9 @@ node_modules/
 **/.next/
 **/.cache/
 
+# Generated at server startup by server/scripts/sync-version.mjs
+server/src/version.js
+
 # ── logs ────────────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
