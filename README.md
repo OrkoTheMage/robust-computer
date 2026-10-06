@@ -1,6 +1,10 @@
-![Logo](landing/public/banner2-cut.svg)
+<div align="center">
+  <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
+</div>
 
-**Version 0.6.0**
+**Version 0.8.1**
+
+Full-stack web app for Robust Computer's Marketing Site & API
 
 ## Tech stack
 
@@ -8,6 +12,8 @@
 |---------|-------|----------|---------|
 | `landing/` | React + Vite | 3000 | Marketing site |
 | `server/` | Express + MongoDB | 5000 | API |
+
+Package manager: **Yarn**
 
 ## Installation
 
@@ -39,185 +45,111 @@ repo root).
 
 > NOTE: See [Environment Variables](#environment-variables) below for the full contract per project.
 
-## Repository layout
-
-```
-.
-├── landing/                  # React + Vite marketing site
-├── server/                   # Express + MongoDB API
-├── scripts/
-│   └── dev.js                # single-script dev orchestrator
-├── .env.example              # canonical env-var contract
-├── .env.dev                  # git-ignored, dev values
-├── .env.prod                 # git-ignored, prod-shaped values
-├── package.json              # root — version controller + dev wrapper
-└── README.md
-```
-
-### landing/
-
-```
-landing/
-├── public/                   # static SVG assets + robots.txt
-│   ├── icon.svg
-│   ├── badge.svg
-│   ├── poster.svg            # hero mascot
-│   └── …
-├── src/
-│   ├── main.jsx              # ReactDOM root + BrowserRouter
-│   ├── App.jsx               # <Routes> + 404
-│   ├── index.css             # reset + theme tokens
-│   ├── config.js             # frozen env reader, throws on missing
-│   ├── api.js                # JSON fetch wrapper + ApiError
-│   ├── components/
-│   │   ├── sections/         # Hero, Navbar, Services, …
-│   │   └── ui/               # Container, Button, Chip, Field
-│   ├── pages/                # Home, About, Contact, NotFound
-│   ├── hooks/                # useContactForm, useNewsletterForm
-│   ├── data/                 # work.js, copy.js
-│   └── styles/               # colors.js, typography.js
-├── vercel.json               # SPA rewrites → /index.html
-└── vite.config.js
-```
-
-### server/
-
-```
-server/
-└── src/
-    ├── index.js              # bootstrap, middleware, /api routers
-    ├── config.js             # frozen env reader, loads .env.<NODE_ENV>
-    ├── models/               # Enquiry, Subscriber
-    ├── routes/               # contact.js, newsletter.js
-    ├── middleware/           # rateLimit.js
-    └── utils/                # email.js (nodemailer transport)
-```
-
-## Local development
-
-### Prereqs
-
-- Node 20+
-- Yarn 1 (`npm i -g yarn`)
-- MongoDB 6+ running locally (`mongod` on default port)
-- Mailpit (optional, for capturing dev email) — `yarn mail` to start it on `:1025` (auto-downloads the single-binary release)
-
-### Install everything
+### Switching env at boot
 
 ```bash
-yarn install:all
+yarn dev          # default — loads .env.dev for all three (dev DB)
+yarn dev:prod     # loads .env.prod for all three (prod DB, prod URLs)
 ```
 
-That runs `yarn install` in the root, `landing/`, and `server/`.
+## Project Structure
 
-### Boot everything
-
-```bash
-yarn dev
+```
+robust-computer/
+├── landing/                # Marketing site (React + Vite, port 3000)
+│   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, robots.txt, ...)
+│   ├── src/
+│   │   ├── api/                 # fetch wrapper (index.js exports api + ApiError)
+│   │   ├── components/
+│   │   │   ├── sections/        # Page-level shells
+│   │   │   └── ui/              # Reusable primitives
+│   │   ├── data/                # copy.js, jokes.js
+│   │   ├── hooks/               # useEffects + State
+│   │   ├── pages/               # Routes: Home, About, Contact, Privacy, Terms, NotFound
+│   │   ├── styles/              # index.css, animations.js; colors.js, typography, ...
+│   │   └── utils/               # Helpers & Reusable logic
+│   └── vite.config.js
+│
+│
+├── server/                 # API server (Express + MongoDB, port 5000)
+│   └── src/
+│       ├── middleware/          # rateLimit.js
+│       ├── models/              # Enquiry, Subscriber
+│       ├── routes/              # contact, newsletter
+│       └── utils/
+│           ├── email/           # layout, email templates
+│
+│
+├── scripts/                # Repo-root tooling
+│
+├── package.json            # root scripts: dev, dev:prod, mail, install:all
 ```
 
-That runs `scripts/dev.js` which:
+### Style Component Conventions
+**Folders that produce visual UI. Each layer wraps the next.**
 
-1. Parses `--env=dev|prod` (default `dev`).
-2. Loads `.env.<env>` from the repo root.
-3. Pre-flights ports `3000` (landing) and the server `PORT` (default `5000`).
-4. Spawns `landing` (Vite) and `server` (Express) under `concurrently`.
+| Folder | Purpose |
+|---|---|
+| `pages/`    | Route-level components. Page-specific styled components live at the top, then a default export with hook calls → clean JSX return |
+| `sections/` | Page-level shells composed of `ui/` primitives (landing: `Hero`, `Navbar`, `Footer`, `FieldNotes`; portal: `AppShell`, `AuthShell`) |
+| `ui/`       | Reusable primitives. Must be generic — no project-specific knowledge |
 
-Visit:
 
-- Landing: <http://localhost:3000>
-- Server health: <http://localhost:5000/api/health>
-- Mailpit UI (if running): <http://localhost:8025>
+Page-level components rule: Each file in `pages/` or `sections/` should contain _only_
+- Imports
+- page-specific `styled-components` (the ones that can't be promoted to `ui/`)
+- a default export with **hook calls → clean JSX return**
 
-### Run a single sub-project
+If you find yourself writing a non-styled component, useEffect logic, a
+helper function, or a state mutation inside a page, move it to
+`hooks/`, `utils/`, or `context/` first.
 
-```bash
-yarn dev:landing
-yarn dev:server
-```
+### Logical Component Conventions
+**Folders that produce behavior. Nothing in here renders JSX on its own.**
 
-## Environment variables
-
-Every required var lives in `.env.example`. Deployers copy that file and
-fill in real values. Non-required values (server lifecycle, brand identity,
-SMTP transport defaults) live in code — see `server/src/config.js` and
-`landing/src/config.js`.
-
-| Var | Read by | Required | Notes |
-|---|---|---|---|
-| `NODE_ENV` | server | yes | `development` or `production` (wrapper/host injects; file is documentation) |
-| `MONGODB_URI` | server | yes | `mongodb+srv://…` (see Atlas) |
-| `JWT_SECRET` | server | yes | long random string |
-| `SMTP_HOST` | server | yes | `127.0.0.1` in dev |
-| `SMTP_PORT` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
-| `SMTP_USER` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
-| `SMTP_PASS` | server | yes | empty OK (no auth — Mailpit in dev); real SMTP needs user/pass |
-| `LANDING_URL` | server | yes | used in email links |
-| `API_URL` | server | yes | used in email links |
-| `VITE_API_URL` | landing | yes | backend origin |
-| `VITE_LANDING_URL` | landing | yes | landing origin |
-
-Code constants (not in env): `PORT` (5000), `SMTP_PORT` (1025 dev / 587 prod — set by `NODE_ENV` branch in `server/src/config.js`), `SMTP_SECURE` (`false`, STARTTLS), `SMTP_FROM` (`hello@${BRAND_DOMAIN}`), `JWT_EXPIRES_IN` (`24h`), brand identity (`BRAND_NAME`, `BRAND_DOMAIN`, `BRAND_EMAIL`).
-
-## API
-
-### `POST /api/contact`
-
-Project enquiry. Validated, persisted to Mongo, team notified by email.
-
-```json
-{
-  "name": "Ada Lovelace",
-  "email": "ada@example.com",
-  "company": "Analytical Engines Ltd",
-  "projectType": "webapp",
-  "budget": "15k_50k",
-  "message": "We need a portal for our service team…"
-}
-```
-
-`projectType` ∈ `landing | webapp | saas | unsure`
-`budget` ∈ `under_5k | 5k_15k | 15k_50k | 50k_plus`
-
-### `POST /api/newsletter`
-
-Subscribe an email to Field Notes. Idempotent on duplicates.
-
-```json
-{ "email": "ada@example.com" }
-```
-
-### `GET /api/health`
-
-Returns `{ ok, env, time }`. Used by the dev wrapper and uptime checks.
-
-## Deployment
-
-| App | Host | Root |
-|---|---|---|
-| `landing` | Vercel | `landing/` |
-| `server` | Railway / Fly / Render | `server/` |
-
-Vercel auto-detects Vite. The `vercel.json` in `landing/` rewrites all
-routes to `index.html` so the SPA routing works on hard refresh.
-
-The server is a stock Node app; Nixpacks will pick it up. Set `start`
-to `node src/index.js`, and inject every env var from `.env.example`.
+| Folder      | Purpose |
+|-------------|---------|
+| `hooks/`    | Page-level behavior (state + effects). Each page consumes a small number of focused hooks |
+| `data/`     | `copy.js` and other data sets |
+| `utils/`    | Pure helpers (formatters, validators, permission calculators) |
+| Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
 ## Versioning
 
-- `MAJOR.MINOR.PATCH` (current: `v0.1.0`)
-- Branch model: `feature:<name>`, `dev`, `main`
-- Bump in `package.json` (root) on release.
+| Branch | Purpose |
+|--------|---------|
+| `feature:[feature-name]` | Feature development |
+| `dev` | Integration, testing |
+| `main` | Production releases |
 
-## Conventions reference
+### Release Flow
+1. Create feature branch → merge to `dev`
+2. Update version controllers (`package.json` + `README.md`)
+2. Squash-merge `dev` into `main` with version tag
+3. Fast-forward `dev` to `main`
+4. Delete feature branch
 
-See `PROJECT-CONVENTIONS.md` for the full style guide. Highlights
-applied here:
+> FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
 
-- Frontend per-page structure (one `pages/` file per route)
-- `ui/` primitives that know nothing about the project
-- `hooks/` own state, no JSX
-- Frozen `config.js` that throws on missing env
-- Single `api.js` with `ApiError`
-- Centralized rate limiting, error mapping, CORS allowlist
+## Deployment
+
+| App | URL | Host |
+|-----|-----|------|
+| Landing | robust-computer.vercel.app | Vercel |
+| API     | TBD | Railway |
+
+Landing is a Vercel projects rooted at `landing/`. The API is a Railway service rooted at `server/`.
+
+> NOTE: Auto-deploys on push to `main`.
+
+### Environment Variables
+
+Every variables listed below is required by the code. `NODE_ENV` and `PORT` default to `'development'`/`5000` for bare-`node` startup but are set by Railway / `scripts/dev.js` in practice. The full contract lives in [`.env.example`](.env.example).
+
+
+| Project | Environment Variables |
+|---|---|
+| **Vercel — Landing** | `VITE_API_URL`, `VITE_PORTAL_URL`, `VITE_LANDING_URL` |
+| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `SMTP_HOST`,`SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `LANDING_URL`, `API_URL` |
+
+> NOTE: Each project owns their own `config.js` which is their own processor for envs.
