@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import config from '../../config.js'
+import { VERSION } from '../../version.js'
 
 /**
  * server/src/utils/email/layout.js
@@ -49,21 +50,9 @@ import config from '../../config.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Read the monorepo root package.json once at module load so the
-// email version stamp stays in sync with the on-page Hero ticket
-// and the rest of the brand surfaces. We walk up four levels
-// (server/src/utils/email/ → server/src/utils/ → server/src/ →
-// server/ → repo root) — same pattern the landing uses in
-// `Hero.jsx`. Only the root package.json carries the `version`
-// field; the per-package manifests (`server/package.json`,
-// `landing/package.json`) don't, so reading them returns
-// `undefined` and the email renders "Release undefined".
-// Restart the server to pick up a version bump (same cadence as
-// the page).
-const pkg = JSON.parse(
-  readFileSync(path.join(__dirname, '../../../../package.json'), 'utf8')
-)
-const VERSION = pkg.version
+// Generated from the root `package.json` by `scripts/sync-version.mjs`
+// at server startup (see `--import` in the `start`/`dev` scripts). Bump
+// the root version and restart.
 
 // Read both IBM Plex Mono weights we ship (400 + 700) at module
 // load so we can inline them as data: URLs. Inlining (rather
