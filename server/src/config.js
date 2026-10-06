@@ -75,30 +75,19 @@ const PORT = 5000
 // JWT.
 const JWT_EXPIRES_IN = '24h'
 
-// SMTP transport. `host`, `port`, `secure`, `user`, `pass` are all
-// required env vars. We don't derive port/secure from NODE_ENV
-// because every provider has its own combination:
+// Transactional email via the Resend HTTPS API.
 //
-//   Mailpit (dev)       : 1025, secure=false (plaintext)
-//   Resend              : 465,  secure=true  (implicit TLS)
-//   SendGrid / Mailgun  : 587,  secure=false (STARTTLS)
-//   AWS SES (SMTP)      : 587,  secure=false (STARTTLS)
+// Why HTTPS, not SMTP: Railway's outbound network blocks (or fails
+// to DNS-resolve) the SMTP ports to Resend — both 465/SSL and
+// 587/STARTTLS hit a 5-second connection timeout. Port 443 is
+// virtually never blocked on PaaS platforms, so we use Resend's
+// REST API instead. Switching providers later means changing the
+// helper in `utils/email.js`; this file only knows about the API
+// key + the from address.
 //
-// The deployer picks the combination and sets all five vars; the
-// code doesn't care which provider it's talking to.
-//
-// `SMTP_FROM` is derived from BRAND_DOMAIN so a domain migration
+// `EMAIL_FROM` is derived from BRAND_DOMAIN so a domain migration
 // updates the envelope sender too.
-const SMTP_FROM = `hello@${BRAND_DOMAIN}`
-
-// nodemailer's `secure` field is a boolean, but env values are
-// always strings. Parse the deployer's value here so the rest of
-// the file treats `config.smtp.secure` as a real boolean.
-const parseBool = (val, key) => {
-  if (val === 'true') return true
-  if (val === 'false') return false
-  throw new Error(`[${APP_NAME}] Invalid boolean for env var ${key}: ${val} (expected "true" or "false")`)
-}
+const EMAIL_FROM = `hello@${BRAND_DOMAIN}`
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Required env vars (deployer must set these — no fallback to constants)
@@ -137,13 +126,9 @@ const config = Object.freeze({
     expiresIn: JWT_EXPIRES_IN,
   }),
 
-  smtp: Object.freeze({
-    host: required('SMTP_HOST'),
-    port: parseInt(required('SMTP_PORT'), 10),
-    secure: parseBool(required('SMTP_SECURE'), 'SMTP_SECURE'),
-    user: required('SMTP_USER'),
-    pass: required('SMTP_PASS'),
-    from: SMTP_FROM,
+  email: Object.freeze({
+    from: EMAIL_FROM,
+    resendApiKey: required('RESEND_API_KEY'),
   }),
 })
 
