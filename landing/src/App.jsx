@@ -12,6 +12,7 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import FieldNote from './pages/FieldNote'
 import BugReport from './pages/BugReport'
+import Unsubscribe from './pages/Unsubscribe'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import NotFound from './pages/NotFound'
@@ -26,6 +27,12 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/bug-report" element={<BugReport />} />
+        {/* Unsubscribe target for the link in the Field Notes
+            confirmation email. The page reads `?email=…` from
+            the query string and fires the API. Mounted before
+            the dynamic `/field-notes/:slug` route so it can't
+            be swallowed. */}
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
         {/* Field-note post pages: items live at
             `/field-notes/<slug>`. Single-segment slugs for now;
             if multi-segment slugs are ever needed, switch to
