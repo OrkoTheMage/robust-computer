@@ -21,6 +21,7 @@
  */
 
 import { colors } from '../styles/colors'
+import { getLatestNewsPath } from './fieldNotes'
 
 // ── Brand ────────────────────────────────────────────────────────────────
 export const footerTagline = ''
