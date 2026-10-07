@@ -50,10 +50,23 @@ const Cols = styled.div`
   border-bottom: 3px solid ${colors.paper};
 
   @media (max-width: 760px) {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 32px;
     justify-items: center;
     text-align: center;
+
+    /* Brand spans both columns at the top.
+       Elsewhere takes the right column for rows 2-3,
+       so Site + Connect sit stacked in the left column. */
+    & > :first-child {
+      grid-column: 1 / -1;
+    }
+
+    & > :last-child {
+      grid-column: 2;
+      grid-row: 2 / 4;
+    }
   }
 `
 
