@@ -41,7 +41,7 @@ export const issue001 = {
 Welcome to The First Issue of Field Notes
 
 # Hello World
-![CDC 721 Terminal (circa 1982)](/public/field-notes/issue-001/computer.jpg)
+![CDC 721 Terminal (circa 1982)](/field-notes/issue-001/computer.jpg)
 ### Introduction
 
 In this issue, we will explore the basics of our publication and what you can expect in future issues.
@@ -55,6 +55,7 @@ In future issues, you can look forward to **tech-based topics**, shipped project
 You can read 'Field Notes' on the [official website](https://www.robust.computer/field-notes). 
 Each issue will have its own slug (e.g., \u0060\u0060\u0060issue-001\u0060\u0060\u0060) which you can access directly via its [URL](https://www.robust.computer/field-notes/issue-001).
 You can also read our RSS feed via [XML](https://www.robust.computer/rss.xml) or as [plain-text](https://www.robust.computer/feed.txt).
+
 ### RSS snippet
 
 \u0060\u0060\u0060bash
@@ -71,7 +72,7 @@ curl -s https://www.robust.computer/feed.txt
 
 You can subscribe to 'Field Notes' via the [index](https://www.robust.computer/field-notes), or directly via the [RSS feed](https://www.robust.computer/rss.xml). 
 We'll keep you updated with the latest issues through these channels. 
-![Icon](/public/field-notes/issue-001/icon.png)
+![Icon](/field-notes/issue-001/icon.png)
 
 - If you're subscribed via email you'll receive updates directly in your inbox. (still working out the kinks — might end up in spam)
 - If you're subscribed via RSS or plain-text feeds, you'll receive updates through your preferred feed reader.
