@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api, ApiError } from '../api'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * useContactForm
@@ -9,31 +10,33 @@ import { api, ApiError } from '../api'
  * lifecycle, and server-error surfacing.
  *
  * Returns a single binding object the page destructures directly.
+ * The chip group options (`projectTypes`, `budgets`) come from
+ * the locale dictionary, accessed via the page's own `useLocale()`
+ * call — keeping them out of this hook's return value avoids a
+ * locale change re-running the form's effect cycle for unrelated
+ * reasons. The error fallback likewise reads from the dictionary
+ * so a network failure renders the locale-appropriate message.
+ *
+ * Defaults
+ *   `projectType` defaults to the first chip option (the
+ *   dictionary's first entry), and `budget` defaults to the
+ *   second (the "5k–15k" / "De 5k a 15k" middle range) — the
+ *   same defaults the form had before the i18n split. Reading
+ *   them off the dictionary at mount time keeps a future
+ *   reordering of the chip arrays consistent with the form's
+ *   initial state, and lets a locale re-order its chips
+ *   without breaking that contract.
  */
 
-const PROJECT_TYPES = [
-  { value: 'landing', label: 'Landing page' },
-  { value: 'webapp', label: 'Web app' },
-  { value: 'saas', label: 'SaaS platform' },
-  { value: 'unsure', label: 'Not sure yet' },
-]
-
-const BUDGETS = [
-  { value: 'under_5k', label: 'Under 5k' },
-  { value: '5k_15k', label: '5k to 15k' },
-  { value: '15k_50k', label: '15k to 50k' },
-  { value: '50k_plus', label: '50k+' },
-]
-
-export { PROJECT_TYPES, BUDGETS }
-
 export function useContactForm() {
+  const { formErrors, projectTypes, budgets } = useLocale()
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     company: '',
-    projectType: 'landing',
-    budget: '5k_15k',
+    projectType: projectTypes[0]?.value || '',
+    budget: budgets[1]?.value || budgets[0]?.value || '',
     message: '',
   })
   const [submitting, setSubmitting] = useState(false)
@@ -83,7 +86,7 @@ export function useContactForm() {
           setFieldErrors(fe)
         }
       } else {
-        setError('Could not send the enquiry. Please try again.')
+        setError(formErrors.contactFallback)
       }
     } finally {
       setSubmitting(false)

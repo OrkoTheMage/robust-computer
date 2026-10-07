@@ -14,7 +14,7 @@ import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
 import { formatPubDate } from '../utils/formatPubDate'
 import { getLatestIssue } from '../utils/fieldNoteView'
-import { heroChrome, homePage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * Home page
@@ -54,6 +54,7 @@ export default function Home() {
   const newsletter = useNewsletterForm()
   const chrome = useChromeHeight()
   const latest = getLatestIssue()
+  const { heroChrome, homePage } = useLocale()
   const ticketBody = latest
     ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
     : heroChrome.emptyTicket

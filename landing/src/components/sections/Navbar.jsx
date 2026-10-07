@@ -17,6 +17,10 @@ import {
  *
  * Active link gets the ink underline. The CTA button on the right
  * is the "start a project" call.
+ *
+ * Two "About" / "News" labels appear inline (desktop) and a third
+ * copy is used in the site-menu modal. Both come from the i18n
+ * dictionary's `navChrome` so a locale switch updates them at once.
  */
 
   Github,
@@ -36,8 +40,8 @@ import { Button, XBrand } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 import { Modal } from '../modals'
 import { colors } from '../../styles/colors'
-import { navbarMobilePages, navbarPages, navbarConnects, navbarSocials } from '../../data/copy'
 import { useNavbar } from '../../hooks/useNavbar'
+import { useLocale } from '../../context/LocaleContext'
 import IconLink from './IconLink'
 import LanguageButton from './LanguageButton'
 
@@ -83,6 +87,11 @@ const Brand = styled.button`
 // character index 2 — line up vertically without any per-glyph
 // padding. Two <span>s so each word is its own <Zer0Text> unit
 // and so the line break isn't a stray space.
+//
+// "Robust" and "Computer" are kept as English literals here
+// because they're halves of the brand name. "Robust Computer"
+// is untranslated across every locale (see i18n/index.js
+// "Untranslated by design"), so the two halves are too.
 const BrandStack = styled.div`
   display: flex;
   flex-direction: column;
@@ -400,6 +409,7 @@ const Navbar = () => {
     toggleMobile,
     closeMobile,
   } = useNavbar()
+  const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome } = useLocale()
 
   return (
     <>
@@ -408,7 +418,7 @@ const Navbar = () => {
           <Brand
             type="button"
             onClick={openMenu}
-            aria-label="Open site menu"
+            aria-label={navChrome.openSiteMenu}
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
           >
@@ -419,8 +429,8 @@ const Navbar = () => {
             </BrandStack>
           </Brand>
           <Links>
-            <NavA to="/about"><Zer0Text>About</Zer0Text></NavA>
-            <NavA to="/field-notes"><Zer0Text>News</Zer0Text></NavA>
+            <NavA to="/about"><Zer0Text>{navChrome.about}</Zer0Text></NavA>
+            <NavA to="/field-notes"><Zer0Text>{navChrome.news}</Zer0Text></NavA>
             <IconLinks>
               <LanguageButton />
               {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
@@ -440,13 +450,13 @@ const Navbar = () => {
               })}
             </IconLinks>
             <CTA as={Link} to="/contact">
-              <Zer0Text>Start a project</Zer0Text>
+              <Zer0Text>{heroChrome.start}</Zer0Text>
             </CTA>
           </Links>
           <MenuBtn
             type="button"
             onClick={toggleMobile}
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileOpen ? navChrome.closeMenu : navChrome.openMenu}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
           >
@@ -482,7 +492,7 @@ const Navbar = () => {
               })}
             </PanelIcons>
             <PanelCTA as={Link} to="/contact" onClick={closeMobile}>
-              <Zer0Text>Start a project</Zer0Text>
+              <Zer0Text>{heroChrome.start}</Zer0Text>
             </PanelCTA>
           </Panel>
         )}
@@ -493,15 +503,15 @@ const Navbar = () => {
       <Modal
         open={menuOpen}
         onClose={closeMenu}
-        ariaLabel="Site menu"
+        ariaLabel={navChrome.menu.title}
       >
         <MenuBody>
-          <MenuHeader>Menu</MenuHeader>
-          <MenuSub>Jump anywhere</MenuSub>
+          <MenuHeader>{navChrome.menu.title}</MenuHeader>
+          <MenuSub>{navChrome.menu.sub}</MenuSub>
 
           <List>
             <ListDivider>
-              <span>Pages</span>
+              <span>{navChrome.menu.pagesHeader}</span>
             </ListDivider>
             {navbarPages.map((p) => {
               const { to, href, label, hint, icon, external } = p
@@ -530,7 +540,7 @@ const Navbar = () => {
             })}
 
             <ListDivider>
-              <span>Connect</span>
+              <span>{navChrome.menu.connectHeader}</span>
             </ListDivider>
             {navbarConnects.map(({ href, label, hint, external, icon }) => {
               const Icon = ICON_MAP[icon]
@@ -554,7 +564,7 @@ const Navbar = () => {
             })}
 
             <ListDivider>
-              <span>Elsewhere</span>
+              <span>{navChrome.menu.elsewhereHeader}</span>
             </ListDivider>
             {navbarSocials.map(({ href, label, hint, external, icon }) => {
               const Icon = ICON_MAP[icon]

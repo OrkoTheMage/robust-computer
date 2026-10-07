@@ -9,7 +9,7 @@ import FieldNoteBody from '../components/sections/FieldNoteBody'
 import { SEO } from '../components/seo'
 import { formatPubDate } from '../utils/formatPubDate'
 import { getIssueBySlug } from '../utils/fieldNoteView'
-import { fieldNotePage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * FieldNote
@@ -28,6 +28,23 @@ import { fieldNotePage } from '../data/copy'
  * Route: /field-notes/:slug  (items live at /field-notes/<slug>;
  * single-segment slug for now — see the App.jsx comment if a
  * multi-segment slug is ever needed).
+ *
+ * The "Published" line in the post header reads from
+ * `fieldNotePage.publishedLabel` so a Spanish user sees
+ * "Publicado" instead of the English word. The post body,
+ * title, and description stay in English (chrome translates,
+ * content doesn't — see i18n/index.js "Field Notes content
+ * scope").
+ *
+ * The page's `lead` (the line under the eyebrow on the
+ * per-post page header) used to come from
+ * `getChannelDescription()` in `data/fieldNotes.js`. Chunk 6
+ * moved that string to the i18n dictionaries
+ * (`fieldNotes.lead` in `i18n/en.js` / `i18n/es.js`) so a
+ * Spanish visitor sees a Spanish channel description, not
+ * the English one. The RSS feed still consumes the English
+ * string via `CHANNEL_DESCRIPTION` (the feed is
+ * English-only because the posts are English-only).
  */
 
 const Page = styled.main`
@@ -264,6 +281,7 @@ const AuthorStamp = styled.div`
 const FieldNote = () => {
   const { slug = '' } = useParams()
   const item = getIssueBySlug(slug)
+  const { fieldNotePage, fieldNotes } = useLocale()
   const seoTitle = item ? item.title : fieldNotePage.notFoundTitle
   const seoDescription = item ? item.description : fieldNotePage.seoFallbackDescription
 
@@ -295,13 +313,13 @@ const FieldNote = () => {
       <Navbar />
       <PageHeader
         eyebrow={fieldNotePage.eyebrow}
-        lead={item.channelDescription}
+        lead={fieldNotes.lead}
         imageVariant="bannerAlt"
       />
       <HeaderBox>
         {item.issuePrefix && <span className="kicker">{item.issuePrefix}</span>}
         <h1>{item.title}</h1>
-        <div className="date">Published {formatPubDate(item.pubDate)}</div>
+        <div className="date">{fieldNotePage.publishedLabel} {formatPubDate(item.pubDate)}</div>
       </HeaderBox>
       <Sheet>
         <FieldNoteBody raw={item.raw} />

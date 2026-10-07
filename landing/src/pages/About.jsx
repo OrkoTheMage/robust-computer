@@ -6,8 +6,8 @@ import Developer from '../components/sections/Developer'
 import CTABand from '../components/sections/CTABand'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
-import { developers, aboutPage } from '../data/copy'
 import { developerPreviews } from '../components/sections/developerPreviews'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * About page
@@ -22,6 +22,7 @@ const Page = styled.main`
 `
 
 export default function About() {
+  const { developers, aboutPage } = useLocale()
   return (
     <Page>
       <SEO

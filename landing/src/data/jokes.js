@@ -46,4 +46,7 @@ export const jokes = [
   'a deploy button we don\u2019t trust',
   'a Figma file named final_final_v3',
   'a 47-step README',
+  'Un diccionario Español',
+  'Un dictionnaire Français',
 ]
+  

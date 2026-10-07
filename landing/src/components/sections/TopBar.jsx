@@ -2,7 +2,7 @@ import { colors } from '../../styles/colors'
 import styled from '@emotion/styled'
 import { Zer0Text } from '../brand'
 import { useTopBarJoke } from '../../hooks/useTopBarJoke'
-import { topBar } from '../../data/copy'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * TopBar
@@ -44,6 +44,7 @@ const Dot = styled.span`
 
 const TopBar = () => {
   const joke = useTopBarJoke()
+  const { topBar } = useLocale()
 
   return (
     <Bar data-chrome="top">

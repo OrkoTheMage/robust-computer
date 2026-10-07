@@ -7,7 +7,7 @@ import { Button, FieldGroup, InputControl, TextareaControl } from '../components
 import { Zer0Text } from '../components/brand'
 import { SEO } from '../components/seo'
 import { useBugReportForm } from '../hooks/useBugReportForm'
-import { bugReportLead, bugReportPage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * BugReport
@@ -21,6 +21,10 @@ import { bugReportLead, bugReportPage } from '../data/copy'
  * Reporter's name + email are optional. The three repro fields
  * (what you were doing / what you expected / what happened) are
  * required.
+ *
+ * Field labels and placeholders come from the locale dictionary
+ * so a Spanish user sees "Tu nombre" / "Pasos para reproducir…"
+ * instead of the English strings.
  */
 
 const Page = styled.main`
@@ -109,6 +113,7 @@ const ErrorText = styled.p`
 
 export default function BugReport() {
   const b = useBugReportForm()
+  const { bugReportLead, bugReportPage, fields, placeholders } = useLocale()
 
   return (
     <Page>
@@ -135,21 +140,21 @@ export default function BugReport() {
             <p>{bugReportPage.sheetLead}</p>
 
       <Two>
-        <FieldGroup label="Your name" error={b.fieldErrors.name}>
+        <FieldGroup label={fields.yourName} error={b.fieldErrors.name}>
           <InputControl
             type="text"
             name="name"
-            placeholder="Full name"
+            placeholder={placeholders.fullName}
             value={b.formData.name}
             onChange={b.handleChange}
             disabled={b.submitting}
           />
         </FieldGroup>
-        <FieldGroup label="Email" error={b.fieldErrors.email}>
+        <FieldGroup label={fields.email} error={b.fieldErrors.email}>
           <InputControl
             type="email"
             name="email"
-            placeholder="you@company.com"
+            placeholder={placeholders.email}
             value={b.formData.email}
             onChange={b.handleChange}
             disabled={b.submitting}
@@ -157,10 +162,10 @@ export default function BugReport() {
         </FieldGroup>
       </Two>
 
-      <FieldGroup label="What were you doing?" error={b.fieldErrors.whatWereYouDoing}>
+      <FieldGroup label={fields.whatDoing} error={b.fieldErrors.whatWereYouDoing}>
         <TextareaControl
           name="whatWereYouDoing"
-          placeholder="Steps to reproduce — the page, the click, the input."
+          placeholder={placeholders.stepsRepro}
           value={b.formData.whatWereYouDoing}
           onChange={b.handleChange}
           disabled={b.submitting}
@@ -168,10 +173,10 @@ export default function BugReport() {
         />
       </FieldGroup>
 
-      <FieldGroup label="What did you expect?" error={b.fieldErrors.whatExpected}>
+      <FieldGroup label={fields.whatExpected} error={b.fieldErrors.whatExpected}>
         <TextareaControl
           name="whatExpected"
-          placeholder="What should have happened."
+          placeholder={placeholders.whatExpected}
           value={b.formData.whatExpected}
           onChange={b.handleChange}
           disabled={b.submitting}
@@ -179,10 +184,10 @@ export default function BugReport() {
         />
       </FieldGroup>
 
-      <FieldGroup label="What actually happened?" error={b.fieldErrors.whatHappened}>
+      <FieldGroup label={fields.whatHappened} error={b.fieldErrors.whatHappened}>
         <TextareaControl
           name="whatHappened"
-          placeholder="The actual behavior — error messages, broken layout, etc."
+          placeholder={placeholders.whatHappened}
           value={b.formData.whatHappened}
           onChange={b.handleChange}
           disabled={b.submitting}
@@ -190,11 +195,11 @@ export default function BugReport() {
         />
       </FieldGroup>
 
-      <FieldGroup label="Browser + device" error={b.fieldErrors.browserDevice}>
+      <FieldGroup label={fields.browserDevice} error={b.fieldErrors.browserDevice}>
         <InputControl
           type="text"
           name="browserDevice"
-          placeholder="e.g. Chrome 119 on macOS 14, iPhone 15 Safari"
+          placeholder={placeholders.browserDevice}
           value={b.formData.browserDevice}
           onChange={b.handleChange}
           disabled={b.submitting}

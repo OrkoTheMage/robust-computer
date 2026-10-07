@@ -5,12 +5,12 @@ import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../components/ui'
 import { Zer0Text } from '../components/brand'
-import { useContactForm, PROJECT_TYPES, BUDGETS } from '../hooks/useContactForm'
+import { useContactForm } from '../hooks/useContactForm'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { NewsletterBox } from '../components/sections/FieldNotes'
 import { SEO } from '../components/seo'
 import config from '../config'
-import { contactWhatHappens, fieldNotes, contactPage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * Contact page
@@ -19,6 +19,13 @@ import { contactWhatHappens, fieldNotes, contactPage } from '../data/copy'
  * the right (plain email, "what happens next" steps, newsletter).
  * Enquiry state is owned by `useContactForm`. Subscribe state
  * is owned by `useNewsletterForm` and passed into the box.
+ *
+ * All copy reads from the locale dictionary via `useLocale()`:
+ * page chrome (`contactPage`), the chip group options
+ * (`projectTypes`, `budgets`), field labels + placeholders
+ * (`fields`, `placeholders`), the "what happens next" list
+ * (`contactWhatHappens`), and the newsletter box framing
+ * (`fieldNotes.contactBox`).
  */
 
 const Page = styled.main`
@@ -201,6 +208,15 @@ const ErrorText = styled.p`
 export default function Contact() {
   const c = useContactForm()
   const newsletter = useNewsletterForm()
+  const {
+    contactPage,
+    contactWhatHappens,
+    fieldNotes,
+    fields,
+    placeholders,
+    projectTypes,
+    budgets,
+  } = useLocale()
 
   return (
     <Page>
@@ -229,22 +245,22 @@ export default function Contact() {
             <p>{contactPage.enquiryLead}</p>
 
             <Two>
-              <FieldGroup label="Your name" error={c.fieldErrors.name}>
+              <FieldGroup label={fields.yourName} error={c.fieldErrors.name}>
                 <InputControl
                   type="text"
                   name="name"
-                  placeholder="Full name"
+                  placeholder={placeholders.fullName}
                   value={c.formData.name}
                   onChange={c.handleChange}
                   disabled={c.submitting}
                   required
                 />
               </FieldGroup>
-              <FieldGroup label="Email" error={c.fieldErrors.email}>
+              <FieldGroup label={fields.email} error={c.fieldErrors.email}>
                 <InputControl
                   type="email"
                   name="email"
-                  placeholder="you@company.com"
+                  placeholder={placeholders.email}
                   value={c.formData.email}
                   onChange={c.handleChange}
                   disabled={c.submitting}
@@ -253,20 +269,20 @@ export default function Contact() {
               </FieldGroup>
             </Two>
 
-            <FieldGroup label="Company or project" error={c.fieldErrors.company}>
+            <FieldGroup label={fields.company} error={c.fieldErrors.company}>
               <InputControl
                 type="text"
                 name="company"
-                placeholder="Optional"
+                placeholder={placeholders.optional}
                 value={c.formData.company}
                 onChange={c.handleChange}
                 disabled={c.submitting}
               />
             </FieldGroup>
 
-            <Lab><Zer0Text>What are you building?</Zer0Text></Lab>
+            <Lab><Zer0Text>{contactPage.whatAreYouBuilding}</Zer0Text></Lab>
             <Chips>
-              {PROJECT_TYPES.map((p) => (
+              {projectTypes.map((p) => (
                 <ChipButton
                   key={p.value}
                   type="button"
@@ -277,9 +293,9 @@ export default function Contact() {
               ))}
             </Chips>
 
-            <Lab><Zer0Text>Rough budget</Zer0Text></Lab>
+            <Lab><Zer0Text>{contactPage.roughBudget}</Zer0Text></Lab>
             <Chips>
-              {BUDGETS.map((b) => (
+              {budgets.map((b) => (
                 <ChipButton
                   key={b.value}
                   type="button"
@@ -290,10 +306,10 @@ export default function Contact() {
               ))}
             </Chips>
 
-            <FieldGroup label="Tell us more" error={c.fieldErrors.message}>
+            <FieldGroup label={fields.message} error={c.fieldErrors.message}>
               <TextareaControl
                 name="message"
-                placeholder="What problem should it solve, and who will use it?"
+                placeholder={placeholders.messageContact}
                 value={c.formData.message}
                 onChange={c.handleChange}
                 disabled={c.submitting}

@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { colors } from '../../../styles/colors'
 import { Button, FieldGroup, InputControl } from '../../ui'
 import { Zer0Text } from '../../brand'
-import { subscribeStatus } from '../../../data/copy'
+import { useLocale } from '../../../context/LocaleContext'
 
 /**
  * FieldNotes/NewsletterBox
@@ -13,7 +13,7 @@ import { subscribeStatus } from '../../../data/copy'
  * the box just renders the bindings.
  *
  * `header` and `sub` are required — every call site should
- * pass them from `data/copy.js` so the two boxes stay in
+ * pass them from the i18n dictionary so the two boxes stay in
  * sync on the only thing they differ on (the framing).
  * The form itself (email input + subscribe button + status
  * caption) is fixed.
@@ -66,12 +66,13 @@ const NewsletterBox = ({
   status,
   errorMessage,
 }) => {
+  const { subscribeStatus, fields } = useLocale()
   return (
     <Box $bg={bg} $fg={fg}>
       <h3><Zer0Text>{header}</Zer0Text></h3>
       <p>{sub}</p>
       <form onSubmit={onSubmit}>
-        <FieldGroup label="Email address">
+        <FieldGroup label={fields.emailAddress}>
           <InputControl
             type="email"
             name="email"

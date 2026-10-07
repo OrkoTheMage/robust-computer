@@ -1,16 +1,27 @@
 import styled from '@emotion/styled'
 import { Languages } from 'lucide-react'
 import { colors } from '../../styles/colors'
-import { languages } from '../../data/copy'
 import { Modal } from '../modals'
 import IconLink from './IconLink'
 import { useLanguageMenu } from '../../hooks/useLanguageMenu'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * LanguageButton
  *
  * Language control for the main bar (dropdown) and the mobile
  * panel (modal). Each instance owns its own open state.
+ *
+ * The actual locale change is handled by the LocaleContext —
+ * selecting a row calls `setLocale(code)`, which updates the
+ * dictionary every consumer reads, persists the choice to
+ * localStorage, and reflects in `<html lang>`. The button
+ * itself is a pure control: render the row, fire the setter.
+ *
+ * `active` is computed from the current `locale` (not a static
+ * field on the language entry), so the row that reads
+ * "this is the language you're looking at right now" always
+ * matches the dictionary the rest of the app is rendering.
  */
 
 const LanguageWrap = styled.div`
@@ -84,6 +95,22 @@ const LanguageItemHint = styled.span`
   margin-left: 12px;
 `
 
+// Right-side language code (EN, ES, FR, HI, ZH). Kept on its
+// own styled component so the text-transform stays uppercase —
+// the shared LanguageItemHint is `lowercase` to fit the
+// "(coming soon)" copy and would otherwise render "en" / "fr"
+// instead of "EN" / "FR". Weight is bumped to 700 so the code
+// reads as a label, not a stray annotation.
+const LanguageItemAbbr = styled.span`
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: ${colors.deskSoft};
+  margin-left: 12px;
+  flex: none;
+`
+
 // Static-positioned wrapper for the language list when rendered
 // inside the centered Modal (mobile). Reuses the same
 // LanguageItem rows as the dropdown so the "current / disabled /
@@ -109,9 +136,35 @@ const LanguageModalList = styled.div`
 // centered Modal dialog (the Modal primitive handles backdrop
 // and Escape; its built-in close button is hidden for this
 // case via the hideCloseButton prop).
-
 const LanguageButton = ({ variant = 'dropdown', onAfterSelect }) => {
   const { open, wrapRef, isModal, close, toggle } = useLanguageMenu(variant)
+  const { languages, locale, setLocale, languageChrome } = useLocale()
+
+  const select = (code) => {
+    setLocale(code)
+    close()
+    onAfterSelect?.()
+  }
+
+  const renderRow = ({ code, label, abbr, available }) => {
+    const isActive = code === locale
+    return (
+      <LanguageItem
+        key={code}
+        role="menuitem"
+        disabled={!available}
+        aria-current={isActive ? 'true' : undefined}
+        onClick={() => {
+          if (!available) return
+          select(code)
+        }}
+      >
+        <span>{label}</span>
+        {abbr && <LanguageItemAbbr>{abbr}</LanguageItemAbbr>}
+        {!available && <LanguageItemHint>{languageChrome.comingSoon}</LanguageItemHint>}
+      </LanguageItem>
+    )
+  }
 
   return (
     <LanguageWrap ref={wrapRef} data-language-wrap>
@@ -122,10 +175,10 @@ const LanguageButton = ({ variant = 'dropdown', onAfterSelect }) => {
           e.preventDefault()
           toggle()
         }}
-        aria-label="Language"
+        aria-label={languageChrome.ariaLabel}
         aria-haspopup={isModal ? 'dialog' : 'menu'}
         aria-expanded={open}
-        data-tooltip="Language"
+        data-tooltip={languageChrome.tooltip}
       >
         <Languages size={26} strokeWidth={2.4} />
       </IconLink>
@@ -133,45 +186,17 @@ const LanguageButton = ({ variant = 'dropdown', onAfterSelect }) => {
         <Modal
           open={open}
           onClose={close}
-          ariaLabel="Language"
+          ariaLabel={languageChrome.modalAriaLabel}
           hideCloseButton
         >
-          <LanguageModalList role="menu" aria-label="Language">
-            {languages.map(({ code, label, available, active }) => (
-              <LanguageItem
-                key={code}
-                role="menuitem"
-                disabled={!available}
-                aria-current={active ? 'true' : undefined}
-                onClick={() => {
-                  close()
-                  onAfterSelect?.()
-                }}
-              >
-                <span>{label}</span>
-                {!available && <LanguageItemHint>(coming soon)</LanguageItemHint>}
-              </LanguageItem>
-            ))}
+          <LanguageModalList role="menu" aria-label={languageChrome.modalAriaLabel}>
+            {languages.map(renderRow)}
           </LanguageModalList>
         </Modal>
       )}
       {open && !isModal && (
-        <LanguageMenu role="menu" aria-label="Language">
-          {languages.map(({ code, label, available, active }) => (
-            <LanguageItem
-              key={code}
-              role="menuitem"
-              disabled={!available}
-              aria-current={active ? 'true' : undefined}
-              onClick={() => {
-                close()
-                onAfterSelect?.()
-              }}
-            >
-              <span>{label}</span>
-              {!available && <LanguageItemHint>(coming soon)</LanguageItemHint>}
-            </LanguageItem>
-          ))}
+        <LanguageMenu role="menu" aria-label={languageChrome.ariaLabel}>
+          {languages.map(renderRow)}
         </LanguageMenu>
       )}
     </LanguageWrap>

@@ -2,13 +2,14 @@ import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
 import { Container } from '../ui'
 import { Zer0Text } from '../brand'
-import { steps, stepsHeadline, stepsLead } from '../../data/copy'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * Steps
  *
  * "How a project runs" — gold band with a 4-step row. Numbers are
- * huge, body copy is small. Static content lives in `data/copy.js`.
+ * huge, body copy is small. Static content lives in the i18n
+ * dictionaries.
  */
 
 const Section = styled.section`
@@ -100,24 +101,27 @@ const Head = styled.div`
   }
 `
 
-const Steps = () => (
-  <Section>
-    <Container>
-      <Head>
-        <h2><Zer0Text>{stepsHeadline}</Zer0Text></h2>
-        <p>{stepsLead}</p>
-      </Head>
-      <Row>
-        {steps.map((s, i) => (
-          <Step key={s.title}>
-            <span className="n">{i + 1}</span>
-            <h3><Zer0Text>{s.title}</Zer0Text></h3>
-            <p>{s.body}</p>
-          </Step>
-        ))}
-      </Row>
-    </Container>
-  </Section>
-)
+const Steps = () => {
+  const { steps, stepsHeadline, stepsLead } = useLocale()
+  return (
+    <Section>
+      <Container>
+        <Head>
+          <h2><Zer0Text>{stepsHeadline}</Zer0Text></h2>
+          <p>{stepsLead}</p>
+        </Head>
+        <Row>
+          {steps.map((s, i) => (
+            <Step key={s.title}>
+              <span className="n">{i + 1}</span>
+              <h3><Zer0Text>{s.title}</Zer0Text></h3>
+              <p>{s.body}</p>
+            </Step>
+          ))}
+        </Row>
+      </Container>
+    </Section>
+  )
+}
 
 export default Steps

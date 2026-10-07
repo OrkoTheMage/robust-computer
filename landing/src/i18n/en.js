@@ -1,35 +1,61 @@
-import { colors } from '../styles/colors'
-import { FIELD_NOTES_LEAD } from './brand.js'
-
 /**
- * landing/src/data/copy.js
+ * i18n/en.js
  *
- * Single source of truth for all marketing copy on the site. Per
- * the Source of Truth audit:
- *   - Every sentence, headline, lead, value prop, and section title
- *     lives here.
- *   - UI micro-copy (button labels, form labels, placeholders,
- *     captions) stays in the component — it's tied to the
- *     component's structure, not "content".
+ * English dictionary. Single source of truth for every string the
+ * landing renders as copy — section headlines, button labels, nav
+ * links, form fields, error states, aria labels, microcopy, page
+ * titles and leads. The `useLocale()` hook in `context/LocaleContext`
+ * spreads these exports into its context value, so any page or
+ * component reads them through `const { hero } = useLocale()`.
  *
- * Plain text — the 0-for-O rule is applied at render time via
- * `utils/zer0.js`. Section titles and developer roles are written
- * in title case here (e.g., 'Full-stack developer'); the
- * rendering site calls zer0 on them since the UI uppercases via CSS.
+ * Structure: this file mirrors the shape `data/copy.js` used to hold.
+ * The Spanish dictionary (`i18n/es.js`) exports the same keys. Add
+ * a new key to both files at the same time; a missing key on one
+ * side falls back to the other (via the dictionary lookup in the
+ * LocaleContext), but a missing key on both surfaces as the raw
+ * key in the UI, which is a bug.
  *
- * Icon names (in Navbar / Services arrays) are strings, not
- * component references. The component maps them to Lucide
- * imports — keeps this file as pure data, no React/Lucide
- * coupling.
+ * The 0-for-O rule is applied at render time via `<Zer0Text>` and
+ * `utils/zer0.js`. It only makes sense for Latin scripts; the
+ * rule's docs already call out that it should be skipped on
+ * non-Latin scripts. As long as only `en` and `es` are live
+ * (both Latin), `<Zer0Text>` is correct everywhere.
+ *
+ * Plain text everywhere. No React, no JSX, no Lucide imports —
+ * keeps this file a pure data module that the build-rss script
+ * can also consume if it ever needs to.
  */
 
 // ── Brand ────────────────────────────────────────────────────────────────
-export const footerTagline = ''
+//
+// `tagline` is the small line under the wordmark in the footer
+// brand column. Empty by default — the footer's own tagline
+// (`footerChrome.tagline`) sits in the small bottom strip and
+// reads as the "site tagline" without duplicating it here.
+export const brand = {
+  tagline: '',
+}
 
 // ── Hero ─────────────────────────────────────────────────────────────────
 export const hero = {
   headline: 'Custom software, built to last.',
   lead: 'Robust Computer is a small team of developers. We design it, build it, and stay on after launch, so what we ship keeps working long after we hand it over.',
+}
+
+// ── Hero chrome ──────────────────────────────────────────────────────────
+//
+// The "chrome" keys are short strings that hang off the hero
+// specifically: button labels, the build-log ticket header, the
+// "shipped" stamp, the empty-ticket placeholder, and the
+// "Release X.Y.Z" string built from package.json. The CTABand
+// reuses `start` for its gold button on the about page.
+export const heroChrome = {
+  start: 'Start a project',
+  team: 'Meet the Team',
+  buildLog: 'Build log',
+  shipped: 'Shipped',
+  emptyTicket: '$ curl /latest.txt\n> (no issues yet)',
+  releasePrefix: 'Release',
 }
 
 // ── Promises (marquee items) ─────────────────────────────────────────────
@@ -55,32 +81,32 @@ export const services = {
   items: [
     {
       span: 7,
-      bg: colors.ink,
-      fg: colors.paper,
+      bg: 'ink',
+      fg: 'paper',
       icon: 'MonitorSmartphone',
       title: 'Landing pages and sites',
       body: 'Fast, clear marketing sites that explain what you do and get people to act.',
     },
     {
       span: 5,
-      bg: colors.gold,
-      fg: colors.ink,
+      bg: 'gold',
+      fg: 'ink',
       icon: 'Code2',
       title: 'Custom web apps',
       body: 'Portals, dashboards and internal tools shaped around how your team works.',
     },
     {
       span: 5,
-      bg: colors.paper,
-      fg: colors.ink,
+      bg: 'paper',
+      fg: 'ink',
       icon: 'Boxes',
       title: 'SaaS platforms',
       body: 'Accounts, billing and the product itself, built to scale.',
     },
     {
       span: 7,
-      bg: colors.gold,
-      fg: colors.ink,
+      bg: 'gold',
+      fg: 'ink',
       icon: 'Workflow',
       title: 'Integrations and APIs',
       body: 'Connect the tools you already use so data moves without anyone retyping it.',
@@ -114,7 +140,21 @@ export const steps = [
 // ── Industries ──────────────────────────────────────────────────────────
 export const industriesHeadline = 'Built across industries'
 
-// ── Field Notes ───────────────────────────────────────────────────────────
+// Industry chips on the home page. Static content (not interactive
+// filters), so this list lives with the other copy and the page
+// just maps over it.
+export const industries = [
+  'Finance',
+  'Healthcare',
+  'Retail',
+  'Hospitality',
+  'Education',
+  'Logistics',
+  'Non-profit',
+  'Professional services',
+]
+
+// ── Field Notes ──────────────────────────────────────────────────────────
 //
 // One product, three labels — picked by context, not by surface:
 //
@@ -144,7 +184,7 @@ export const industriesHeadline = 'Built across industries'
 export const fieldNotes = {
   headline: 'Field notes',
   indexTitle: 'Field notes',
-  lead: FIELD_NOTES_LEAD,
+  lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
   contactBox: {
     header: 'Field notes',
     sub: 'Short issues — updates frequently — on building software that lasts.',
@@ -162,6 +202,7 @@ export const ctaBand = {
 }
 
 // ── Navbar ─────────────────────────────────────────────────────────────
+//
 // `icon` is a string (mapped to a Lucide component in Navbar.jsx)
 // so this file stays pure data.
 export const navbarMobilePages = [
@@ -233,26 +274,49 @@ export const navbarSocials = [
   },
 ]
 
-// ── Languages (i18n stub) ────────────────────────────────────────────────
-// Drives the language dropdown that opens behind the Languages
-// icon in the nav. Top 5 by total speakers (native + L2), per
-// the common "most used languages" ranking. English is the
-// active language; the other four are disabled placeholders so
-// the menu shape is visible before translations actually land.
+// ── Navbar chrome ───────────────────────────────────────────────────────
 //
-// Non-Latin scripts (zh, hi) will fall back from IBM Plex Mono
-// to the browser's system CJK / Devanagari font on the menu row.
-// That's a visible inconsistency — see Navbar.jsx for a
-// fallback stack you can add to LanguageItem if it bothers you.
-export const languages = [
-  { code: 'en', label: 'English', available: true, active: true },
-  { code: 'es', label: 'Español', available: false },
-  { code: 'fr', label: 'Français', available: false },
-  { code: 'hi', label: 'हिन्दी', available: false },
-  { code: 'zh', label: '中文', available: false },
-]
+// Strings that hang off the navbar shell but aren't part of the
+// page list — the modal's title/sub/section dividers, the mobile
+// panel's aria labels, the open/close button labels. Kept
+// separate from `navbarPages` so the page list reads as a clean
+// data file (one entry per page) and the chrome stays grouped.
+export const navChrome = {
+  menu: {
+    title: 'Menu',
+    sub: 'Jump anywhere',
+    pagesHeader: 'Pages',
+    connectHeader: 'Connect',
+    elsewhereHeader: 'Elsewhere',
+  },
+  // Short labels for the two inline main-bar links that sit
+  // between the brand stack and the icon cluster. The
+  // mobile panel reads its labels from `navbarMobilePages`
+  // (per-entry) and the site-menu modal reads from
+  // `navbarPages` (per-entry) — those two paths don't go
+  // through these keys, only the inline main bar does.
+  about: 'About',
+  news: 'News',
+  openSiteMenu: 'Open site menu',
+  openMenu: 'Open menu',
+  closeMenu: 'Close menu',
+}
 
-// ── Footer ──────────────────────────────────────────────────────────────
+// ── Language button chrome ──────────────────────────────────────────────
+//
+// aria labels, the tooltip text, and the "coming soon" hint shown
+// beside disabled entries in the language menu. The `languages`
+// list itself lives in `i18n/index.js` (the entry labels are the
+// language's own name, not a translation, so they belong with
+// the language registry rather than a per-locale dictionary).
+export const languageChrome = {
+  ariaLabel: 'Language',
+  tooltip: 'Language',
+  modalAriaLabel: 'Language',
+  comingSoon: '(coming soon)',
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────
 export const footerSections = {
   site: [
     { to: '/', label: 'Home', icon: 'Home' },
@@ -275,6 +339,19 @@ export const footerSections = {
     { href: 'https://www.instagram.com/robust.computer/', label: 'Instagram', icon: 'Instagram' },
     { href: 'https://www.facebook.com/profile.php?id=61594902219428', label: 'Facebook', icon: 'Facebook' },
   ],
+}
+
+// Footer chrome — section headers, legal row, bottom-strip tagline.
+// Mirrors the structure of `navChrome`: a small bag of strings
+// the footer reads alongside `footerSections`.
+export const footerChrome = {
+  site: 'Site',
+  connect: 'Connect',
+  elsewhere: 'Elsewhere',
+  privacy: 'Privacy Policy',
+  terms: 'Terms of Service',
+  bug: 'Report a bug',
+  tagline: 'Custom software, built to last.',
 }
 
 // ── Not Found ───────────────────────────────────────────────────────────
@@ -349,11 +426,19 @@ export const termsSections = [
   'Changes to these Terms',
 ]
 
+// ── TopBar ──────────────────────────────────────────────────────────────
 export const topBar = {
   nowWith: 'Now with —',
   replies: 'Replies within 1-3 business day',
 }
 
+// ── Subscribe widget status ─────────────────────────────────────────────
+//
+// Drives every status caption rendered under the email field on
+// the home page Field Notes band and the NewsletterBox widget on
+// the Contact sidebar and the /field-notes index. The component
+// switches on `status` from the `useNewsletterForm` hook; this
+// object is the lookup table.
 export const subscribeStatus = {
   sending: 'Sending…',
   subscribe: 'Subscribe',
@@ -365,6 +450,53 @@ export const subscribeStatus = {
   latestSuffix: ', read online.',
   latestEmpty: 'Latest issue: placeholder title, read online.',
 }
+
+// ── Form chrome ─────────────────────────────────────────────────────────
+//
+// Field labels, placeholders, chip options, and "what happens next"
+// group labels. The contact and bug-report forms each render a
+// small set of these; centralizing them here keeps the two pages
+// in sync on the labels that overlap (e.g. "Your name", "Email").
+export const fields = {
+  email: 'Email',
+  emailAddress: 'Email address',
+  yourName: 'Your name',
+  company: 'Company or project',
+  message: 'Tell us more',
+  whatDoing: 'What were you doing?',
+  whatExpected: 'What did you expect?',
+  whatHappened: 'What actually happened?',
+  browserDevice: 'Browser + device',
+}
+
+export const placeholders = {
+  fullName: 'Full name',
+  email: 'you@company.com',
+  optional: 'Optional',
+  messageContact: 'What problem should it solve, and who will use it?',
+  stepsRepro: 'Steps to reproduce — the page, the click, the input.',
+  whatExpected: 'What should have happened.',
+  whatHappened: 'The actual behavior — error messages, broken layout, etc.',
+  browserDevice: 'e.g. Chrome 119 on macOS 14, iPhone 15 Safari',
+}
+
+// Project-type chips on the contact form. `value` is the wire
+// format sent to the server (the route handler maps it back to
+// a label here for display).
+export const projectTypes = [
+  { value: 'landing', label: 'Landing page' },
+  { value: 'webapp', label: 'Web app' },
+  { value: 'saas', label: 'SaaS platform' },
+  { value: 'unsure', label: 'Not sure yet' },
+]
+
+// Budget chips. Same wire-format pattern.
+export const budgets = [
+  { value: 'under_5k', label: 'Under 5k' },
+  { value: '5k_15k', label: '5k to 15k' },
+  { value: '15k_50k', label: '15k to 50k' },
+  { value: '50k_plus', label: '50k+' },
+]
 
 export const contactPage = {
   seoTitle: 'Contact',
@@ -379,6 +511,8 @@ export const contactPage = {
   preferEmailTitle: 'Prefer plain email?',
   preferEmailBody: 'Write to us directly and we will reply from a real person.',
   whatNextTitle: 'What happens next',
+  whatAreYouBuilding: 'What are you building?',
+  roughBudget: 'Rough budget',
   sending: 'Sending…',
   send: 'Send enquiry',
   errorFallback: 'Something went wrong. Please try again.',
@@ -417,11 +551,20 @@ export const termsPage = {
   lead: 'The ground rules for using this site and working with us.',
 }
 
+// ── Field Notes pagination ──────────────────────────────────────────────
+//
+// Visible prev/next labels and the aria labels for the page
+// buttons. The "go to page N" label is built from a function
+// (called with the page number) so the string can be assembled
+// with the right number in any locale's grammar.
 export const fieldNotesPage = {
   empty: "No posts yet — subscribe and you'll get the first one.",
   published: 'Published',
   prev: '‹ Prev',
   next: 'Next ›',
+  previousPageLabel: 'Previous page',
+  nextPageLabel: 'Next page',
+  goToPage: (n) => `Go to page ${n}`,
 }
 
 export const fieldNotePage = {
@@ -429,6 +572,7 @@ export const fieldNotePage = {
   notFoundLead: 'No post at this URL.',
   eyebrow: 'Field notes',
   back: 'Back to home',
+  publishedLabel: 'Published',
   seoFallbackDescription: 'Field Notes from Robust Computer — short issues on building software that lasts.',
 }
 
@@ -448,23 +592,27 @@ export const unsubscribePage = {
   brokenTitle: 'This link is broken',
   brokenLede: 'The unsubscribe link is missing the email address. Open the most recent Field Notes email and use the link at the bottom of that message.',
   back: 'Back to home',
+  // The error-state lede appends the email if we have one so
+  // the user can confirm which address failed. Built from a
+  // function so the sentence can be assembled in any locale's
+  // grammar.
+  errorEmailSuffix: (email) => ` Trying to unsubscribe ${email}.`,
+  defaultError: 'Could not unsubscribe right now. Try again in a moment.',
 }
 
 export const homePage = {
   seoDescription: 'Custom software, built to last. Robust Computer is a small team of developers. We design it, build it, and stay on after launch.',
 }
 
-export const heroChrome = {
-  start: 'Start a project',
-  team: 'Meet the Team',
-  buildLog: 'Build log',
-  shipped: 'Shipped',
-  emptyTicket: '$ curl /latest.txt\n> (no issues yet)',
-}
-
-export const footerChrome = {
-  privacy: 'Privacy Policy',
-  terms: 'Terms of Service',
-  bug: 'Report a bug',
-  tagline: 'Custom software, built to last.',
+// ── Form errors ─────────────────────────────────────────────────────────
+//
+// Fallback messages shown by the form hooks when the network call
+// fails outright (i.e. when the server didn't get a chance to send
+// a friendly error of its own). The hooks also surface server
+// errors verbatim — those are server-controlled and don't go
+// through the i18n system.
+export const formErrors = {
+  contactFallback: 'Could not send the enquiry. Please try again.',
+  bugFallback: 'Could not send the report. Please try again.',
+  newsletterFallback: 'Something went wrong. Please try again.',
 }

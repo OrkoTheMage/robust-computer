@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import config from '../../config'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * landing/src/components/seo/SEO.jsx
@@ -21,6 +22,17 @@ import config from '../../config'
  *     path="/about"
  *   />
  *
+ * Locale awareness
+ *   The component re-runs its effect whenever the locale
+ *   changes, so a user who switches the language without
+ *   navigating still gets a title/description/og:* set in
+ *   the new language on the next tick. The page itself
+ *   re-renders with the new copy, and the SEO component
+ *   follows in the same React commit. Without this hookup,
+ *   a language switch on, say, the home page would change
+ *   the visible headline but leave the document title in
+ *   the previous language.
+ *
  * The `image` prop is optional; defaults to the wide banner
  * (banner2-cut.svg) which reads well as a Twitter
  * summary_large_image card and an OG image at 1200×630.
@@ -33,12 +45,21 @@ import config from '../../config'
  * the site root).
  */
 
+// `BASE` is the brand name. "Robust Computer" is untranslated
+// across every locale (see i18n/index.js "Untranslated by
+// design") so the title prefix is the same English string in
+// every locale.
 const BASE = 'Robust Computer'
 const SEP = ' | '
 
 // Default description for any page that doesn't pass one.
 // Kept short (~155 chars) so it isn't truncated by Twitter
-// or Facebook's preview cards.
+// or Facebook's preview cards. Same string in every locale
+// for the same reason as BASE: this is the rare fallback
+// path, and the English wording is the most likely to
+// render usefully in a search snippet. Pages that ship
+// translated copy override this with their i18n
+// `seoDescription` field.
 const DEFAULT_DESCRIPTION =
   'Robust Computer is a small team of developers. We design it, build it, and stay on after launch.'
 
@@ -78,6 +99,14 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
   const url = path ? `${config.landingUrl}${path}` : config.landingUrl
   // og:image and twitter:image want absolute URLs.
   const absoluteImage = image.startsWith('http') ? image : `${config.landingUrl}${image}`
+  // Track the locale so the effect re-runs on language change.
+  // The page's title/description props are themselves read from
+  // the i18n dict, so when those props change the effect
+  // already re-runs; subscribing to locale is belt-and-braces
+  // for the case where a page re-uses the same prop value
+  // across a language switch (e.g. an untranslated brand
+  // label) but the user-visible body changed.
+  const { locale } = useLocale()
 
   useEffect(() => {
     const previousTitle = document.title
@@ -115,7 +144,7 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
       // don't bother restoring them individually.
       if (document.title === fullTitle) document.title = previousTitle
     }
-  }, [fullTitle, description, url, absoluteImage, type])
+  }, [fullTitle, description, url, absoluteImage, type, locale])
 
   return null
 }

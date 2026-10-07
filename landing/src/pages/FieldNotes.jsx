@@ -6,12 +6,12 @@ import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { NewsletterBox } from '../components/sections/FieldNotes'
 import { SEO } from '../components/seo'
-import { fieldNotes as fieldNotesCopy, fieldNotesPage } from '../data/copy'
 import { FIELD_NOTES_PAGE_SIZE } from '../data/fieldNotes'
 import { formatPubDate } from '../utils/formatPubDate'
 import { getAllByDate } from '../utils/fieldNoteView'
 import { usePagination } from '../hooks/usePagination'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * FieldNotes index page
@@ -32,7 +32,11 @@ import { useNewsletterForm } from '../hooks/useNewsletterForm'
  * The "Not already Subscribed?" box reuses the
  * NewsletterBox widget from the Contact page (the only
  * difference is the header/sub copy, both pulled from
- * `data/copy.js`).
+ * the i18n dictionary).
+ *
+ * Pagination aria labels come from `fieldNotesPage` so
+ * the prev/next buttons announce correctly to screen
+ * readers in the active locale.
  *
  * Route: /field-notes  (must be mounted before
  * /field-notes/:slug in App.jsx so the slug route doesn't
@@ -255,18 +259,19 @@ export default function FieldNotes() {
   const posts = getAllByDate()
   const pager = usePagination(posts, FIELD_NOTES_PAGE_SIZE)
   const newsletter = useNewsletterForm()
+  const { fieldNotes, fieldNotesPage } = useLocale()
 
   return (
     <Page>
       <SEO
-        title={fieldNotesCopy.indexTitle}
-        description={fieldNotesCopy.lead}
+        title={fieldNotes.indexTitle}
+        description={fieldNotes.lead}
         path="/field-notes"
       />
       <Navbar />
       <PageHeader
-        title={fieldNotesCopy.indexTitle}
-        lead={fieldNotesCopy.lead}
+        title={fieldNotes.indexTitle}
+        lead={fieldNotes.lead}
         imageVariant="bannerAlt"
       />
       <List>
@@ -291,7 +296,7 @@ export default function FieldNotes() {
             type="button"
             onClick={pager.prev}
             disabled={!pager.hasPrev}
-            aria-label="Previous page"
+            aria-label={fieldNotesPage.previousPageLabel}
           >
             {fieldNotesPage.prev}
           </PageBtn>
@@ -301,7 +306,7 @@ export default function FieldNotes() {
               type="button"
               onClick={() => pager.goTo(p)}
               $active={pager.page === p}
-              aria-label={`Go to page ${p}`}
+              aria-label={fieldNotesPage.goToPage(p)}
               aria-current={pager.page === p ? 'page' : undefined}
             >
               {p}
@@ -311,7 +316,7 @@ export default function FieldNotes() {
             type="button"
             onClick={pager.next}
             disabled={!pager.hasNext}
-            aria-label="Next page"
+            aria-label={fieldNotesPage.nextPageLabel}
           >
             {fieldNotesPage.next}
           </PageBtn>
@@ -320,8 +325,8 @@ export default function FieldNotes() {
       <Subscribe>
         <Box>
           <NewsletterBox
-            header={fieldNotesCopy.subscribeBox.header}
-            sub={fieldNotesCopy.subscribeBox.sub}
+            header={fieldNotes.subscribeBox.header}
+            sub={fieldNotes.subscribeBox.sub}
             bg={colors.gold}
             fg={colors.ink}
             email={newsletter.email}

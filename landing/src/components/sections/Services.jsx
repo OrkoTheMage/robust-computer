@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
 import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
-import { services } from '../../data/copy'
 import { Container } from '../ui'
 import { Zer0Text } from '../brand'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * Services
@@ -13,14 +13,29 @@ import { Zer0Text } from '../brand'
  * gold — top to bottom). Each card has an icon, a title, and a
  * one-liner.
  *
- * Per-card copy and `bg`/`fg` colors live in `data/copy.js`; this
- * file is just the layout and the icon-name → Lucide-component
- * map. See ICON_MAP below.
+ * Per-card copy and `bg`/`fg` colors live in the i18n dictionaries.
+ * The `bg`/`fg` fields are tokens ('ink' | 'gold' | 'paper'), not
+ * raw color values — keeps the dictionary pure data (no
+ * `colors.js` import) while letting the surface track the rest of
+ * the site. SWATCHES maps the token to its color when the styled
+ * component receives it.
  */
 
-// Map icon-name strings from the data file to Lucide components.
-// Keeps the data file pure (no React/Lucide imports).
+// Map icon-name strings from the i18n dictionary to Lucide
+// components. Keeps the dictionary file pure (no React/Lucide
+// imports).
 const ICON_MAP = { MonitorSmartphone, Code2, Boxes, Workflow }
+
+// Token → color. The dictionary only knows about ink/gold/paper
+// because those are the three surface colors the Services grid
+// actually uses; if a future item wants a different surface,
+// extend this map (don't smuggle raw color strings into the
+// dictionary — keeps the surface vocabulary in one place).
+const SWATCHES = {
+  ink: colors.ink,
+  gold: colors.gold,
+  paper: colors.paper,
+}
 
 const Section = styled.section`
   padding: 84px 56px 72px;
@@ -65,8 +80,8 @@ const Grid = styled.div`
 
 const Card = styled.article`
   grid-column: ${(p) => p.span};
-  background: ${(p) => p.bg};
-  color: ${(p) => p.fg};
+  background: ${(p) => SWATCHES[p.bg] || p.bg};
+  color: ${(p) => SWATCHES[p.fg] || p.fg};
   border: 3px solid ${colors.ink};
   padding: 30px 32px 32px;
   display: flex;
@@ -94,32 +109,35 @@ const Card = styled.article`
   }
 `
 
-const Services = () => (
-  <Section>
-    <Container>
-      <Head>
-        <h2><Zer0Text>{services.headline}</Zer0Text></h2>
-        <p>{services.lead}</p>
-      </Head>
-      <Grid>
-        {services.items.map((it) => {
-          const Icon = ICON_MAP[it.icon]
-          return (
-            <Card
-              key={it.title}
-              span={`span ${it.span}`}
-              bg={it.bg}
-              fg={it.fg}
-            >
-              <Icon size={64} strokeWidth={2.4} />
-              <h3><Zer0Text>{it.title}</Zer0Text></h3>
-              <p>{it.body}</p>
-            </Card>
-          )
-        })}
-      </Grid>
-    </Container>
-  </Section>
-)
+const Services = () => {
+  const { services } = useLocale()
+  return (
+    <Section>
+      <Container>
+        <Head>
+          <h2><Zer0Text>{services.headline}</Zer0Text></h2>
+          <p>{services.lead}</p>
+        </Head>
+        <Grid>
+          {services.items.map((it) => {
+            const Icon = ICON_MAP[it.icon]
+            return (
+              <Card
+                key={it.title}
+                span={`span ${it.span}`}
+                bg={it.bg}
+                fg={it.fg}
+              >
+                <Icon size={64} strokeWidth={2.4} />
+                <h3><Zer0Text>{it.title}</Zer0Text></h3>
+                <p>{it.body}</p>
+              </Card>
+            )
+          })}
+        </Grid>
+      </Container>
+    </Section>
+  )
+}
 
 export default Services

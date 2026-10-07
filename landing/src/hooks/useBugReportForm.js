@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api, ApiError } from '../api'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * useBugReportForm
@@ -11,9 +12,14 @@ import { api, ApiError } from '../api'
  * three repro fields (what you were doing / what you expected /
  * what happened) are required. Mirrors the useContactForm API
  * (returns one binding object the page destructures).
+ *
+ * The network-failure fallback reads from the locale dictionary
+ * so a Spanish user sees "No se pudo enviar el reporte" instead
+ * of the English fallback.
  */
 
 export function useBugReportForm() {
+  const { formErrors } = useLocale()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -58,7 +64,7 @@ export function useBugReportForm() {
           setFieldErrors(fe)
         }
       } else {
-        setError('Could not send the report. Please try again.')
+        setError(formErrors.bugFallback)
       }
     } finally {
       setSubmitting(false)
