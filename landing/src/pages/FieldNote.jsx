@@ -158,8 +158,6 @@ const BackLink = styled(Link)`
   align-items: center;
   gap: 8px;
   margin-top: 48px;
-  padding-top: 24px;
-  border-top: 3px solid ${colors.ink};
   font-family: var(--mono);
   font-weight: 700;
   font-size: 14px;
@@ -176,7 +174,6 @@ const BackLink = styled(Link)`
 
   @media (max-width: 760px) {
     margin-top: 32px;
-    padding-top: 20px;
     font-size: 13px;
   }
 `
@@ -214,9 +211,13 @@ const BackLink = styled(Link)`
 // output from highlight.js; the <pre> wrapper preserves
 // whitespace and gives us the overflow-x: auto.
 const AuthorFoot = styled.div`
-  margin-top: 48px;
+  margin-top: 72px;
   display: flex;
   justify-content: flex-end;
+
+  @media (max-width: 760px) {
+    margin-top: 48px;
+  }
 `
 
 const AuthorStamp = styled.div`

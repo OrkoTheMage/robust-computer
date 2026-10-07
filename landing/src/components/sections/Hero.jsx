@@ -26,8 +26,6 @@ import { useLocale } from '../../context/LocaleContext'
  * The "Release X.Y.Z" tag uses a separate chrome string
  * (`heroChrome.releasePrefix`) so each locale can order the
  * label and the version however reads naturally — e.g.
- * Spanish uses "Versión 0.12.0" rather than the English
- * "Release 0.12.0".
  */
 
 /* Fills the opening viewport above the promises bar. The inner

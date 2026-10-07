@@ -74,6 +74,10 @@ const Lede = styled.p`
     font-size: 0.9em;
     box-shadow: inset 0 -1px 0 ${colors.ink};
   }
+  img {
+    margin: 16px 0;
+    height: auto;
+  }
 
   @media (max-width: 760px) {
     padding: 2px 0 2px 16px;
@@ -102,6 +106,10 @@ const TextSection = styled.div`
     color: ${colors.paper};
     padding: 2px 6px;
     font-size: 0.9em;
+  }
+  img {
+    margin: 16px 0;
+    height: auto;
   }
 `
 
@@ -142,6 +150,10 @@ const QuoteSection = styled.div`
     color: ${colors.paper};
     padding: 2px 6px;
     font-size: 0.9em;
+  }
+  img {
+    margin: 16px 0;
+    height: auto;
   }
 
   @media (max-width: 760px) {
@@ -431,6 +443,10 @@ const UlSection = styled.ul`
       padding: 2px 6px;
       font-size: 0.9em;
     }
+    img {
+      margin: 16px 0;
+      height: auto;
+    }
   }
 `
 
@@ -474,6 +490,10 @@ const OlSection = styled.ol`
       color: ${colors.paper};
       padding: 2px 6px;
       font-size: 0.9em;
+    }
+    img {
+      margin: 16px 0;
+      height: auto;
     }
   }
 `
