@@ -23,7 +23,6 @@ import {
   Linkedin,
   Facebook,
   Instagram,
-  Twitter,
   Rss,
   Mail,
   Home,
@@ -33,7 +32,7 @@ import {
   Menu,
   X,
 } from 'lucide-react'
-import { Button } from '../ui'
+import { Button, XBrand } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 import { Modal } from '../modals'
 import { colors } from '../../styles/colors'
@@ -43,7 +42,7 @@ import IconLink from './IconLink'
 import LanguageButton from './LanguageButton'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Github, Linkedin, Facebook, Instagram, Twitter, Rss, Mail, Home, Users, Send, Newspaper }
+const ICON_MAP = { Github, Linkedin, Facebook, Instagram, X: XBrand, Rss, Mail, Home, Users, Send, Newspaper }
 
 const Sticky = styled.div`
   position: sticky;
