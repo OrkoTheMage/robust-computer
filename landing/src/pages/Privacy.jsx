@@ -4,7 +4,7 @@ import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
-import { privacySections, privacyPage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * Privacy Policy
@@ -67,6 +67,7 @@ const Meta = styled.p`
 `
 
 const Privacy = () => {
+  const { privacySections, privacyPage } = useLocale()
   return (
   <Page>
     <SEO

@@ -3,7 +3,7 @@ import { colors } from '../../../styles/colors'
 import { Link } from 'react-router-dom'
 import { Button, InputControl, FieldGroup } from '../../ui'
 import { Zer0Text } from '../../brand'
-import { fieldNotes, subscribeStatus } from '../../../data/copy'
+import { useLocale } from '../../../context/LocaleContext'
 
 /**
  * FieldNotes/Band
@@ -107,6 +107,7 @@ const Row = styled.div`
 // "no custom overrides" rule honest.
 
 const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage, latest }) => {
+  const { fieldNotes, subscribeStatus, fields } = useLocale()
   return (
     <Band>
       <div>
@@ -115,7 +116,7 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessag
       </div>
       <Form onSubmit={onSubmit}>
         <div style={{ marginBottom: 0 }}>
-          <FieldGroup label="Email address">
+          <FieldGroup label={fields.emailAddress}>
             <Row>
               <InputControl
                 type="email"

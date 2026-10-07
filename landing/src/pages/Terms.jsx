@@ -4,7 +4,7 @@ import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
-import { termsSections, termsPage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * Terms of Service
@@ -67,6 +67,7 @@ const Meta = styled.p`
 `
 
 const Terms = () => {
+  const { termsSections, termsPage } = useLocale()
   return (
   <Page>
     <SEO

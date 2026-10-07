@@ -5,7 +5,7 @@ import { Button } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 import { ticketIn } from '../../styles/animations'
 import { colors } from '../../styles/colors'
-import { hero, heroChrome } from '../../data/copy'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * Hero
@@ -22,6 +22,12 @@ import { hero, heroChrome } from '../../data/copy'
  *     /public/rss.xml is regenerated from the same array) and
  *     renders its title, pub date, and one-sentence excerpt. If
  *     the array is empty, it shows a placeholder.
+ *
+ * The "Release X.Y.Z" tag uses a separate chrome string
+ * (`heroChrome.releasePrefix`) so each locale can order the
+ * label and the version however reads naturally — e.g.
+ * Spanish uses "Versión 0.12.0" rather than the English
+ * "Release 0.12.0".
  */
 
 /* Fills the opening viewport above the promises bar. The inner
@@ -229,6 +235,7 @@ const TicketStamp = styled.span`
 `
 
 const Hero = ({ latest, ticketBody }) => {
+  const { hero, heroChrome } = useLocale()
   return (
     <Wrap>
       <Inner>
@@ -252,7 +259,7 @@ const Hero = ({ latest, ticketBody }) => {
             <Ticket>
               <TicketTag>
                 <span><Zer0Text>{heroChrome.buildLog}</Zer0Text></span>
-                <span><Zer0Text>{`Release ${pkg.version}`}</Zer0Text></span>
+                <span><Zer0Text>{`${heroChrome.releasePrefix} ${pkg.version}`}</Zer0Text></span>
               </TicketTag>
               <TicketBody>{ticketBody}</TicketBody>
               {latest?.to ? (

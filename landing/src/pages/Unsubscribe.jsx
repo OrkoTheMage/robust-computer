@@ -7,7 +7,7 @@ import { Button } from '../components/ui'
 import { Logo, Zer0Text } from '../components/brand'
 import { SEO } from '../components/seo'
 import { useUnsubscribe } from '../hooks/useUnsubscribe'
-import { unsubscribePage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * Unsubscribe
@@ -71,6 +71,7 @@ const Lede = styled.p`
 
 const Unsubscribe = () => {
   const { headline, lede, showHome } = useUnsubscribe()
+  const { unsubscribePage } = useLocale()
 
   return (
     <Page>

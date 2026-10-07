@@ -3,8 +3,7 @@ import { colors } from '../../styles/colors'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui'
 import { Zer0Text } from '../brand'
-import { heroChrome } from '../../data/copy'
-import { ctaBand } from '../../data/copy'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * CTABand
@@ -46,16 +45,19 @@ const Band = styled.section`
   }
 `
 
-const CTABand = () => (
-  <Band>
-    <div>
-      <h2><Zer0Text>{ctaBand.headline}</Zer0Text></h2>
-      <p>{ctaBand.lead}</p>
-    </div>
-    <Button as={Link} to="/contact" variant="gold">
-      <Zer0Text>{heroChrome.start}</Zer0Text>
-    </Button>
-  </Band>
-)
+const CTABand = () => {
+  const { ctaBand, heroChrome } = useLocale()
+  return (
+    <Band>
+      <div>
+        <h2><Zer0Text>{ctaBand.headline}</Zer0Text></h2>
+        <p>{ctaBand.lead}</p>
+      </div>
+      <Button as={Link} to="/contact" variant="gold">
+        <Zer0Text>{heroChrome.start}</Zer0Text>
+      </Button>
+    </Band>
+  )
+}
 
 export default CTABand

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api, ApiError } from '../api'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * useNewsletterForm
@@ -25,6 +26,7 @@ import { api, ApiError } from '../api'
  */
 
 export function useNewsletterForm() {
+  const { formErrors } = useLocale()
   const [email, setEmail] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState('idle')
@@ -59,7 +61,7 @@ export function useNewsletterForm() {
         // connection and try again." for a network failure.
         setErrorMessage(err.message)
       } else {
-        setErrorMessage('Something went wrong. Please try again.')
+        setErrorMessage(formErrors.newsletterFallback)
       }
       setStatus('error')
     } finally {

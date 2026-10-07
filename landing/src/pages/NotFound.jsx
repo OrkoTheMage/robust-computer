@@ -6,7 +6,7 @@ import Footer from '../components/sections/Footer'
 import { Button } from '../components/ui'
 import { Logo, Zer0Text } from '../components/brand'
 import { SEO } from '../components/seo'
-import { notFound, notFoundPage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * NotFound
@@ -64,6 +64,7 @@ const Lede = styled.p`
 `
 
 export default function NotFound() {
+  const { notFound, notFoundPage } = useLocale()
   return (
     <Page>
       <SEO

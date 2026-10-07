@@ -4,7 +4,7 @@ import { Zer0Text } from '../brand'
 import { marqueeLr } from '../../styles/animations'
 import { repeat } from '../../utils/repeat'
 import { colors } from '../../styles/colors'
-import { promisesItems } from '../../data/copy'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * Promises
@@ -76,6 +76,7 @@ const Dot = styled.b`
 const COPIES = 6
 
 const Promises = () => {
+  const { promisesItems } = useLocale()
   const repeated = repeat(promisesItems, COPIES)
   return (
     <Bar aria-label={promisesItems.join(' · ')}>

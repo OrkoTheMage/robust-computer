@@ -25,8 +25,8 @@ import {
 import config from '../../config'
 import { Logo, Zer0Text } from '../brand'
 import { XBrand } from '../ui'
-import { footerTagline, footerSections, footerChrome } from '../../data/copy'
 import { useHomeLinkClick } from '../../hooks/useHomeLinkClick'
+import { useLocale } from '../../context/LocaleContext'
 
 // Map icon-name strings from the data file to Lucide components.
 const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, X: XBrand, Mail, Newspaper }
@@ -230,17 +230,18 @@ const Legal = styled.nav`
 
 const Footer = () => {
   const { onHomeClick } = useHomeLinkClick()
+  const { brand: brandCopy, footerSections, footerChrome } = useLocale()
 
   return (
     <Foot>
       <Cols>
         <Brand>
           <Logo variant="banner2Alt" h={160} className="w" alt={config.brand.name} />
-          <p>{footerTagline}</p>
+          <p>{brandCopy.tagline}</p>
           <p className="mono">{config.brand.email}</p>
         </Brand>
         <Col>
-          <h4><Zer0Text>Site</Zer0Text></h4>
+          <h4><Zer0Text>{footerChrome.site}</Zer0Text></h4>
           {footerSections.site.map((l) => {
             const Icon = ICON_MAP[l.icon]
             return l.to ? (
@@ -257,7 +258,7 @@ const Footer = () => {
           })}
       </Col>
       <Col>
-        <h4><Zer0Text>Connect</Zer0Text></h4>
+        <h4><Zer0Text>{footerChrome.connect}</Zer0Text></h4>
         {footerSections.connect.map((l) => {
           const Icon = ICON_MAP[l.icon]
           return (
@@ -269,7 +270,7 @@ const Footer = () => {
         })}
       </Col>
       <Col>
-        <h4><Zer0Text>Elsewhere</Zer0Text></h4>
+        <h4><Zer0Text>{footerChrome.elsewhere}</Zer0Text></h4>
         {footerSections.elsewhere.map((l) => {
           const Icon = ICON_MAP[l.icon]
           return (

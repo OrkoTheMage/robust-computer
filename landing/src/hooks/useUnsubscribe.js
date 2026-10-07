@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
-import { unsubscribePage } from '../data/copy'
+import { useLocale } from '../context/LocaleContext'
 
 /**
  * useUnsubscribe
@@ -28,34 +28,40 @@ import { unsubscribePage } from '../data/copy'
  * can show which address was unsubscribed (the user just
  * clicked a link in an email — confirming the address back to
  * them is reassuring).
+ *
+ * Reads its copy from the locale context so a Spanish user
+ * sees the same flow in Spanish. The error-state lede
+ * appends the email via `unsubscribePage.errorEmailSuffix(email)`
+ * — a function in the dictionary that knows how to assemble
+ * the sentence in the active locale's grammar.
  */
 
-const viewFor = ({ status, email, errorMessage }) => {
+const viewFor = ({ status, email, errorMessage, copy }) => {
   if (status === 'success') {
     return {
-      headline: unsubscribePage.successTitle,
-      lede: `${email} ${unsubscribePage.successLede}`,
+      headline: copy.successTitle,
+      lede: `${email} ${copy.successLede}`,
       showHome: true,
     }
   }
   if (status === 'error') {
-    const detail = errorMessage || unsubscribePage.errorFallback
-    const who = email ? ` Trying to unsubscribe ${email}.` : ''
+    const detail = errorMessage || copy.errorFallback
+    const who = email ? copy.errorEmailSuffix(email) : ''
     return {
-      headline: unsubscribePage.errorTitle,
+      headline: copy.errorTitle,
       lede: `${detail}${who}`,
       showHome: true,
     }
   }
   if (status === 'idle') {
     return {
-      headline: unsubscribePage.brokenTitle,
-      lede: unsubscribePage.brokenLede,
+      headline: copy.brokenTitle,
+      lede: copy.brokenLede,
       showHome: true,
     }
   }
   return {
-    headline: unsubscribePage.loading,
+    headline: copy.loading,
     lede: null,
     showHome: false,
   }
@@ -64,6 +70,7 @@ const viewFor = ({ status, email, errorMessage }) => {
 export function useUnsubscribe() {
   const [searchParams] = useSearchParams()
   const email = searchParams.get('email') || ''
+  const { unsubscribePage: copy } = useLocale()
 
   const [status, setStatus] = useState('loading')
   const [errorMessage, setErrorMessage] = useState(null)
@@ -90,7 +97,7 @@ export function useUnsubscribe() {
         if (err instanceof ApiError) {
           setErrorMessage(err.message)
         } else {
-          setErrorMessage('Could not unsubscribe right now. Try again in a moment.')
+          setErrorMessage(copy.defaultError)
         }
         setStatus('error')
       })
@@ -100,5 +107,5 @@ export function useUnsubscribe() {
     }
   }, [email])
 
-  return { email, status, errorMessage, ...viewFor({ status, email, errorMessage }) }
+  return { email, status, errorMessage, ...viewFor({ status, email, errorMessage, copy }) }
 }

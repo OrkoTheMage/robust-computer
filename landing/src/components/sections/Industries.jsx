@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
-import { industriesHeadline } from '../../data/copy'
 import { Chip } from '../ui'
 import { Zer0Text } from '../brand'
+import { useLocale } from '../../context/LocaleContext'
 
 /**
  * Industries
@@ -45,28 +45,20 @@ const Chips = styled.div`
   gap: 10px;
 `
 
-const items = [
-  'Finance',
-  'Healthcare',
-  'Retail',
-  'Hospitality',
-  'Education',
-  'Logistics',
-  'Non-profit',
-  'Professional services',
-]
-
-const Industries = () => (
-  <Bar>
-    <h2><Zer0Text>{industriesHeadline}</Zer0Text></h2>
-    <Chips>
-      {items.map((label) => (
-        <Chip key={label} onInk>
-          {label}
-        </Chip>
-      ))}
-    </Chips>
-  </Bar>
-)
+const Industries = () => {
+  const { industriesHeadline, industries } = useLocale()
+  return (
+    <Bar>
+      <h2><Zer0Text>{industriesHeadline}</Zer0Text></h2>
+      <Chips>
+        {industries.map((label) => (
+          <Chip key={label} onInk>
+            {label}
+          </Chip>
+        ))}
+      </Chips>
+    </Bar>
+  )
+}
 
 export default Industries
