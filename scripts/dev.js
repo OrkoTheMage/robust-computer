@@ -177,7 +177,7 @@ async function main() {
         prefixColor: 'cyan',
       },
       {
-        command: 'node --import ./scripts/sync-version.mjs --watch src/index.js',
+        command: 'node --watch src/index.js',
         name: 'server',
         cwd: 'server',
         env: childEnv,

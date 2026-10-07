@@ -1,7 +1,7 @@
 {
   "name": "server",
   "private": true,
-  "version": "0.10.12",
+  "version": "0.11.0",
   "description": "Robust Computer API — Express + MongoDB.",
   "type": "module",
   "scripts": {
