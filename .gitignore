@@ -8,16 +8,13 @@ node_modules/
 .env.*
 !.env.example
 
-# ── destructive dev tools (safety net even if the file doesn't exist yet)
+# ── destructive dev tools
 **/reset-db.mjs
 
 # ── build output ────────────────────────────────────────────────────────
 **/dist/
 **/.next/
 **/.cache/
-
-# Generated at server startup by server/scripts/sync-version.mjs
-server/src/version.js
 
 # ── logs ────────────────────────────────────────────────────────────────
 *.log
@@ -32,13 +29,17 @@ yarn-error.log*
 *.swp
 
 # ── scratch / temp ──────────────────────────────────────────────────────
-# `*.txt` is broad on purpose: catches any stray notes/checklists dropped
-# at the repo root. Whitelist the .txt files the app actually ships.
+# `*.txt` is broad on purpose: catches any stray notes/checklists
 *.txt
+
+# ── .txt Whitelist
 !landing/public/robots.txt
 !landing/public/feed.txt
 !landing/public/latest.txt
+
+# ── project documentation ─────────────────────────────────────────────────
 PROJECT-CONVENTIONS.md
+FIELD-NOTES-SYNTAX.md
 
 # ── downloaded Mailpit binary (used by `yarn mail`) ────────────────────
 scripts/.mailpit/

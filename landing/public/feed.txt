@@ -13,34 +13,105 @@ Short issues — updates frequently — on building software that lasts. Practic
 ════════════════════════════════════════════════════════════════════════
 
 ────────────────────────────────────────────────────────────────────────
-  Issue 001 - New Beginnings
+  Issue 001 - Syntax Checklist
   Published  Oct 6, 2026    by Aeryn
   URL        https://robust.computer/field-notes/issue-001
 ────────────────────────────────────────────────────────────────────────
 
-Welcome to the first issue of Field Notes
+Field Notes syntax checklist — every supported feature, exercised in one
+post.
 
-  > I thought this was a **cool idea** — So I built it and now here we
-  > are. This will be our newsletter to you, our *'News'*. Short,
-  > **practical** updates from our build log. New post land when there
-  > is something worth talking about: **shipped projects**, **lessons
-  > learned**, **tech discovered**, or **tools we built** — like this
-  > one.
+[image: Test image]
 
-We will keep each issue tight. If it cannot fit in a few minutes of
-reading, it does not belong here. *No bull*****, no marketing copy
-disguised as engineering wisdom — just the work, the mistakes, and the
-small victories.
+If anything below renders wrong, the syntax is broken. This is the live
+test surface for the markdown pipeline: parser, React renderer, RSS
+feed, plain-text feed.
 
-Check out our `RSS` feed for the first issue:
+────────────────────────────────────────────────────────────────────────
+  HEADINGS
+────────────────────────────────────────────────────────────────────────
+
+ATX form, 1–6 leading `#`s. Levels 1–4 render as distinct visual styles;
+5 and 6 collapse to h4.
+
+════════════════════════════════════════════════════════════════════════
+  H1 — GOLD-TICKET SECTION STAMP
+════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────
+  H2 — SECTION BREAK WITH BOTTOM BORDER
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+  H3 — SUB-SECTION, NO BORDER
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+  H4 — SMALL UPPERCASE MONO LABEL
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+  INLINE MARKDOWN
+────────────────────────────────────────────────────────────────────────
+
+**bold**, *italic*, ~~strikethrough~~, `inline code`, [link
+text](https://example.com), <https://example.com>, **bold with *italic*
+inside** for nesting. An inline image embedded in prose: look at this
+![small icon](/icon-var-rss.svg) sitting in the middle of a sentence.
+
+────────────────────────────────────────────────────────────────────────
+  BLOCKQUOTE
+────────────────────────────────────────────────────────────────────────
+
+  > A single-line blockquote with `>` prefix and **inline markdown**
+  > inside. Lines are joined with spaces per CommonMark soft-break
+  > semantics.
+
+────────────────────────────────────────────────────────────────────────
+  CODE BLOCK
+────────────────────────────────────────────────────────────────────────
+
+The body is a JS template literal, so the triple backticks below are
+escaped with `.
 
 ── bash ────────────────────────────────────────────────────────────────
-  // This will fetch the raw RSS feed, as XML - for your RSS reader
+  # Fenced code block, with a language hint
   curl -sL "https://www.robust.computer/rss.xml"
-  
-  // This will fetch the raw RSS feed as plain text - for your terminal
-  curl -sL "https://www.robust.computer/feed.txt"
 ────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+  LISTS
+────────────────────────────────────────────────────────────────────────
+
+Unordered — consecutive `-` or `*` lines become one block:
+
+  ▪ one
+  ▪ two
+  ▪ three
+
+Ordered — consecutive `1.` or `1)` lines become one block:
+
+  1. first
+  2. second
+  3. third
+
+Mixed markers in the same run split into two blocks (intentional):
+
+  ▪ unordered
+  ▪ another unordered
+
+  1. ordered
+  2. another ordered
+
+────────────────────────────────────────────────────────────────────────
+  IMAGE (STANDALONE)
+────────────────────────────────────────────────────────────────────────
+
+A line that is JUST an image becomes its own block — `Figure` on the
+slug page, `<img>` in the RSS feed, `[image: alt]` placeholder in the
+plain-text feed.
+
+[image: Test image, again]
 
 
 ────────────────────────────────────────────────────────────────────────
