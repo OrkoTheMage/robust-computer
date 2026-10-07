@@ -139,20 +139,6 @@ const HeaderBox = styled.div`
   }
 `
 
-// Lede as a pull-quote. The first paragraph of the post
-// becomes the "deck" — a summary statement that sits above the
-// body proper. The thick left border + breathing room on the
-// indented side gives it a clear "this is the lead" treatment
-// that distinguishes it from the body paragraphs below. Sized
-// at 28px (vs body's 18px) — 25% larger than the previous
-// 22px — so it dominates the reading flow and reads as the
-// post's thesis at a glance.
-//
-// Mobile: scales down via `clamp()` to ~21px (down from
-// 28px) so the deck still reads as the lead but doesn't
-// dominate the phone viewport. The left border thins to
-// 4px and the bottom margin shrinks so the lede doesn't
-// push the first body section halfway down the screen.
 const BackLink = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -199,17 +185,6 @@ const BackLink = styled(Link)`
 // has no `author`, the foot is omitted entirely (the BackLink
 // still renders below).
 
-// CodeBlock. A fenced code block in the post body (markdown
-// ` ```lang ... ``` `) renders as this: a gold language tag at
-// the top, then a dark "tie" body with the highlighted code.
-// The highlight.js color classes (.hljs-keyword, .hljs-string,
-// etc.) are styled in src/styles/highlight.css to match the
-// brand palette — this component only handles layout.
-//
-// Horizontally scrollable so long lines don't break the
-// layout. The <code> inside <pre> is the actual highlighted
-// output from highlight.js; the <pre> wrapper preserves
-// whitespace and gives us the overflow-x: auto.
 const AuthorFoot = styled.div`
   margin-top: 72px;
   display: flex;
@@ -263,22 +238,6 @@ const AuthorStamp = styled.div`
   }
 `
 
-// Inline markdown renderer for body text. Uses `marked` for
-// real markdown parsing (handles nesting, links, inline code,
-// and the underscore / asterisk alternatives) and `DOMPurify`
-// to sanitize the output before it goes into
-// `dangerouslySetInnerHTML` — any literal <, >, & in the
-// source are still escaped, and any HTML the user types
-// (like <script>) is stripped.
-//
-// Supported syntax:
-//   *italic*  _italic_
-//   **bold**  __bold__
-//   [text](url)
-//   `code`
-//   **bold *italic* bold**  (nesting)
-//   <https://example.com>  (autolink)
-//
 const FieldNote = () => {
   const { slug = '' } = useParams()
   const item = getIssueBySlug(slug)

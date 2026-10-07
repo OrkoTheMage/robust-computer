@@ -34,3 +34,17 @@ export const bugReportLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'Too many bug reports from this address. Please try again later.' },
 })
+
+// Admin-gated `POST /api/newsletter/broadcast`. The secret check
+// is the real auth (see `requireAdminSecret` in routes/newsletter.js);
+// this limiter is just belt-and-suspenders against a script run
+// gone wild. 60/hr is far above the legitimate call rate (the build
+// script fires once per regen) but still throttles a misbehaving CI
+// pipeline.
+export const broadcastLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many broadcast attempts from this address.' },
+})
