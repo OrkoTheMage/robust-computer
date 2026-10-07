@@ -6,60 +6,54 @@
     <link>https://robust.computer/</link>
     <description>Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://robust.computer/rss.xml" rel="self" type="application/rss+xml" />
 
     <item>
-      <title>Issue 001 - Syntax Checklist</title>
+      <title>Issue 001 - A New Beginning</title>
       <link>https://robust.computer/field-notes/issue-001</link>
-      <description>Field Notes syntax checklist — every supported feature, exercised in one post. (image: Test image) If anything below renders wrong, the syntax is broken. This is the live test surface for the markdown pipeline: parser, React renderer, RSS feed, plain-text feed. Headings ATX…</description>
-      <content:encoded><![CDATA[<p>Field Notes syntax checklist — every supported feature, exercised in one post.</p>
-<p><img src="/field-notes/issue-001/test.jpg" alt="Test image"></p>
-<p>If anything below renders wrong, the syntax is broken. This is the live test surface for the markdown pipeline: parser, React renderer, RSS feed, plain-text feed.</p>
-<h2>Headings</h2>
-<p>ATX form, 1–6 leading <code>#</code>s. Levels 1–4 render as distinct visual styles; 5 and 6 collapse to h4.</p>
-<h1>h1 — gold-ticket section stamp</h1>
-<h2>h2 — section break with bottom border</h2>
-<h3>h3 — sub-section, no border</h3>
-<h4>h4 — small uppercase mono label</h4>
-<h2>Inline markdown</h2>
-<p><strong>bold</strong>, <em>italic</em>, <del>strikethrough</del>, <code>inline code</code>, <a href="https://example.com">link text</a>, <a href="https://example.com">https://example.com</a>, <strong>bold with <em>italic</em> inside</strong> for nesting. An inline image embedded in prose: look at this <img src="/icon-var-rss.svg" alt="small icon"> sitting in the middle of a sentence.</p>
-<h2>Blockquote</h2>
-<blockquote>
-<p>A single-line blockquote with <code>&gt;</code> prefix and <strong>inline markdown</strong> inside. Lines are joined with spaces per CommonMark soft-break semantics.</p>
-</blockquote>
-<h2>Code block</h2>
-<p>The body is a JS template literal, so the triple backticks below are escaped with `.</p>
-<pre><code class="language-bash"># Fenced code block, with a language hint
-curl -sL "https://www.robust.computer/rss.xml"
+      <description>Welcome to The First Issue of Field Notes Hello World (image: CDC 721 Terminal (circa 1982)) Introduction In this issue, we will explore the basics of our publication and what you can expect in future issues. What to Expect In future issues, you can look forward to tech-based…</description>
+      <content:encoded><![CDATA[<p>Welcome to The First Issue of Field Notes</p>
+<h1>Hello World</h1>
+<p><img src="/public/field-notes/issue-001/computer.jpg" alt="CDC 721 Terminal (circa 1982)"></p>
+<h3>Introduction</h3>
+<p>In this issue, we will explore the basics of our publication and what you can expect in future issues.</p>
+<h3>What to Expect</h3>
+<p>In future issues, you can look forward to <strong>tech-based topics</strong>, shipped projects, pitfalls and lessons learned from our team. We aim to provide valuable content for developers of all levels. No marketing copy passed off as engineering <em>wisdom</em> — <em><strong>No bull</strong></em>***</p>
+<h2>How to Read</h2>
+<p>You can read 'Field Notes' on the <a href="https://www.robust.computer/field-notes">official website</a>. 
+Each issue will have its own slug (e.g., <code>issue-001</code>) which you can access directly via its <a href="https://www.robust.computer/field-notes/issue-001">URL</a>.
+You can also read our RSS feed via <a href="https://www.robust.computer/rss.xml">XML</a> or as <a href="https://www.robust.computer/feed.txt">plain-text</a>.</p>
+<h3>RSS snippet</h3>
+<pre><code class="language-bash"># Fetch the RSS feed for Field Notes
+# /latest.xml (symlink to the latest RSS feed)
+curl -s https://www.robust.computer/rss.xml
+
+# Fetch the plain-text feed for Field Notes
+# /latest.txt (symlink to the latest plain-text feed)
+curl -s https://www.robust.computer/feed.txt 
 </code></pre>
-<h2>Lists</h2>
-<p>Unordered — consecutive <code>-</code> or <code>*</code> lines become one block:</p>
+<h2>How to Subscribe</h2>
+<p>You can subscribe to 'Field Notes' via the <a href="https://www.robust.computer/field-notes">index</a>, or directly via the <a href="https://www.robust.computer/rss.xml">RSS feed</a>. 
+We'll keep you updated with the latest issues through these channels. 
+<img src="/public/field-notes/issue-001/icon.png" alt="Icon"></p>
 <ul>
-<li>one</li>
-<li>two</li>
-<li>three</li>
+<li>If you're subscribed via email you'll receive updates directly in your inbox. (still working out the kinks — might end up in spam)</li>
+<li>If you're subscribed via RSS or plain-text feeds, you'll receive updates through your preferred feed reader.</li>
+<li>If you follow us on social media, you'll receive updates through those platforms as well.</li>
 </ul>
-<p>Ordered — consecutive <code>1.</code> or <code>1)</code> lines become one block:</p>
-<ol>
-<li>first</li>
-<li>second</li>
-<li>third</li>
-</ol>
-<p>Mixed markers in the same run split into two blocks (intentional):</p>
+<h3>Social Media Links:</h3>
 <ul>
-<li>unordered</li>
-<li>another unordered</li>
+<li><a href="https://www.instagram.com/robust.computer/">Instagram</a></li>
+<li><a href="https://x.com/Robust_Computer">X</a></li>
+<li><a href="https://www.facebook.com/people/Robust-Computer/61594902219428/">Facebook</a></li>
+<li><a href="https://www.linkedin.com/company/robust.computer">LinkedIn</a></li>
 </ul>
-<ol>
-<li>ordered</li>
-<li>another ordered</li>
-</ol>
-<h2>Image (standalone)</h2>
-<p>A line that is JUST an image becomes its own block — <code>Figure</code> on the slug page, <code>&lt;img&gt;</code> in the RSS feed, <code>[image: alt]</code> placeholder in the plain-text feed.</p>
-<p><img src="/field-notes/issue-001/test.jpg" alt="Test image, again"></p>
+<blockquote>
+<p>Honestly — I appreciate your support. I look forward to keeping this publication up-to-date. I wanted it, nobody else asked for it, but I made it mine. So here it is, thank you for reading.</p>
+</blockquote>
 ]]></content:encoded>
-      <pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">field-notes/issue-001</guid>
     </item>
   </channel>
