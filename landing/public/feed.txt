@@ -75,7 +75,7 @@ You can subscribe to 'Field Notes' via the
 [index](https://www.robust.computer/field-notes), or directly via the
 [RSS feed](https://www.robust.computer/rss.xml). We'll keep you updated
 with the latest issues through these channels.
-![Icon](/public/field-notes/issue-001/icon.png)
+![Icon](/field-notes/issue-001/icon.png)
 
   ▪ If you're subscribed via email you'll receive updates directly in your
     inbox. (still working out the kinks — might end up in spam)

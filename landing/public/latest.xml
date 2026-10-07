@@ -15,7 +15,7 @@
       <description>Welcome to The First Issue of Field Notes Hello World (image: CDC 721 Terminal (circa 1982)) Introduction In this issue, we will explore the basics of our publication and what you can expect in future issues. What to Expect In future issues, you can look forward to tech-based…</description>
       <content:encoded><![CDATA[<p>Welcome to The First Issue of Field Notes</p>
 <h1>Hello World</h1>
-<p><img src="/public/field-notes/issue-001/computer.jpg" alt="CDC 721 Terminal (circa 1982)"></p>
+<p><img src="/field-notes/issue-001/computer.jpg" alt="CDC 721 Terminal (circa 1982)"></p>
 <h3>Introduction</h3>
 <p>In this issue, we will explore the basics of our publication and what you can expect in future issues.</p>
 <h3>What to Expect</h3>
@@ -36,7 +36,7 @@ curl -s https://www.robust.computer/feed.txt
 <h2>How to Subscribe</h2>
 <p>You can subscribe to 'Field Notes' via the <a href="https://www.robust.computer/field-notes">index</a>, or directly via the <a href="https://www.robust.computer/rss.xml">RSS feed</a>. 
 We'll keep you updated with the latest issues through these channels. 
-<img src="/public/field-notes/issue-001/icon.png" alt="Icon"></p>
+<img src="/field-notes/issue-001/icon.png" alt="Icon"></p>
 <ul>
 <li>If you're subscribed via email you'll receive updates directly in your inbox. (still working out the kinks — might end up in spam)</li>
 <li>If you're subscribed via RSS or plain-text feeds, you'll receive updates through your preferred feed reader.</li>
