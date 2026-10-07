@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.12.3**
+**Version 0.12.4**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -49,6 +49,33 @@ The file is shared by the server and `landing/`.
 yarn dev          # default — loads .env.dev (dev DB)
 yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
+
+### Field Notes publishing
+
+Three scripts regenerate the public feeds (`landing/public/rss.xml`,
+`feed.txt`, `latest.xml`, `latest.txt`) from `landing/src/data/issues/`.
+
+```bash
+yarn feeds:build               # write all four files; load .env.dev
+yarn feeds:broadcast           # write all four files + fire the prod broadcast
+yarn feeds:latest              # write only the latest.{xml,txt} pair
+yarn feeds:build --dry-run     # print the four files; no writes, no broadcast
+```
+
+`feeds:build` is the local pre-flight: it loads `.env.dev` (no
+broadcast) so you can eyeball the output before committing. Flags
+(`--xml-only`, `--txt-only`, `--full-only`, `--latest-only`,
+`--dry-run`) all compose.
+
+`feeds:broadcast` is the production publish step. It sets
+`NODE_ENV=production` so the script reads `.env.prod`, picks up the
+real `API_URL` + `NEWSLETTER_ADMIN_SECRET`, and POSTs to
+`https://api.robust.computer/api/newsletter/broadcast`. The server
+returns 202 immediately; the broadcast loop runs server-side and
+dedupes per-subscriber via `Subscriber.issueSlugs`. A re-run is a
+no-op once every active subscriber has been marked. Run after
+pushing to `main` so Vercel has already deployed the post the
+email CTA links to.
 
 ## Project Structure
 
