@@ -178,7 +178,7 @@ export const navbarPages = [
 
 export const navbarConnects = [
   {
-    href: 'https://github.com/OrkoTheMage/robust-computer',
+    href: 'https://github.com/robust-computer/web',
     label: 'GitHub',
     hint: 'View source',
     external: true,
@@ -211,11 +211,11 @@ export const navbarSocials = [
     icon: 'Linkedin',
   },
   {
-    href: 'https://www.facebook.com/profile.php?id=61594902219428',
-    label: 'Facebook',
+    href: 'https://x.com/Robust_Computer',
+    label: 'X',
     hint: 'Follow',
     external: true,
-    icon: 'Facebook',
+    icon: 'X',
   },
   {
     href: 'https://www.instagram.com/robust.computer/',
@@ -225,11 +225,11 @@ export const navbarSocials = [
     icon: 'Instagram',
   },
   {
-    href: 'https://x.com/Robust_Computer',
-    label: 'X',
+    href: 'https://www.facebook.com/profile.php?id=61594902219428',
+    label: 'Facebook',
     hint: 'Follow',
     external: true,
-    icon: 'Twitter',
+    icon: 'Facebook',
   },
 ]
 
@@ -266,14 +266,14 @@ export const footerSections = {
     { to: '/field-notes', label: 'News', icon: 'Newspaper' },
   ],
   connect: [
-    { href: 'https://github.com/OrkoTheMage/robust-computer', label: 'GitHub', icon: 'Github' },
+    { href: 'https://github.com/robust-computer/web', label: 'GitHub', icon: 'Github' },
     { href: 'mailto:hello@robust.computer', label: 'Email', icon: 'Mail' },
   ],
   elsewhere: [
     { href: 'https://linkedin.com/company/robust-computer', label: 'LinkedIn', icon: 'Linkedin' },
-    { href: 'https://www.facebook.com/profile.php?id=61594902219428', label: 'Facebook', icon: 'Facebook' },
+    { href: 'https://x.com/Robust_Computer', label: 'X', icon: 'X' },
     { href: 'https://www.instagram.com/robust.computer/', label: 'Instagram', icon: 'Instagram' },
-    { href: 'https://x.com/Robust_Computer', label: 'X', icon: 'Twitter' },
+    { href: 'https://www.facebook.com/profile.php?id=61594902219428', label: 'Facebook', icon: 'Facebook' },
   ],
 }
 

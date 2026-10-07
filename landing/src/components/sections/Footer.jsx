@@ -19,17 +19,17 @@ import {
   Linkedin,
   Facebook,
   Instagram,
-  Twitter,
   Mail,
   Newspaper,
 } from 'lucide-react'
 import config from '../../config'
 import { Logo, Zer0Text } from '../brand'
+import { XBrand } from '../ui'
 import { footerTagline, footerSections, footerChrome } from '../../data/copy'
 import { useHomeLinkClick } from '../../hooks/useHomeLinkClick'
 
 // Map icon-name strings from the data file to Lucide components.
-const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, Twitter, Mail, Newspaper }
+const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, X: XBrand, Mail, Newspaper }
 
 const Foot = styled.footer`
   background: ${colors.ink};
