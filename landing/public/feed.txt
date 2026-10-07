@@ -51,7 +51,11 @@ website](https://www.robust.computer/field-notes). Each issue will have
 its own slug (e.g., ```issue-001```) which you can access directly via
 its [URL](https://www.robust.computer/field-notes/issue-001). You can
 also read our RSS feed via [XML](https://www.robust.computer/rss.xml) or
-as [plain-text](https://www.robust.computer/feed.txt). ### RSS snippet
+as [plain-text](https://www.robust.computer/feed.txt).
+
+────────────────────────────────────────────────────────────────────────
+  RSS SNIPPET
+────────────────────────────────────────────────────────────────────────
 
 ── bash ────────────────────────────────────────────────────────────────
   # Fetch the RSS feed for Field Notes
