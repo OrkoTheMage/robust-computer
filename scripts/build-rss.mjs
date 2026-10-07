@@ -24,11 +24,30 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  * have to ship a build step. Run this script after adding or
  * editing a post and commit the result.
  *
+ * After writing the feed files, the script fires a
+ * `POST /api/newsletter/broadcast` against the running
+ * server if `API_URL` and `NEWSLETTER_ADMIN_SECRET` are in
+ * the environment. The server queues a broadcast to every
+ * active subscriber who hasn't received the latest slug yet
+ * (see `server/src/utils/newsletterBroadcast.js`). The
+ * broadcast itself is async — the script returns as soon as
+ * the server returns 202, and the server logs progress from
+ * then on.
+ *
+ * Env loading is a tiny inline parser (KEY=value lines, no
+ * quoting) so the script doesn't need dotenv as a transitive
+ * dependency — the server already requires it, but it's not
+ * hoisted to the root node_modules. `.env.<NODE_ENV>` is
+ * loaded if it exists, but only for keys that aren't already
+ * in `process.env` (shell-set vars win). When
+ * `NODE_ENV === 'production'` it loads `.env.prod`;
+ * otherwise `.env.dev`. Both files are gitignored.
+ *
  * Usage:
  *   node scripts/build-rss.mjs                # write all four files
  *   node scripts/build-rss.mjs --xml-only     # only the XML files
  *   node scripts/build-rss.mjs --txt-only     # only the TXT files
- *   node scripts/build-rss.mjs --full-only    # skip the latest.* files
+ *   node scripts/build-rss.mjs --full-only    # skip the latest only
  *   node scripts/build-rss.mjs --latest-only  # skip the full files
  *   node scripts/build-rss.mjs --dry-run      # print everything to stdout
  *
@@ -67,20 +86,54 @@ const writeTxt = !xmlOnly
 const writeFull = !latestOnly
 const writeLatest = !fullOnly
 
+// ── env loading ──────────────────────────────────────────────────────────
+// Tiny inline .env parser. Reads KEY=value lines, ignores
+// comments and blank lines, doesn't quote. Only sets a key if
+// it's not already in process.env (shell wins). NODE_ENV
+// picks which file to load: production -> .env.prod, anything
+// else -> .env.dev.
+const NODE_ENV = process.env.NODE_ENV || 'development'
+const envFileName = NODE_ENV === 'production' ? '.env.prod' : '.env.dev'
+const envFilePath = path.join(repoRoot, envFileName)
+
+if (fs.existsSync(envFilePath)) {
+  const content = fs.readFileSync(envFilePath, 'utf8')
+  for (const rawLine of content.split('\n')) {
+    const line = rawLine.trim()
+    if (!line || line.startsWith('#')) continue
+    const eq = line.indexOf('=')
+    if (eq === -1) continue
+    const key = line.slice(0, eq).trim()
+    if (!key || key in process.env) continue
+    process.env[key] = line.slice(eq + 1).trim()
+  }
+}
+
 // ── dynamic import of the data module ────────────────────────────────────
-const dataModulePath = path.join(
+// Both modules load cleanly in raw Node — they have no Vite-specific
+// `import.meta.env` reads, so the regen script doesn't need the Vite
+// shim. `BRAND_DOMAIN` is imported from `data/brand.js` (the single
+// source of truth for brand strings); the field-notes module re-exports
+// nothing we need beyond the builders and `getLatest`.
+const fieldNotesPath = path.join(
   repoRoot,
   'landing/src/data/fieldNotes.js',
 )
-const { buildRss, buildFeedTxt, getLatest } = await import(
-  pathToFileURL(dataModulePath).href
+const brandPath = path.join(
+  repoRoot,
+  'landing/src/data/brand.js',
 )
+const { buildRss, buildFeedTxt, getLatest } = await import(
+  pathToFileURL(fieldNotesPath).href
+)
+const { BRAND_DOMAIN } = await import(pathToFileURL(brandPath).href)
 
 // Latest post as a one-element array. `getLatest()` returns
 // null if the data is empty; fall back to an empty array so
 // the builders still emit a well-formed (but item-less) feed
 // rather than throwing.
-const latestNotes = getLatest() ? [getLatest()] : []
+const latestNote = getLatest()
+const latestNotes = latestNote ? [latestNote] : []
 
 // ── build the (path, content) pairs we'll write ─────────────────────────
 // Each pair is independent so --dry-run can print them all
@@ -111,4 +164,60 @@ for (const [rel, content] of files) {
   const outPath = path.resolve(repoRoot, rel)
   fs.writeFileSync(outPath, content, 'utf8')
   console.log(`✓ Wrote ${path.relative(repoRoot, outPath)}`)
+}
+
+// ── broadcast ───────────────────────────────────────────────────────────
+// Fires `POST /api/newsletter/broadcast` against the running
+// server if the env has `API_URL` and `NEWSLETTER_ADMIN_SECRET`.
+// Skipped silently otherwise (a quick local regen doesn't need
+// to email every subscriber, and a CI without those vars just
+// regenerates feeds without broadcasting).
+//
+// The broadcast is best-effort — failure logs a warning but
+// doesn't fail the build. The feed files are already on disk;
+// whether the email blast lands is a separate concern that
+// the server's own run summary reports.
+const apiUrl = process.env.API_URL
+const adminSecret = process.env.NEWSLETTER_ADMIN_SECRET
+
+if (latestNote && apiUrl && adminSecret) {
+  const url = `https://${BRAND_DOMAIN}/field-notes/${latestNote.slug}`
+  const payload = {
+    slug: latestNote.slug,
+    issuePrefix: latestNote.issuePrefix,
+    title: latestNote.title,
+    description: latestNote.description,
+    pubDate: latestNote.pubDate,
+    url,
+    ...(latestNote.author ? { author: latestNote.author } : {}),
+  }
+  try {
+    const res = await fetch(`${apiUrl.replace(/\/$/, '')}/api/newsletter/broadcast`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-secret': adminSecret,
+      },
+      body: JSON.stringify(payload),
+    })
+    if (res.ok) {
+      console.log(`✓ Broadcast queued for ${latestNote.slug} (HTTP ${res.status})`)
+    } else {
+      let detail = ''
+      try {
+        detail = await res.text()
+      } catch {
+        // ignore — non-JSON body, status code is enough
+      }
+      console.warn(
+        `⚠ Broadcast endpoint returned ${res.status}: ${detail || '(no body)'}`
+      )
+    }
+  } catch (err) {
+    console.warn(`⚠ Broadcast request failed: ${err.message}`)
+  }
+} else if (latestNote && (!apiUrl || !adminSecret)) {
+  console.log(
+    '⊘ Broadcast skipped (set API_URL + NEWSLETTER_ADMIN_SECRET to enable)'
+  )
 }

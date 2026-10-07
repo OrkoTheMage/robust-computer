@@ -78,6 +78,11 @@ const COLOR = {
   ink: '#000000',
   white: '#ffffff',
   inputBg: '#fff8',
+  // Brand gold, mirrored from landing/src/styles/colors.js.
+  // Used by the new-issue broadcast CTA (the "Read online →"
+  // button shadow) and any other surface that needs the
+  // accent fill on an ink-on-paper sheet.
+  gold: '#d0c096',
 }
 
 // Font stacks mirror landing/src/index.css. The brand faces

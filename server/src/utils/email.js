@@ -3,6 +3,7 @@ import config from '../config.js'
 import { subscriberConfirmation as renderSubscriber } from './email/subscriberConfirmation.js'
 import { enquiryNotification as renderEnquiry } from './email/enquiryNotification.js'
 import { bugReportNotification as renderBugReport } from './email/bugReportNotification.js'
+import { newIssueNotification as renderNewIssue } from './email/newIssueNotification.js'
 
 /**
  * server/src/utils/email.js
@@ -214,5 +215,34 @@ export const sendBugReportNotification = async (report) => {
     console.log(`[email] bug report notification sent: id=${providerId(info)}`)
   } catch (err) {
     console.error('[email] bug report notification failed:', err.message)
+  }
+}
+
+/**
+ * sendNewIssueNotification
+ *
+ * Fires the "Field Notes · Issue NNN: <title>" email to a
+ * single subscriber. Called from
+ * `utils/newsletterBroadcast.js`, which batches calls and
+ * rate-limits at 10/s to stay inside Resend's API quota.
+ *
+ * Returns `{ ok, id }` (success) or `{ ok: false, error }`
+ * (failure) — the caller (broadcast loop) tracks these so a
+ * run summary can report successes vs. failures. The dedupe
+ * guarantee comes from `Subscriber.issueSlugs` (set BEFORE
+ * the send loop, not per-recipient), so a thrown error here
+ * means that recipient was already marked and won't be
+ * re-tried on the next broadcast.
+ */
+export const sendNewIssueNotification = async ({ email, issue }) => {
+  const { subject, html, text } = renderNewIssue({ email, issue })
+  try {
+    const info = await sendViaProvider({ to: email, subject, html, text })
+    return { ok: true, id: providerId(info) }
+  } catch (err) {
+    console.error(
+      `[email] new-issue notification failed for ${email}: ${err.message}`
+    )
+    return { ok: false, error: err.message }
   }
 }

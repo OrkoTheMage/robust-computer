@@ -125,6 +125,16 @@ const config = Object.freeze({
 
   mongoUri: required('MONGODB_URI'),
 
+  // Shared secret for the admin-gated `POST /api/newsletter/broadcast`
+  // endpoint. The build script (`scripts/build-rss.mjs`) sends the
+  // same secret in an `x-admin-secret` header when it fires a new-issue
+  // broadcast after a feed regen. Required at boot so a deployer can't
+  // accidentally ship a server that anyone on the internet can broadcast
+  // through — the secret gates the endpoint, not the rest of the app.
+  newsletter: Object.freeze({
+    adminSecret: required('NEWSLETTER_ADMIN_SECRET'),
+  }),
+
   email: IS_PRODUCTION
     ? Object.freeze({
         from: MAIL_FROM,
