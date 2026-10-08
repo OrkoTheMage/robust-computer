@@ -2,7 +2,7 @@
   <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.12.5**
+**Version 0.12.6**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -52,20 +52,36 @@ yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 
 ### Field Notes publishing
 
-Three scripts regenerate the public feeds (`landing/public/rss.xml`,
-`feed.txt`, `latest.xml`, `latest.txt`) from `landing/src/data/issues/`.
+Three scripts split the two concerns — write the public feed files,
+or fire the broadcast — across the local pre-commit and the
+post-deploy steps.
 
 ```bash
-yarn feeds:build               # write all four files; load .env.dev
-yarn feeds:broadcast           # write all four files + fire the prod broadcast
-yarn feeds:latest              # write only the latest.{xml,txt} pair
-yarn feeds:build --dry-run     # print the four files; no writes, no broadcast
+yarn feeds:build          # write all four files (pre-commit; no broadcast)
+yarn feeds:broadcast-dev  # fire the broadcast against dev subscribers
+yarn feeds:broadcast      # fire the broadcast against prod subscribers
 ```
 
-`feeds:build` is the local pre-flight: it loads `.env.dev` (no
-broadcast) so you can eyeball the output before committing. Flags
-(`--xml-only`, `--txt-only`, `--full-only`, `--latest-only`,
-`--dry-run`) all compose.
+The underlying script (`scripts/build-rss.mjs`) also accepts the
+format / variant / dry-run flags directly: `--xml-only`,
+`--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
+two split-concern flags `--no-write` and `--no-broadcast`. All flags
+compose.
+
+`feeds:build` is the pre-commit step. It regenerates
+`landing/public/rss.xml`, `feed.txt`, `latest.xml`, and
+`latest.txt` from `landing/src/data/issues/`, loads `.env.dev` (the
+data module is the source of truth — `.env.dev` is only consulted
+for the optional broadcast, which `feeds:build` skips), and exits.
+Commit the regenerated files alongside the new / edited post and
+push to `main`.
+
+`feeds:broadcast-dev` is the dev send. It loads `.env.dev`, picks up
+the local `API_URL` (`http://localhost:5000`) + dev admin secret,
+and POSTs to `/api/newsletter/broadcast` — so a running local
+server (started by `yarn dev`) is the target. Use it to dry-run the
+email + dedupe logic against the dev subscriber list before
+publishing for real.
 
 `feeds:broadcast` is the production publish step. It sets
 `NODE_ENV=production` so the script reads `.env.prod`, picks up the

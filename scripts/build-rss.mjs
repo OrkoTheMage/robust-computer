@@ -44,12 +44,21 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  * otherwise `.env.dev`. Both files are gitignored.
  *
  * Usage:
- *   node scripts/build-rss.mjs                # write all four files
+ *   node scripts/build-rss.mjs                # write all four files + broadcast
  *   node scripts/build-rss.mjs --xml-only     # only the XML files
  *   node scripts/build-rss.mjs --txt-only     # only the TXT files
  *   node scripts/build-rss.mjs --full-only    # skip the latest only
  *   node scripts/build-rss.mjs --latest-only  # skip the full files
+ *   node scripts/build-rss.mjs --no-write     # skip file writes (broadcast only)
+ *   node scripts/build-rss.mjs --no-broadcast # skip the broadcast (build only)
  *   node scripts/build-rss.mjs --dry-run      # print everything to stdout
+ *
+ * `--no-write` and `--no-broadcast` are independent of the
+ * format/variant flags and compose with them. They're how the
+ * yarn aliases split the two concerns:
+ *   - `feeds:build`         — pre-commit, write files only
+ *   - `feeds:broadcast-dev` — dev send, broadcast only
+ *   - `feeds:broadcast`     — prod send, broadcast only
  *
  * Format flags and variant flags compose: `--xml-only
  * --latest-only` writes only `latest.xml`. `--full-only
@@ -75,6 +84,8 @@ const xmlOnly = args.includes('--xml-only')
 const txtOnly = args.includes('--txt-only')
 const fullOnly = args.includes('--full-only')
 const latestOnly = args.includes('--latest-only')
+const noWrite = args.includes('--no-write')
+const noBroadcast = args.includes('--no-broadcast')
 
 // `--xml-only` and `--txt-only` are mutually exclusive; if
 // neither is set we write both formats.
@@ -160,10 +171,14 @@ if (dryRun) {
 }
 
 // ── write ────────────────────────────────────────────────────────────────
-for (const [rel, content] of files) {
-  const outPath = path.resolve(repoRoot, rel)
-  fs.writeFileSync(outPath, content, 'utf8')
-  console.log(`✓ Wrote ${path.relative(repoRoot, outPath)}`)
+if (noWrite) {
+  console.log('⊘ File writes skipped (--no-write)')
+} else {
+  for (const [rel, content] of files) {
+    const outPath = path.resolve(repoRoot, rel)
+    fs.writeFileSync(outPath, content, 'utf8')
+    console.log(`✓ Wrote ${path.relative(repoRoot, outPath)}`)
+  }
 }
 
 // ── broadcast ───────────────────────────────────────────────────────────
@@ -180,7 +195,9 @@ for (const [rel, content] of files) {
 const apiUrl = process.env.API_URL
 const adminSecret = process.env.NEWSLETTER_ADMIN_SECRET
 
-if (latestNote && apiUrl && adminSecret) {
+if (noBroadcast) {
+  console.log('⊘ Broadcast skipped (--no-broadcast)')
+} else if (latestNote && apiUrl && adminSecret) {
   const url = `https://${BRAND_DOMAIN}/field-notes/${latestNote.slug}`
   const payload = {
     slug: latestNote.slug,

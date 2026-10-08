@@ -1,3 +1,4 @@
+import config from '../../config.js'
 import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 /**
@@ -153,7 +154,7 @@ const buildText = (enquiry) => {
 }
 
 export const enquiryNotification = (enquiry) => ({
-  subject: `[${'Robust Computer'}] New enquiry from ${enquiry.name}`,
+  subject: `[${config.brand.name}] New enquiry from ${enquiry.name}`,
   html: buildHtml(enquiry),
   text: buildText(enquiry),
 })
