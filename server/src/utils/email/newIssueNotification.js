@@ -4,14 +4,15 @@ import { wrapHtml, wrapText, emailTokens } from './layout.js'
 /**
  * server/src/utils/email/newIssueNotification.js
  *
- * "New in Field Notes · Issue NNN: <title>" — fired by
+ * "Issue NNN: <title>" — fired by
  * `utils/newsletterBroadcast.js` to every active subscriber
  * when a new issue ships. Subject line carries the issue
- * prefix + title so the inbox preview reads as the issue
- * itself (not just "Field Notes update"). Sender is the
- * brand inbox; one-off reply address on the issue post is
- * meaningless here (the email is outbound, not a reply
- * thread).
+ * prefix + title (bare, no `[Robust Computer]` tag — this
+ * is outbound to the subscriber, not inbound to the team)
+ * so the inbox preview reads as the issue itself (not just
+ * "Field Notes update"). Sender is the brand inbox; one-off
+ * reply address on the issue post is meaningless here (the
+ * email is outbound, not a reply thread).
  *
  * Returns { subject, html, text }. No SMTP here — the
  * dispatcher in `email.js` picks the transport and hands
@@ -111,7 +112,7 @@ const buildText = ({ email, issue }) => {
 }
 
 export const newIssueNotification = ({ email, issue }) => ({
-  subject: `[${config.brand.name}] ${issue.issuePrefix}: ${issue.title}`,
+  subject: `${issue.issuePrefix}: ${issue.title}`,
   html: buildHtml({ email, issue }),
   text: buildText({ email, issue }),
 })

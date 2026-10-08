@@ -320,7 +320,7 @@ export const developers = [
     name: 'Aeryn',
     role: 'Développeur·euse full-stack',
     bio: 'Aeryn construit les deux faces d\'une application : des front-ends en React que les gens apprécient utiliser, et les services back-end sur lesquels ils s\'appuient. Quatre ans de travail full-stack sur des projets clients de toutes tailles et de tous secteurs d\'activité.',
-    stack: ['JavaScript', 'Python', 'React', 'Bases de données', 'APIs'],
+    stack: ['JavaScript', 'Python', 'React', 'MongoDB/SQL', 'APIs'],
     avatar: 'iconVarHappy',
     links: {
       portfolio: 'https://grue.vercel.app/',

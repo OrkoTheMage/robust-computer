@@ -1,3 +1,4 @@
+import config from '../../config.js'
 import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 /**
@@ -137,7 +138,7 @@ const buildText = (report) => {
 }
 
 export const bugReportNotification = (report) => ({
-  subject: `[${'Robust Computer'}] Bug report${report.name ? ` from ${report.name}` : ''}`,
+  subject: `[${config.brand.name}] Bug report${report.name ? ` from ${report.name}` : ''}`,
   html: buildHtml(report),
   text: buildText(report),
 })
