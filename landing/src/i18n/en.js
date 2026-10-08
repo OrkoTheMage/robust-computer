@@ -568,12 +568,9 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  notFoundTitle: 'Not found',
-  notFoundLead: 'No post at this URL.',
   eyebrow: 'Field notes',
   back: 'Back to home',
   publishedLabel: 'Published',
-  seoFallbackDescription: 'Field Notes from Robust Computer — short issues on building software that lasts.',
 }
 
 export const notFoundPage = {

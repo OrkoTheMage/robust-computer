@@ -10,6 +10,7 @@ import FieldNoteBody from '../components/sections/FieldNoteBody'
 import { SEO } from '../components/seo'
 import { formatPubDate } from '../utils/formatPubDate'
 import { getIssueBySlug } from '../utils/fieldNoteView'
+import NotFound from './NotFound'
 import { useLocale } from '../context/LocaleContext'
 
 /**
@@ -29,6 +30,15 @@ import { useLocale } from '../context/LocaleContext'
  * Route: /field-notes/:slug  (items live at /field-notes/<slug>;
  * single-segment slug for now — see the App.jsx comment if a
  * multi-segment slug is ever needed).
+ *
+ * A slug that doesn't resolve to a real post renders the
+ * standard NotFound page (the same one the catch-all
+ * `<Route path="*">` uses) instead of an in-page "this slug
+ * wasn't found" affordance. The URL stays at /field-notes/<slug>
+ * so the browser shows a real 404 path, but the rendered page
+ * is the site-wide 404. The matching happens here — React
+ * Router matches the dynamic route before the catch-all, so
+ * the only place to short-circuit is inside this component.
  *
  * The "Published" line in the post header reads from
  * `fieldNotePage.publishedLabel` so a Spanish user sees
@@ -245,31 +255,21 @@ const FieldNote = () => {
   const { slug = '' } = useParams()
   const item = getIssueBySlug(slug)
   const { fieldNotePage, fieldNotes } = useLocale()
-  const seoTitle = item ? item.title : fieldNotePage.notFoundTitle
-  const seoDescription = item ? item.description : fieldNotePage.seoFallbackDescription
 
   if (!item) {
-    return (
-      <Page>
-        <SEO title={seoTitle} description={seoDescription} path={`/field-notes/${slug}`} type="article" />
-        <Navbar />
-        <PageHeader title={fieldNotePage.notFoundTitle} lead={fieldNotePage.notFoundLead} image={false} />
-        <Sheet>
-          <BackLink to="/">
-            <ArrowLeft size={18} strokeWidth={2.4} aria-hidden="true" />
-            {fieldNotePage.back}
-          </BackLink>
-        </Sheet>
-        <Footer />
-      </Page>
-    )
+    // Slug didn't match a real post — hand off to the
+    // standard 404 page so the user sees the site-wide
+    // not-found artwork and copy. The URL stays at
+    // /field-notes/<slug>; the navbar icon stays on the
+    // brand default (usePageIcon checks slug validity).
+    return <NotFound />
   }
 
   return (
     <Page>
       <SEO
-        title={seoTitle}
-        description={seoDescription}
+        title={item.title}
+        description={item.description}
         path={`/field-notes/${slug}`}
         type="article"
       />

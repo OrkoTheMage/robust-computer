@@ -500,12 +500,9 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  notFoundTitle: 'Introuvable',
-  notFoundLead: 'Aucun article à cette URL.',
   eyebrow: 'Field notes',
   back: 'Retour à l\'accueil',
   publishedLabel: 'Publié',
-  seoFallbackDescription: 'Field Notes de Robust Computer — numéros courts sur la création de logiciels durables.',
 }
 
 export const notFoundPage = {

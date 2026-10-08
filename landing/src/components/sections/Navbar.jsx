@@ -42,6 +42,7 @@ import { Logo, Zer0Text } from '../brand'
 import { Modal } from '../modals'
 import { colors } from '../../styles/colors'
 import { useNavbar } from '../../hooks/useNavbar'
+import { usePageIcon } from '../../hooks/usePageIcon'
 import { useLocale } from '../../context/LocaleContext'
 import IconLink from './IconLink'
 import LanguageButton from './LanguageButton'
@@ -412,6 +413,12 @@ const Navbar = () => {
     closeMobile,
   } = useNavbar()
   const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome } = useLocale()
+  // Brand icon varies per route — see `usePageIcon` for the
+  // route → variant map. The visual swaps to a thematic
+  // variant (about/contact/rss/…) without changing the
+  // semantic: this is still the brand mark in the navbar,
+  // not a page-specific image.
+  const pageIcon = usePageIcon()
 
   return (
     <>
@@ -424,7 +431,7 @@ const Navbar = () => {
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
           >
-            <Logo variant="icon" h={87} />
+            <Logo src={pageIcon} h={87} />
             <BrandStack>
               <BrandLine><Zer0Text>Robust</Zer0Text></BrandLine>
               <BrandLine><Zer0Text>Computer</Zer0Text></BrandLine>
