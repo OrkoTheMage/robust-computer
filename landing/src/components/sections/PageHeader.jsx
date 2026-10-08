@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Logo, Zer0Text } from '../brand'
 
 /**
@@ -80,7 +81,7 @@ const Wrap = styled.header`
     font-size: 20px;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     padding: 40px 24px 36px;
     gap: 0;

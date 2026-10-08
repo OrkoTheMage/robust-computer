@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Link } from 'react-router-dom'
 import {
 
@@ -37,7 +38,7 @@ const Foot = styled.footer`
   padding: 56px 56px 30px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
 
-  @media (max-width: 760px) {
+  ${mobile} {
     padding: 40px 24px 24px;
   }
 `
@@ -49,7 +50,7 @@ const Cols = styled.div`
   padding-bottom: 24px;
   border-bottom: 3px solid ${colors.paper};
 
-  @media (max-width: 760px) {
+  ${mobile} {
     grid-template-columns: 1fr 1fr;
     column-gap: 24px;
     row-gap: 32px;
@@ -87,7 +88,7 @@ const Brand = styled.div`
     font-size: 15px;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,7 +154,7 @@ const Col = styled.div`
     border-bottom-color: ${colors.gold};
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -178,7 +179,7 @@ const Small = styled.div`
   letter-spacing: 0.03em;
   text-transform: uppercase;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     flex-direction: column;
     align-items: center;
     gap: 6px;
@@ -221,7 +222,7 @@ const Legal = styled.nav`
     border-bottom-color: ${colors.gold};
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     flex-wrap: wrap;
     justify-content: center;
     row-gap: 8px;

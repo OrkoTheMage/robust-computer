@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { MonitorSmartphone, Code2, Boxes, Workflow } from 'lucide-react'
 import { Container } from '../ui'
 import { Zer0Text } from '../brand'
@@ -42,7 +43,7 @@ const Section = styled.section`
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   border-bottom: 3px solid ${colors.ink};
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 56px 24px 48px;
   }
 `
@@ -89,7 +90,7 @@ const Card = styled.article`
   gap: 14px;
   min-height: 260px;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     grid-column: span 12 !important;
   }
 

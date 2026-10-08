@@ -5,6 +5,7 @@ import { Button } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 import { ticketIn } from '../../styles/animations'
 import { colors } from '../../styles/colors'
+import { heroStack, mobile } from '../../styles/breakpoints'
 import { useLocale } from '../../context/LocaleContext'
 
 /**
@@ -39,9 +40,10 @@ const Wrap = styled.section`
   background: ${colors.paper};
   border-bottom: 3px solid ${colors.ink};
 
-  @media (max-width: 980px) {
-    /* On mobile the Opening drops the 100dvh clamp, so the hero
-       grows to fit its stacked content rather than overflowing. */
+  ${heroStack} {
+    /* When the hero stacks, the Opening drops the 100dvh clamp
+       (see Home.jsx), so the hero grows to fit its content
+       rather than overflowing. */
     flex: none;
     align-items: flex-start;
   }
@@ -57,7 +59,7 @@ const Inner = styled.div`
   padding: 64px 56px 72px;
   align-items: center;
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     grid-template-columns: 1fr;
     padding: 48px 24px 56px;
     gap: 40px;
@@ -67,12 +69,24 @@ const Inner = styled.div`
 const Headline = styled.h1`
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(48px, 6.5vw, 96px);
+  /* Snaps to three discrete sizes — no continuous growth —
+     so the headline locks to the hero's layout breakpoints.
+     96px on the desktop row (narrow column), 72px when the
+     hero stacks (wide column, fewer wraps), 48px on phones. */
+  font-size: 96px;
   line-height: 0.92;
   margin: 0 0 26px;
   text-transform: uppercase;
   letter-spacing: -0.015em;
   color: ${colors.ink};
+
+  ${heroStack} {
+    font-size: 72px;
+  }
+
+  ${mobile} {
+    font-size: 48px;
+  }
 `
 
 const Lead = styled.p`
@@ -94,7 +108,7 @@ const Art = styled.div`
   justify-content: flex-end;
   align-items: center;
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     order: -1;
     justify-content: center;
   }
@@ -104,8 +118,8 @@ const ArtFrame = styled.div`
   position: relative;
   width: 960px;
 
-  @media (max-width: 980px) {
-    /* Cap the art on small screens so the ticket can sit at a
+  ${heroStack} {
+    /* Cap the art when stacked so the ticket can sit at a
        reasonable size below it without overflowing the column. */
     width: min(100%, 320px);
     margin-inline: auto;
@@ -119,7 +133,7 @@ const ArtImg = styled(Logo)`
   max-width: none;
   filter: drop-shadow(16px 16px 0 ${colors.ink});
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     width: 100%;
     height: auto;
     filter: drop-shadow(8px 8px 0 ${colors.ink});
@@ -151,7 +165,7 @@ const Ticket = styled.div`
      the animation runs on the compositor (no layout/paint). */
   will-change: transform, opacity;
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     position: static;
     transform: rotate(-2.5deg);
     width: 100%;
@@ -182,7 +196,7 @@ const TicketTag = styled.div`
   text-transform: uppercase;
   color: ${colors.ink};
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     font-size: 11px;
     border-bottom-width: 3px;
     padding-bottom: 7px;
@@ -198,7 +212,7 @@ const TicketBody = styled.pre`
   white-space: pre-wrap;
   color: ${colors.ink};
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     font-size: 13px;
   }
 `
@@ -216,7 +230,7 @@ const TicketStamp = styled.span`
   text-transform: uppercase;
   text-decoration: none;
 
-  @media (max-width: 980px) {
+  ${heroStack} {
     margin-top: 10px;
     font-size: 11px;
     padding: 3px 9px;

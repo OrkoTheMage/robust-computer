@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { mobile } from '../../styles/breakpoints'
 
 /**
  * Container
@@ -12,7 +13,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 0 24px;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     padding: 0 18px;
   }
 `
