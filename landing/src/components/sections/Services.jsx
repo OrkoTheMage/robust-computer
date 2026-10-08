@@ -39,6 +39,8 @@ const SWATCHES = {
 }
 
 const Section = styled.section`
+  max-width: var(--max);
+  margin-inline: auto;
   padding: 84px 56px 72px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   border-bottom: 3px solid ${colors.ink};

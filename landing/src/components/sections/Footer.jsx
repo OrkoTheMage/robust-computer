@@ -33,6 +33,8 @@ import { useLocale } from '../../context/LocaleContext'
 const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, X: XBrand, Mail, Newspaper }
 
 const Foot = styled.footer`
+  max-width: var(--max);
+  margin-inline: auto;
   background: ${colors.ink};
   color: ${colors.paper};
   padding: 56px 56px 30px;

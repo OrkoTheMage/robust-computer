@@ -14,6 +14,8 @@ import { useLocale } from '../../context/LocaleContext'
  */
 
 const Section = styled.section`
+  max-width: var(--max);
+  margin-inline: auto;
   background: ${colors.gold};
   border-top: 3px solid ${colors.ink};
   border-bottom: 3px solid ${colors.ink};

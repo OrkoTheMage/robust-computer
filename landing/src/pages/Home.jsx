@@ -32,11 +32,15 @@ import { useLocale } from '../context/LocaleContext'
  */
 
 const Page = styled.main`
+  max-width: var(--max);
+  margin-inline: auto;
   min-height: 100vh;
   background: ${colors.paper};
 `
 
 const Opening = styled.div`
+  max-width: var(--max);
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   /* Fits in one viewport: 100dvh minus the TopBar + Navbar above.

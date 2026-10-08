@@ -56,6 +56,8 @@ const Sticky = styled.div`
 `
 
 const Bar = styled.nav`
+  max-width: var(--max);
+  margin-inline: auto;
   background: ${colors.paper};
   border-bottom: 3px solid ${colors.ink};
   display: flex;

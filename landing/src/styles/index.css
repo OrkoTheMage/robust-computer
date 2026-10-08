@@ -94,9 +94,14 @@
   --hl-string: #a8d5a8;
   --hl-number: #e8c170;
   --hl-comment: #7a7260;
-  /* Content stays inside --page. Band backgrounds are not capped;
-     they run the full viewport. Gutters default to paper. */
+  /* Content stays inside --page. Outer band wrappers are capped
+     at --max (3500px) so they don't stretch past ultra-wide
+     displays; gutters default to paper. */
   --page: 1750px;
+  /* Layout cap — outer sections without a per-component max
+     use this. Caps the bands on ultra-wide displays (4K+) so
+     backgrounds and content stop growing past 3500px wide. */
+  --max: 3500px;
 
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);

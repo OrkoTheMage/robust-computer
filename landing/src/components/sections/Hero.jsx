@@ -5,7 +5,7 @@ import { Button } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 import { ticketIn } from '../../styles/animations'
 import { colors } from '../../styles/colors'
-import { heroStack, mobile } from '../../styles/breakpoints'
+import { heroMid, heroStack, mobile } from '../../styles/breakpoints'
 import { useLocale } from '../../context/LocaleContext'
 
 /**
@@ -33,6 +33,8 @@ import { useLocale } from '../../context/LocaleContext'
    grid stays on --page, which keeps the ticket parked on the art. */
 const Wrap = styled.section`
   width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
   flex: 1;
   min-height: 0;
   display: flex;
@@ -59,6 +61,14 @@ const Inner = styled.div`
   padding: 64px 56px 72px;
   align-items: center;
 
+  /* Mid tier (1200-1575w, >1215h): stay 2-col but shrink the
+     art column so the headline gets enough room on common
+     laptop sizes (1280-1536) without the row feeling cramped. */
+  ${heroMid} {
+    grid-template-columns: minmax(0, 1fr) 720px;
+    gap: 56px;
+  }
+
   ${heroStack} {
     grid-template-columns: 1fr;
     padding: 48px 24px 56px;
@@ -69,10 +79,11 @@ const Inner = styled.div`
 const Headline = styled.h1`
   font-family: var(--display);
   font-weight: 800;
-  /* Snaps to three discrete sizes — no continuous growth —
+  /* Snaps to four discrete sizes — no continuous growth —
      so the headline locks to the hero's layout breakpoints.
-     96px on the desktop row (narrow column), 72px when the
-     hero stacks (wide column, fewer wraps), 48px on phones. */
+     96px on the desktop row, 72px on the mid tier (2-col
+     still, art shrunk to 720), 56px when stacked, 48px on
+     phones. */
   font-size: 96px;
   line-height: 0.92;
   margin: 0 0 26px;
@@ -80,8 +91,12 @@ const Headline = styled.h1`
   letter-spacing: -0.015em;
   color: ${colors.ink};
 
-  ${heroStack} {
+  ${heroMid} {
     font-size: 72px;
+  }
+
+  ${heroStack} {
+    font-size: 56px;
   }
 
   ${mobile} {
@@ -118,6 +133,10 @@ const ArtFrame = styled.div`
   position: relative;
   width: 960px;
 
+  ${heroMid} {
+    width: 720px;
+  }
+
   ${heroStack} {
     /* Cap the art when stacked so the ticket can sit at a
        reasonable size below it without overflowing the column. */
@@ -132,6 +151,12 @@ const ArtImg = styled(Logo)`
   height: 960px;
   max-width: none;
   filter: drop-shadow(16px 16px 0 ${colors.ink});
+
+  ${heroMid} {
+    width: 720px;
+    height: 720px;
+    filter: drop-shadow(12px 12px 0 ${colors.ink});
+  }
 
   ${heroStack} {
     width: 100%;
@@ -165,6 +190,14 @@ const Ticket = styled.div`
      the animation runs on the compositor (no layout/paint). */
   will-change: transform, opacity;
 
+  ${heroMid} {
+    left: -36px;
+    bottom: 16px;
+    width: 320px;
+    border-width: 4px;
+    box-shadow: 7px 7px 0 ${colors.ink};
+  }
+
   ${heroStack} {
     position: static;
     transform: rotate(-2.5deg);
@@ -196,6 +229,11 @@ const TicketTag = styled.div`
   text-transform: uppercase;
   color: ${colors.ink};
 
+  ${heroMid} {
+    font-size: 13px;
+    border-bottom-width: 3px;
+  }
+
   ${heroStack} {
     font-size: 11px;
     border-bottom-width: 3px;
@@ -211,6 +249,10 @@ const TicketBody = styled.pre`
   line-height: 1.55;
   white-space: pre-wrap;
   color: ${colors.ink};
+
+  ${heroMid} {
+    font-size: 16px;
+  }
 
   ${heroStack} {
     font-size: 13px;
@@ -229,6 +271,12 @@ const TicketStamp = styled.span`
   padding: 4px 13px;
   text-transform: uppercase;
   text-decoration: none;
+
+  ${heroMid} {
+    margin-top: 12px;
+    font-size: 13px;
+    padding: 4px 11px;
+  }
 
   ${heroStack} {
     margin-top: 10px;
