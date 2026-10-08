@@ -32,7 +32,7 @@ cp .env.example .env.prod
 ```
 
 The server selects between these via `NODE_ENV` (set by the
-`scripts/dev.js` wrapper). The Vite app points `envDir` at the
+`scripts/dev.js` wrapper - see [Scripts](#Scripts)). The Vite app points `envDir` at the
 repo root and reads whichever file the wrapper chose.
 
 The file is shared by the server and `landing/`.
@@ -49,24 +49,6 @@ The file is shared by the server and `landing/`.
 yarn dev          # default — loads .env.dev (dev DB)
 yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
-
-### Field Notes publishing
-
-Three scripts split the two concerns — write the public feed files,
-or fire the broadcast — across the local pre-commit and the
-post-deploy steps.
-
-```bash
-yarn feeds:build          # write all four files (pre-commit; no broadcast)
-yarn feeds:broadcast-dev  # fire the broadcast against dev subscribers
-yarn feeds:broadcast      # fire the broadcast against prod subscribers
-```
-
-The underlying script (`scripts/build-rss.mjs`) also accepts the
-format / variant / dry-run flags directly: `--xml-only`,
-`--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
-two split-concern flags `--no-write` and `--no-broadcast`. All flags
-compose.
 
 ## Project Structure
 
@@ -154,6 +136,47 @@ helper function, or a state mutation inside a page, move it to
 4. Delete feature branch
 
 > FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
+
+## Scripts
+
+### dev ([`dev.js`](/scripts/dev.js))
+
+`yarn dev` boots `landing/` (Vite) and `server/` (Express) together with one shared env file and one pre-flighted set of ports. Default is `.env.dev`; `yarn dev:prod` is shorthand for `--env=prod` and points the server at the production Mongo DB.
+
+```bash
+yarn dev          # .env.dev everywhere — dev DB, dev URLs
+yarn dev:prod     # .env.prod everywhere — prod DB, prod URLs
+```
+
+The wrapper (`scripts/dev.js`) does the boring-but-important work: probes ports 3000 + 5000 up front so a busy port surfaces as a clear "X is already in use" instead of a cryptic Vite fallback that breaks the `/api` proxy, allocates the server port and injects `PORT` into both children so Vite's proxy and the server agree, maps `--env=prod|dev` to `NODE_ENV=production|development` for the server's `config.js`, and prints a colored banner showing the env file, parsed Mongo DB name, and bound ports. Override individual vars from your shell as usual — `VITE_API_URL= yarn dev:prod` keeps the rest of `.env.prod` but swaps one value.
+
+### mail ([`mail.js`](/scripts/mailpit.js))
+
+`yarn mail` boots Mailpit, a local SMTP catcher, so every email the server sends during development lands in an in-browser inbox instead of going to real recipients. The server's `config.js` already points at `localhost:1025` when `NODE_ENV=development`, so no extra wiring is required.
+
+```bash
+yarn mail         # start Mailpit (foreground); UI on :8025, SMTP on :1025
+```
+
+The wrapper (`scripts/mailpit.js`) probes `:1025` and short-circuits with the UI URL if Mailpit is already running, then locates a `mailpit` binary (PATH → cached `scripts/.mailpit/` → auto-download from the official GitHub release — no package manager, no root, no Docker required) and spawns it foreground so `Ctrl+C` stops it cleanly. Open `http://localhost:8025` in your browser to read captured emails.
+
+### Field Notes publishing ([`build-rss.mjs`](/scripts/build-rss.mjs))
+
+Three scripts split the two concerns — write the public feed files,
+or fire the broadcast — across the local pre-commit and the
+post-deploy steps.
+
+```bash
+yarn feeds:build          # write all four files (pre-commit; no broadcast)
+yarn feeds:broadcast-dev  # fire the broadcast against dev subscribers
+yarn feeds:broadcast      # fire the broadcast against prod subscribers
+```
+
+The underlying script (`scripts/build-rss.mjs`) also accepts the
+format / variant / dry-run flags directly: `--xml-only`,
+`--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
+two split-concern flags `--no-write` and `--no-broadcast`. All flags
+compose.
 
 ## Deployment
 
