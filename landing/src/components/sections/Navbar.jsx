@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import { mobile, navHamburger, fromNavHamburger } from '../../styles/breakpoints'
 import {
 
@@ -36,6 +36,7 @@ import {
   Newspaper,
   Menu,
   X,
+  ArrowLeft,
 } from 'lucide-react'
 import { Button, XBrand } from '../ui'
 import { Logo, Zer0Text } from '../brand'
@@ -172,6 +173,26 @@ const PanelLink = styled(NavLink)`
   }
 `
 
+// Mobile-only "back to home"
+const PanelBackRow = styled(Link)`
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: ${colors.ink};
+  text-decoration: none;
+  padding: 14px 8px;
+  border-bottom: 3px solid ${colors.ink};
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &:focus-visible {
+    outline: 3px solid ${colors.goldDeep};
+    outline-offset: -3px;
+  }
+`
+
 const Scrim = styled.div`
   position: fixed;
   inset: 0;
@@ -248,14 +269,19 @@ const PanelCTA = styled(CTA)`
 // (Languages stub + the two mainBar-marked connects). Reuses the
 // same <IconLink> styled component so the icons render at the
 // same size and use the same hover/active inversion on both
-// surfaces. Sits between the page links and the CTA, with its
-// own bottom border so the row reads as a discrete block.
+// surfaces.
+//
+// Sits at the bottom of the panel (below the CTA). The panel's
+// own `border-bottom` closes the section visually, so this row
+// doesn't carry its own — the 3px ink divider that used to live
+// here moved up to <PanelCTA> when the CTA and the icons row
+// swapped positions.
 const PanelIcons = styled.div`
   display: flex;
   justify-content: center;
   gap: 10px;
   padding: 18px 0 14px;
-  border-bottom: 3px solid ${colors.ink};
+  margin-top: 14px;
 `
 
 // ── Modal content ───────────────────────────────────────────────────────
@@ -412,7 +438,13 @@ const Navbar = () => {
     toggleMobile,
     closeMobile,
   } = useNavbar()
-  const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome } = useLocale()
+  const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome, fieldNotePage } = useLocale()
+  const { pathname } = useLocation()
+  // Hide the "back to home" row when the user is already at
+  // `/` — the modal's CTA + page links are the right
+  // surface there, and offering a "back to where you are"
+  // button would be confusing.
+  const isHome = pathname === '/'
   // Brand icon varies per route — see `usePageIcon` for the
   // route → variant map. The visual swaps to a thematic
   // variant (about/contact/rss/…) without changing the
@@ -476,11 +508,21 @@ const Navbar = () => {
         </Bar>
         {mobileOpen && (
           <Panel id="mobile-nav">
+            {!isHome && (
+              <PanelBackRow to="/" onClick={closeMobile}>
+                <ArrowLeft size={18} strokeWidth={2.4} aria-hidden="true" />
+                {fieldNotePage.back}
+              </PanelBackRow>
+            )}
             {navbarMobilePages.map((p) => (
               <PanelLink key={p.to} to={p.to} end={p.end} onClick={closeMobile}>
                 <Zer0Text>{p.label}</Zer0Text>
               </PanelLink>
             ))}
+            <PanelCTA as={Link} to="/contact" onClick={closeMobile}>
+              <Zer0Text>{heroChrome.start}</Zer0Text>
+            </PanelCTA>
+            <div></div>
             <PanelIcons>
               <LanguageButton variant="modal" onAfterSelect={closeMobile} />
               {navbarConnects.filter(({ mainBar }) => mainBar).map(({ href, label, icon, external }) => {
@@ -500,9 +542,6 @@ const Navbar = () => {
                 )
               })}
             </PanelIcons>
-            <PanelCTA as={Link} to="/contact" onClick={closeMobile}>
-              <Zer0Text>{heroChrome.start}</Zer0Text>
-            </PanelCTA>
           </Panel>
         )}
       </Sticky>

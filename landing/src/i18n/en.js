@@ -206,7 +206,7 @@ export const ctaBand = {
 // `icon` is a string (mapped to a Lucide component in Navbar.jsx)
 // so this file stays pure data.
 export const navbarMobilePages = [
-  { to: '/', label: 'Home', end: true },
+  { to: '/field-notes', label: 'News' },
   { to: '/about', label: 'About' },
 ]
 

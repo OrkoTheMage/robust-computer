@@ -176,7 +176,7 @@ export const ctaBand = {
 
 // ── Navbar ─────────────────────────────────────────────────────────────
 export const navbarMobilePages = [
-  { to: '/', label: 'Inicio', end: true },
+  { to: '/field-notes', label: 'Notas' },
   { to: '/about', label: 'Equipo' },
 ]
 
