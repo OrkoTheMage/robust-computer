@@ -148,8 +148,6 @@ yarn dev          # .env.dev — dev DB, dev URLs
 yarn dev:prod     # .env.prod — prod DB, prod URLs
 ```
 
-The wrapper (`scripts/dev.js`) probes ports 3000 + 5000 up front, allocates and injects `PORT` so Vite's `/api` proxy agrees with the server, maps `--env` to `NODE_ENV` for `config.js`, and prints a colored banner with the env file + parsed DB name.
-
 ### mail ([`mailpit.js`](/scripts/mailpit.js))
 
 `yarn mail` boots Mailpit, a local SMTP catcher (UI on `:8025`, SMTP on `:1025`), so server emails land in an in-browser inbox during dev. The server's `config.js` auto-points at `localhost:1025` when `NODE_ENV=development`, no wiring required.
@@ -157,8 +155,6 @@ The wrapper (`scripts/dev.js`) probes ports 3000 + 5000 up front, allocates and 
 ```bash
 yarn mail         # foreground; Ctrl+C to stop
 ```
-
-The wrapper (`scripts/mailpit.js`) probes `:1025` and short-circuits if Mailpit is already running, then resolves a binary (PATH → cached `scripts/.mailpit/` → auto-download from GitHub) and spawns it. Open `http://localhost:8025` to read captured emails.
 
 ### feeds ([`build-rss.mjs`](/scripts/build-rss.mjs))
 
