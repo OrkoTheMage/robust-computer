@@ -68,50 +68,31 @@ format / variant / dry-run flags directly: `--xml-only`,
 two split-concern flags `--no-write` and `--no-broadcast`. All flags
 compose.
 
-`feeds:build` is the pre-commit step. It regenerates
-`landing/public/rss.xml`, `feed.txt`, `latest.xml`, and
-`latest.txt` from `landing/src/data/issues/`, loads `.env.dev` (the
-data module is the source of truth — `.env.dev` is only consulted
-for the optional broadcast, which `feeds:build` skips), and exits.
-Commit the regenerated files alongside the new / edited post and
-push to `main`.
-
-`feeds:broadcast-dev` is the dev send. It loads `.env.dev`, picks up
-the local `API_URL` (`http://localhost:5000`) + dev admin secret,
-and POSTs to `/api/newsletter/broadcast` — so a running local
-server (started by `yarn dev`) is the target. Use it to dry-run the
-email + dedupe logic against the dev subscriber list before
-publishing for real.
-
-`feeds:broadcast` is the production publish step. It sets
-`NODE_ENV=production` so the script reads `.env.prod`, picks up the
-real `API_URL` + `NEWSLETTER_ADMIN_SECRET`, and POSTs to
-`https://api.robust.computer/api/newsletter/broadcast`. The server
-returns 202 immediately; the broadcast loop runs server-side and
-dedupes per-subscriber via `Subscriber.issueSlugs`. A re-run is a
-no-op once every active subscriber has been marked. Run after
-pushing to `main` so Vercel has already deployed the post the
-email CTA links to.
-
 ## Project Structure
 
 ```
 robust-computer/
 ├── landing/                # Marketing site (React + Vite, port 3000)
-│   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, feed.txt, robots.txt, ...)
+│   ├── public/                  # Static assets (images, fonts, feed files, robots.txt)
 │   ├── src/
 │   │   ├── api.js               # fetch wrapper (api + ApiError)
 │   │   ├── components/
 │   │   │   ├── brand/           # Logo, Zer0Text
 │   │   │   ├── modals/          # Modal
-│   │   │   ├── sections/        # Page-level shells
+│   │   │   ├── sections/        # Page-level shells (Hero, Navbar, Footer, FieldNotes, ...)
+│   │   │   ├── seo/             # SEO
 │   │   │   └── ui/              # Generic primitives
-│   │   ├── data/                # copy.js, jokes.js, fieldNotes.js, brand.js
+│   │   ├── context/             # LocaleContext
+│   │   ├── data/                # brand, fieldNotes, jokes, issues/
 │   │   ├── hooks/               # State + effects
-│   │   ├── pages/               # Home, About, Contact, Field Notes, Bug report, Unsubscribe, Privacy, Terms, NotFound
-│   │   ├── styles/              # index.css, colors.js, animations.js, highlight.css
+│   │   ├── i18n/                # en, es, fr
+│   │   ├── pages/               # Home, About, Contact, ...
+│   │   ├── styles/              # index.css, colors.js, animations.js, ...
 │   │   └── utils/               # Pure helpers
 │   └── vite.config.js
+│
+│
+├── scripts/                # Repo-root tooling (build-rss, dev, mailpit)
 │
 │
 ├── server/                 # API server (Express + MongoDB, port 5000)
@@ -120,12 +101,12 @@ robust-computer/
 │       ├── models/              # Enquiry, Subscriber, BugReport
 │       ├── routes/              # contact, newsletter, bug-report
 │       └── utils/
-│           ├── email/           # layout, email templates
+│           ├── email.js         # Mailer dispatcher
+│           ├── newsletterBroadcast.js
+│           └── email/           # layout, per-type templates, fonts
 │
 │
-├── scripts/                # Repo-root tooling
-│
-├── package.json            # root scripts: dev, dev:prod, mail, install:all
+├── package.json            # root scripts, version controller
 ```
 
 ### Style Component Conventions
