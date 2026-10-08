@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
+  <img src="landing/public/brand/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.12.6**
+**Version 0.12.7**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -14,6 +14,10 @@ Full-stack web app for Robust Computer's Marketing Site & API
 | `server/` | Express + MongoDB | 5000 | API |
 
 Package manager: **Yarn**
+
+<div align="left">
+  <img src="landing/public/icons/icon-var-installer.svg" width="200" alt="">
+</div>
 
 ## Installation
 
@@ -32,7 +36,7 @@ cp .env.example .env.prod
 ```
 
 The server selects between these via `NODE_ENV` (set by the
-`scripts/dev.js` wrapper). The Vite app points `envDir` at the
+`scripts/dev.js` wrapper - see [Scripts](#Scripts)). The Vite app points `envDir` at the
 repo root and reads whichever file the wrapper chose.
 
 The file is shared by the server and `landing/`.
@@ -50,68 +54,35 @@ yarn dev          # default — loads .env.dev (dev DB)
 yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
 
-### Field Notes publishing
-
-Three scripts split the two concerns — write the public feed files,
-or fire the broadcast — across the local pre-commit and the
-post-deploy steps.
-
-```bash
-yarn feeds:build          # write all four files (pre-commit; no broadcast)
-yarn feeds:broadcast-dev  # fire the broadcast against dev subscribers
-yarn feeds:broadcast      # fire the broadcast against prod subscribers
-```
-
-The underlying script (`scripts/build-rss.mjs`) also accepts the
-format / variant / dry-run flags directly: `--xml-only`,
-`--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
-two split-concern flags `--no-write` and `--no-broadcast`. All flags
-compose.
-
-`feeds:build` is the pre-commit step. It regenerates
-`landing/public/rss.xml`, `feed.txt`, `latest.xml`, and
-`latest.txt` from `landing/src/data/issues/`, loads `.env.dev` (the
-data module is the source of truth — `.env.dev` is only consulted
-for the optional broadcast, which `feeds:build` skips), and exits.
-Commit the regenerated files alongside the new / edited post and
-push to `main`.
-
-`feeds:broadcast-dev` is the dev send. It loads `.env.dev`, picks up
-the local `API_URL` (`http://localhost:5000`) + dev admin secret,
-and POSTs to `/api/newsletter/broadcast` — so a running local
-server (started by `yarn dev`) is the target. Use it to dry-run the
-email + dedupe logic against the dev subscriber list before
-publishing for real.
-
-`feeds:broadcast` is the production publish step. It sets
-`NODE_ENV=production` so the script reads `.env.prod`, picks up the
-real `API_URL` + `NEWSLETTER_ADMIN_SECRET`, and POSTs to
-`https://api.robust.computer/api/newsletter/broadcast`. The server
-returns 202 immediately; the broadcast loop runs server-side and
-dedupes per-subscriber via `Subscriber.issueSlugs`. A re-run is a
-no-op once every active subscriber has been marked. Run after
-pushing to `main` so Vercel has already deployed the post the
-email CTA links to.
+<div align="left">
+  <img src="landing/public/icons/icon-var-tree.svg" width="200" alt="">
+</div>
 
 ## Project Structure
 
 ```
 robust-computer/
 ├── landing/                # Marketing site (React + Vite, port 3000)
-│   ├── public/                  # Static assets (SVGs, fonts, favicons, rss.xml, feed.txt, robots.txt, ...)
+│   ├── public/                  # Static assets (images, fonts, feed files, robots.txt)
 │   ├── src/
 │   │   ├── api.js               # fetch wrapper (api + ApiError)
 │   │   ├── components/
 │   │   │   ├── brand/           # Logo, Zer0Text
 │   │   │   ├── modals/          # Modal
-│   │   │   ├── sections/        # Page-level shells
+│   │   │   ├── sections/        # Page-level shells (Hero, Navbar, Footer, FieldNotes, ...)
+│   │   │   ├── seo/             # SEO
 │   │   │   └── ui/              # Generic primitives
-│   │   ├── data/                # copy.js, jokes.js, fieldNotes.js, brand.js
+│   │   ├── context/             # LocaleContext
+│   │   ├── data/                # brand, fieldNotes, jokes, issues/
 │   │   ├── hooks/               # State + effects
-│   │   ├── pages/               # Home, About, Contact, Field Notes, Bug report, Unsubscribe, Privacy, Terms, NotFound
-│   │   ├── styles/              # index.css, colors.js, animations.js, highlight.css
+│   │   ├── i18n/                # en, es, fr
+│   │   ├── pages/               # Home, About, Contact, ...
+│   │   ├── styles/              # index.css, colors.js, animations.js, ...
 │   │   └── utils/               # Pure helpers
 │   └── vite.config.js
+│
+│
+├── scripts/                # Repo-root tooling (build-rss, dev, mailpit)
 │
 │
 ├── server/                 # API server (Express + MongoDB, port 5000)
@@ -120,12 +91,12 @@ robust-computer/
 │       ├── models/              # Enquiry, Subscriber, BugReport
 │       ├── routes/              # contact, newsletter, bug-report
 │       └── utils/
-│           ├── email/           # layout, email templates
+│           ├── email.js         # Mailer dispatcher
+│           ├── newsletterBroadcast.js
+│           └── email/           # layout, per-type templates, fonts
 │
 │
-├── scripts/                # Repo-root tooling
-│
-├── package.json            # root scripts: dev, dev:prod, mail, install:all
+├── package.json            # root scripts, version controller
 ```
 
 ### Style Component Conventions
@@ -157,6 +128,51 @@ helper function, or a state mutation inside a page, move it to
 | `utils/`    | Pure helpers (formatters, validators, permission calculators) |
 | Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
+<div align="left">
+  <img src="landing/public/icons/icon-var-script.svg" width="200" alt="">
+</div>
+
+## Scripts
+
+### dev ([`dev.js`](/scripts/dev.js))
+
+`yarn dev` boots `landing/` + `server/` together, defaulting to `.env.dev`. `yarn dev:prod` is shorthand for `--env=prod` and points the server at prod.
+
+```bash
+yarn dev          # .env.dev — dev DB, dev URLs
+yarn dev:prod     # .env.prod — prod DB, prod URLs
+```
+
+### mail ([`mailpit.js`](/scripts/mailpit.js))
+
+`yarn mail` boots Mailpit, a local SMTP catcher (UI on `:8025`, SMTP on `:1025`), so server emails land in an in-browser inbox during dev. The server's `config.js` auto-points at `localhost:1025` when `NODE_ENV=development`, no wiring required.
+
+```bash
+yarn mail         # foreground; Ctrl+C to stop
+```
+
+### feeds ([`build-rss.mjs`](/scripts/build-rss.mjs))
+
+Three scripts split the two concerns — write the public feed files,
+or fire the broadcast — across the local pre-commit and the
+post-deploy steps.
+
+```bash
+yarn feeds:build          # write all four files (pre-commit; no broadcast)
+yarn feeds:broadcast-dev  # fire the broadcast against dev subscribers
+yarn feeds:broadcast      # fire the broadcast against prod subscribers
+```
+
+The underlying script (`scripts/build-rss.mjs`) also accepts the
+format / variant / dry-run flags directly: `--xml-only`,
+`--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
+two split-concern flags `--no-write` and `--no-broadcast`. All flags
+compose.
+
+<div align="left">
+  <img src="landing/public/icons/icon-var-versioning.svg" width="200" alt="">
+</div>
+
 ## Versioning
 
 | Branch | Purpose |
@@ -173,6 +189,10 @@ helper function, or a state mutation inside a page, move it to
 4. Delete feature branch
 
 > FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
+
+<div align="left">
+  <img src="landing/public/icons/icon-var-deploy.svg" width="200" alt="">
+</div>
 
 ## Deployment
 
