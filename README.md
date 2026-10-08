@@ -141,26 +141,26 @@ helper function, or a state mutation inside a page, move it to
 
 ### dev ([`dev.js`](/scripts/dev.js))
 
-`yarn dev` boots `landing/` (Vite) and `server/` (Express) together with one shared env file and one pre-flighted set of ports. Default is `.env.dev`; `yarn dev:prod` is shorthand for `--env=prod` and points the server at the production Mongo DB.
+`yarn dev` boots `landing/` + `server/` together, defaulting to `.env.dev`. `yarn dev:prod` is shorthand for `--env=prod` and points the server at prod.
 
 ```bash
-yarn dev          # .env.dev everywhere — dev DB, dev URLs
-yarn dev:prod     # .env.prod everywhere — prod DB, prod URLs
+yarn dev          # .env.dev — dev DB, dev URLs
+yarn dev:prod     # .env.prod — prod DB, prod URLs
 ```
 
-The wrapper (`scripts/dev.js`) does the boring-but-important work: probes ports 3000 + 5000 up front so a busy port surfaces as a clear "X is already in use" instead of a cryptic Vite fallback that breaks the `/api` proxy, allocates the server port and injects `PORT` into both children so Vite's proxy and the server agree, maps `--env=prod|dev` to `NODE_ENV=production|development` for the server's `config.js`, and prints a colored banner showing the env file, parsed Mongo DB name, and bound ports. Override individual vars from your shell as usual — `VITE_API_URL= yarn dev:prod` keeps the rest of `.env.prod` but swaps one value.
+The wrapper (`scripts/dev.js`) probes ports 3000 + 5000 up front, allocates and injects `PORT` so Vite's `/api` proxy agrees with the server, maps `--env` to `NODE_ENV` for `config.js`, and prints a colored banner with the env file + parsed DB name.
 
-### mail ([`mail.js`](/scripts/mailpit.js))
+### mail ([`mailpit.js`](/scripts/mailpit.js))
 
-`yarn mail` boots Mailpit, a local SMTP catcher, so every email the server sends during development lands in an in-browser inbox instead of going to real recipients. The server's `config.js` already points at `localhost:1025` when `NODE_ENV=development`, so no extra wiring is required.
+`yarn mail` boots Mailpit, a local SMTP catcher (UI on `:8025`, SMTP on `:1025`), so server emails land in an in-browser inbox during dev. The server's `config.js` auto-points at `localhost:1025` when `NODE_ENV=development`, no wiring required.
 
 ```bash
-yarn mail         # start Mailpit (foreground); UI on :8025, SMTP on :1025
+yarn mail         # foreground; Ctrl+C to stop
 ```
 
-The wrapper (`scripts/mailpit.js`) probes `:1025` and short-circuits with the UI URL if Mailpit is already running, then locates a `mailpit` binary (PATH → cached `scripts/.mailpit/` → auto-download from the official GitHub release — no package manager, no root, no Docker required) and spawns it foreground so `Ctrl+C` stops it cleanly. Open `http://localhost:8025` in your browser to read captured emails.
+The wrapper (`scripts/mailpit.js`) probes `:1025` and short-circuits if Mailpit is already running, then resolves a binary (PATH → cached `scripts/.mailpit/` → auto-download from GitHub) and spawns it. Open `http://localhost:8025` to read captured emails.
 
-### Field Notes publishing ([`build-rss.mjs`](/scripts/build-rss.mjs))
+### feed ([`build-rss.mjs`](/scripts/build-rss.mjs))
 
 Three scripts split the two concerns — write the public feed files,
 or fire the broadcast — across the local pre-commit and the
