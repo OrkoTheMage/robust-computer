@@ -30,7 +30,7 @@ const Bar = styled.div`
   position: relative;
   flex: none;
   font-family: var(--mono);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.04em;
   text-transform: uppercase;

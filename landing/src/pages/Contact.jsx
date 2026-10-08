@@ -245,7 +245,7 @@ export default function Contact() {
             <p>{contactPage.enquiryLead}</p>
 
             <Two>
-              <FieldGroup label={fields.yourName} error={c.fieldErrors.name}>
+              <FieldGroup label={<Zer0Text>{fields.yourName}</Zer0Text>} error={c.fieldErrors.name}>
                 <InputControl
                   type="text"
                   name="name"
@@ -269,7 +269,7 @@ export default function Contact() {
               </FieldGroup>
             </Two>
 
-            <FieldGroup label={fields.company} error={c.fieldErrors.company}>
+            <FieldGroup label={<Zer0Text>{fields.company}</Zer0Text>} error={c.fieldErrors.company}>
               <InputControl
                 type="text"
                 name="company"
@@ -306,7 +306,7 @@ export default function Contact() {
               ))}
             </Chips>
 
-            <FieldGroup label={fields.message} error={c.fieldErrors.message}>
+            <FieldGroup label={<Zer0Text>{fields.message}</Zer0Text>} error={c.fieldErrors.message}>
               <TextareaControl
                 name="message"
                 placeholder={placeholders.messageContact}

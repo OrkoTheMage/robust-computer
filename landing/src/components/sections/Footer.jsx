@@ -174,7 +174,7 @@ const Small = styled.div`
   padding-top: 20px;
   font-size: 13px;
   font-family: var(--mono);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 
@@ -197,7 +197,7 @@ const Legal = styled.nav`
   gap: 14px;
   padding: 14px 0 0;
   font-family: var(--mono);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -283,14 +283,14 @@ const Footer = () => {
       </Col>
     </Cols>
     <Legal aria-label="Legal">
-      <Link to="/privacy">{footerChrome.privacy}</Link>
+      <Link to="/privacy"><Zer0Text>{footerChrome.privacy}</Zer0Text></Link>
       <span className="sep" aria-hidden="true">|</span>
-      <Link to="/terms">{footerChrome.terms}</Link>
+      <Link to="/terms"><Zer0Text>{footerChrome.terms}</Zer0Text></Link>
       <span className="sep" aria-hidden="true">|</span>
-      <Link to="/bug-report">{footerChrome.bug}</Link>
+      <Link to="/bug-report"><Zer0Text>{footerChrome.bug}</Zer0Text></Link>
     </Legal>
     <Small>
-      <span>{config.brand.name}</span>
+      <span><Zer0Text>{config.brand.name}</Zer0Text></span>
       <span><Zer0Text>{footerChrome.tagline}</Zer0Text></span>
     </Small>
   </Foot>
