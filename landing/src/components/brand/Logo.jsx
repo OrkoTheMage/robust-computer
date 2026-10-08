@@ -19,22 +19,22 @@ const Img = styled.img`
 `
 
 const variantToSrc = {
-  icon: '/icon.svg',
-  icon404: '/icon-var-404.svg',
-  iconVarAngry: '/icon-var-angry.svg',
-  iconVarCrying: '/icon-var-crying.svg',
-  iconVarDead: '/icon-var-dead.svg',
-  iconVarHappy: '/icon-var-happy.svg',
-  iconVarPanicked: '/icon-var-panicked.svg',
-  iconVarUnamused: '/icon-var-unamused.svg',
-  iconVarUnsub: '/icon-var-unsub.svg',
-  badge: '/badge.svg',
-  badgeAlt: '/badge-cut.svg',
-  poster: '/poster.svg',
-  banner: '/banner.svg',
-  bannerAlt: '/banner-cut.svg',
-  banner2: '/banner2.svg',
-  banner2Alt: '/banner2-cut.svg',
+  icon: '/icons/icon.svg',
+  icon404: '/icons/icon-var-404.svg',
+  iconVarAngry: '/icons/icon-var-angry.svg',
+  iconVarCrying: '/icons/icon-var-crying.svg',
+  iconVarDead: '/icons/icon-var-dead.svg',
+  iconVarHappy: '/icons/icon-var-happy.svg',
+  iconVarPanicked: '/icons/icon-var-panicked.svg',
+  iconVarUnamused: '/icons/icon-var-unamused.svg',
+  iconVarUnsub: '/icons/icon-var-unsub.svg',
+  badge: '/brand/badge.svg',
+  badgeAlt: '/brand/badge-cut.svg',
+  poster: '/brand/poster.svg',
+  banner: '/brand/banner.svg',
+  bannerAlt: '/brand/banner-cut.svg',
+  banner2: '/brand/banner2.svg',
+  banner2Alt: '/brand/banner2-cut.svg',
 }
 
 const variantToAlt = {

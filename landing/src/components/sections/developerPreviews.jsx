@@ -68,7 +68,7 @@ const AerynPreview = () => (
 export const developerPreviews = [
   {
     domain: 'grue.sh',
-    image: '/aeryn-preview.png',
+    image: '/brand/aeryn-preview.png',
     bg: fixture.bg,
     fg: fixture.fg,
     font: 'sans',
