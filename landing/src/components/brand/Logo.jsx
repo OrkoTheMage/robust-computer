@@ -8,6 +8,13 @@ import styled from '@emotion/styled'
  *   - "badge"  → round badge, used in hero & page headers
  *   - "avatar" → square headshot, dev cards
  *
+ * Pass `src` to override the variant's default src. Used by
+ * `usePageIcon`, which feeds the navbar's per-route icon —
+ * the navbar stays variant-agnostic and the route → icon
+ * mapping lives entirely in the hook.
+ *
+ * Pass `alt` to override the variant's default alt.
+ *
  * Sizes are controlled by the consumer — pass `height` (the SVG is
  * viewBox-driven so width auto-scales).
  */
@@ -16,6 +23,13 @@ const Img = styled.img`
   display: block;
   width: auto;
   height: ${(p) => p.h || 44}px;
+  /* Every icon in /icons/ is a 512×512 SVG (square), so the
+     rendered image is always h × h. Reserving the space with
+     aspect-ratio: 1 keeps the navbar layout stable across the
+     icon swap instead of letting the <img> snap from a 0-width
+     placeholder (no intrinsic width until the bytes land) to
+     its natural width once the image decodes. */
+  aspect-ratio: 1;
 `
 
 const variantToSrc = {
@@ -56,9 +70,9 @@ const variantToAlt = {
   banner2Alt: 'Robust Computer',
 }
 
-const Logo = ({ variant = 'icon', h, alt, ...rest }) => (
+const Logo = ({ variant = 'icon', src, h, alt, ...rest }) => (
   <Img
-    src={variantToSrc[variant]}
+    src={src ?? variantToSrc[variant]}
     alt={alt ?? variantToAlt[variant]}
     h={h}
     {...rest}

@@ -41,6 +41,22 @@
     <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/barlow-800.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/newsreader.woff2" crossorigin />
+    <!-- Per-route navbar icons (see `usePageIcon`). Preload every
+         variant at HTML parse time so the navbar icon swap is
+         instant on navigation — same reasoning as the font
+         preloads above: the browser gets these fetches started
+         before React mounts. The JS preloader in `ImagePreloader`
+         is a redundant safety net for any variant added at
+         runtime. Type hints help the browser skip a
+         content-type round-trip. -->
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-about.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-bug.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-contact.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-rss.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-legal.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-unsub.svg" />
+    <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-404.svg" />
     <title>Robust Computer</title>
   </head>
   <body>

@@ -495,12 +495,9 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  notFoundTitle: 'No encontrado',
-  notFoundLead: 'No hay ninguna publicación en esta URL.',
   eyebrow: 'Field notes',
   back: 'Volver al inicio',
   publishedLabel: 'Publicado',
-  seoFallbackDescription: 'Field Notes de Robust Computer — ediciones cortas sobre construir software que perdure.',
 }
 
 export const notFoundPage = {
