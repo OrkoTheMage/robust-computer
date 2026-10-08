@@ -140,7 +140,7 @@ export default function BugReport() {
             <p>{bugReportPage.sheetLead}</p>
 
       <Two>
-        <FieldGroup label={fields.yourName} error={b.fieldErrors.name}>
+        <FieldGroup label={<Zer0Text>{fields.yourName}</Zer0Text>} error={b.fieldErrors.name}>
           <InputControl
             type="text"
             name="name"
@@ -162,7 +162,7 @@ export default function BugReport() {
         </FieldGroup>
       </Two>
 
-      <FieldGroup label={fields.whatDoing} error={b.fieldErrors.whatWereYouDoing}>
+      <FieldGroup label={<Zer0Text>{fields.whatDoing}</Zer0Text>} error={b.fieldErrors.whatWereYouDoing}>
         <TextareaControl
           name="whatWereYouDoing"
           placeholder={placeholders.stepsRepro}
@@ -173,7 +173,7 @@ export default function BugReport() {
         />
       </FieldGroup>
 
-      <FieldGroup label={fields.whatExpected} error={b.fieldErrors.whatExpected}>
+      <FieldGroup label={<Zer0Text>{fields.whatExpected}</Zer0Text>} error={b.fieldErrors.whatExpected}>
         <TextareaControl
           name="whatExpected"
           placeholder={placeholders.whatExpected}
@@ -195,7 +195,7 @@ export default function BugReport() {
         />
       </FieldGroup>
 
-      <FieldGroup label={fields.browserDevice} error={b.fieldErrors.browserDevice}>
+      <FieldGroup label={<Zer0Text>{fields.browserDevice}</Zer0Text>} error={b.fieldErrors.browserDevice}>
         <InputControl
           type="text"
           name="browserDevice"
