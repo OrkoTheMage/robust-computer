@@ -129,27 +129,6 @@ helper function, or a state mutation inside a page, move it to
 | Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
 <div align="left">
-  <img src="landing/public/icons/icon-var-versioning.svg" width="200" alt="">
-</div>
-
-## Versioning
-
-| Branch | Purpose |
-|--------|---------|
-| `feature:[feature-name]` | Feature development |
-| `dev` | Integration, testing |
-| `main` | Production releases |
-
-### Release Flow
-1. Create feature branch → merge to `dev`
-2. Update version controllers (`package.json` + `README.md`)
-2. Squash-merge `dev` into `main` with version tag
-3. Fast-forward `dev` to `main`
-4. Delete feature branch
-
-> FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
-
-<div align="left">
   <img src="landing/public/icons/icon-var-script.svg" width="200" alt="">
 </div>
 
@@ -189,6 +168,27 @@ format / variant / dry-run flags directly: `--xml-only`,
 `--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
 two split-concern flags `--no-write` and `--no-broadcast`. All flags
 compose.
+
+<div align="left">
+  <img src="landing/public/icons/icon-var-versioning.svg" width="200" alt="">
+</div>
+
+## Versioning
+
+| Branch | Purpose |
+|--------|---------|
+| `feature:[feature-name]` | Feature development |
+| `dev` | Integration, testing |
+| `main` | Production releases |
+
+### Release Flow
+1. Create feature branch → merge to `dev`
+2. Update version controllers (`package.json` + `README.md`)
+2. Squash-merge `dev` into `main` with version tag
+3. Fast-forward `dev` to `main`
+4. Delete feature branch
+
+> FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
 
 <div align="left">
   <img src="landing/public/icons/icon-var-deploy.svg" width="200" alt="">
