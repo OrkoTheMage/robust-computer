@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Chip } from '../ui'
 import { Zer0Text } from '../brand'
 import { useLocale } from '../../context/LocaleContext'
@@ -32,7 +33,7 @@ const Bar = styled.section`
     letter-spacing: -0.005em;
   }
 
-  @media (max-width: 980px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     padding: 32px 24px;
     gap: 20px;

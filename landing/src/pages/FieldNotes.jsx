@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
+import { mobile } from '../styles/breakpoints'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
@@ -54,7 +55,7 @@ const List = styled.section`
   margin: 0 auto;
   padding: 64px 56px 24px;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 40px 24px 16px;
   }
 `
@@ -94,7 +95,7 @@ const Card = styled(Link)`
     box-shadow: 3px 3px 0 ${colors.ink};
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 22px 22px;
@@ -158,7 +159,7 @@ const DateChip = styled.span`
   text-transform: uppercase;
   white-space: nowrap;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     align-self: flex-start;
   }
 `
@@ -171,7 +172,7 @@ const Subscribe = styled.section`
   margin: 0 auto;
   padding: 24px 56px 96px;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 16px 24px 64px;
   }
 `
@@ -191,7 +192,7 @@ const Pagination = styled.nav`
   margin: 0 auto;
   padding: 8px 56px 0;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 8px 24px 0;
     gap: 8px;
   }
@@ -241,7 +242,7 @@ const PageBtn = styled.button`
     opacity: 0.4;
   }
 
-  @media (max-width: 560px) {
+  ${mobile} {
     min-width: 38px;
     height: 38px;
     font-size: 12px;

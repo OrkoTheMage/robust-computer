@@ -10,6 +10,7 @@ import xml from 'highlight.js/lib/languages/xml'
 import markdown from 'highlight.js/lib/languages/markdown'
 import plaintext from 'highlight.js/lib/languages/plaintext'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { parseMarkdownBlocks } from '../../utils/parseMarkdownBlocks'
 import '../../styles/highlight.css'
 
@@ -79,7 +80,7 @@ const Lede = styled.p`
     height: auto;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     padding: 2px 0 2px 16px;
     margin: 0 0 32px;
     border-left-width: 4px;
@@ -156,7 +157,7 @@ const QuoteSection = styled.div`
     height: auto;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     padding: 28px 20px 24px;
     font-size: 16px;
     &::before, &::after { font-size: 32px; }

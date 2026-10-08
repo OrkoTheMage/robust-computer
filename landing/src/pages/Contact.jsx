@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
+import { mobile } from '../styles/breakpoints'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
@@ -43,7 +44,7 @@ const Grid = styled.div`
   padding: 64px 56px 84px;
   align-items: start;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     padding: 40px 24px 56px;
   }
@@ -76,7 +77,7 @@ const Two = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 
-  @media (max-width: 560px) {
+  ${mobile} {
     grid-template-columns: 1fr;
   }
 `

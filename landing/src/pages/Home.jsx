@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
+import { heroStack } from '../styles/breakpoints'
 import TopBar from '../components/sections/TopBar'
 import Navbar from '../components/sections/Navbar'
 import Hero from '../components/sections/Hero'
@@ -42,10 +43,10 @@ const Opening = styled.div`
      --chrome is set inline from useChromeHeight. */
   height: calc(100dvh - var(--chrome, 145px));
 
-  @media (max-width: 980px) {
-    /* The stacked art + headline + ticket + lead + CTAs is taller
-       than a phone screen, so let the hero grow and let Promises
-       sit in normal flow below it. */
+  ${heroStack} {
+    /* When the hero stacks (≤1575w OR ≤1215h), the art + headline
+       + ticket + lead + CTAs run taller than a viewport — let the
+       hero grow and let Promises sit in normal flow below it. */
     height: auto;
   }
 `

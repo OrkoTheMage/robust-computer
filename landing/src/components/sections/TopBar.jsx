@@ -1,4 +1,5 @@
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import styled from '@emotion/styled'
 import { Zer0Text } from '../brand'
 import { useTopBarJoke } from '../../hooks/useTopBarJoke'
@@ -27,7 +28,7 @@ const Bar = styled.div`
   text-align: center;
   flex-wrap: wrap;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     font-size: 11px;
     gap: 10px;
   }

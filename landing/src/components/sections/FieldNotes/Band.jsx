@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../../styles/colors'
+import { mobile } from '../../../styles/breakpoints'
 import { Link } from 'react-router-dom'
 import { Button, InputControl, FieldGroup } from '../../ui'
 import { Zer0Text } from '../../brand'
@@ -49,7 +50,7 @@ const Band = styled.section`
     font-size: 18px;
   }
 
-  @media (max-width: 980px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     padding: 48px 24px;
     gap: 28px;
@@ -96,7 +97,7 @@ const Row = styled.div`
   display: flex;
   gap: 12px;
 
-  @media (max-width: 560px) {
+  ${mobile} {
     flex-direction: column;
   }
 `

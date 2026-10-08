@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../styles/colors'
+import { mobile } from '../styles/breakpoints'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Navbar from '../components/sections/Navbar'
@@ -74,7 +75,7 @@ const Sheet = styled.article`
   box-shadow: 8px 8px 0 ${colors.ink};
   color: ${colors.ink};
 
-  @media (max-width: 760px) {
+  ${mobile} {
     margin: 32px 16px;
     padding: 24px 22px;
   }
@@ -133,7 +134,7 @@ const HeaderBox = styled.div`
     opacity: 0.7;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     margin: 24px 16px 0;
     padding: 22px 22px 24px;
   }
@@ -158,7 +159,7 @@ const BackLink = styled(Link)`
     color: ${colors.goldDeep};
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     margin-top: 32px;
     font-size: 13px;
   }
@@ -190,7 +191,7 @@ const AuthorFoot = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     margin-top: 48px;
   }
 `
@@ -228,7 +229,7 @@ const AuthorStamp = styled.div`
      closing quote on desktop would push it into the
      Sheet's right padding on mobile, so pull it in to
      keep the stamp readable. */
-  @media (max-width: 760px) {
+  ${mobile} {
     padding: 11px 20px;
     border-width: 4px;
     box-shadow: 2px 2px 0 ${colors.gold};

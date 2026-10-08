@@ -4,6 +4,7 @@ import { Zer0Text } from '../brand'
 import { marqueeLr } from '../../styles/animations'
 import { repeat } from '../../utils/repeat'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { useLocale } from '../../context/LocaleContext'
 
 /**
@@ -35,7 +36,7 @@ const Bar = styled.div`
   letter-spacing: 0.04em;
   text-transform: uppercase;
 
-  @media (max-width: 980px) {
+  ${mobile} {
     font-size: 12px;
   }
 `

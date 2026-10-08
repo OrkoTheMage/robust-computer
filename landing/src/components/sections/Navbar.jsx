@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { NavLink, Link } from 'react-router-dom'
+import { mobile, navHamburger, fromNavHamburger } from '../../styles/breakpoints'
 import {
 
 /**
@@ -10,8 +11,8 @@ import {
  * quick-jump surface and a place to put GitHub/LinkedIn/RSS without
  * crowding the top bar. That modal stays available at every width.
  *
- * At the mobile breakpoint the inline links collapse into a hamburger.
- * The panel drops out of the bar (it does not replace the icon modal),
+ * At 1200px width and below the inline links collapse into a
+ * hamburger. The panel drops out of the bar (it does not replace the icon modal),
  * dims the page, and leaves document scroll unlocked. It only lists
  * pages plus the start-a-project CTA.
  *
@@ -63,7 +64,7 @@ const Bar = styled.nav`
   padding: 16px 56px;
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 14px 24px;
   }
 `
@@ -104,7 +105,7 @@ const BrandStack = styled.div`
   line-height: 1;
   color: ${colors.ink};
 
-  @media (max-width: 760px) {
+  ${mobile} {
     display: none;
   }
 `
@@ -118,7 +119,7 @@ const Links = styled.div`
   gap: 32px;
   align-items: center;
 
-  @media (max-width: 760px) {
+  ${navHamburger} {
     display: none;
   }
 `
@@ -135,7 +136,7 @@ const MenuBtn = styled.button`
   color: ${colors.ink};
   padding: 0;
 
-  @media (max-width: 760px) {
+  ${navHamburger} {
     display: flex;
   }
 `
@@ -148,7 +149,7 @@ const Panel = styled.div`
   background: ${colors.paper};
   border-bottom: 3px solid ${colors.ink};
 
-  @media (min-width: 761px) {
+  ${fromNavHamburger} {
     display: none;
   }
 `
@@ -177,7 +178,7 @@ const Scrim = styled.div`
      keeps its native scroll (including touch momentum). */
   pointer-events: none;
 
-  @media (min-width: 761px) {
+  ${fromNavHamburger} {
     display: none;
   }
 `
@@ -222,15 +223,14 @@ const CTA = styled(Button)``
 // (GitHub + RSS Feed). Those entries are also surfaced as
 // full text rows in the site-menu modal (Pages / Connect), but
 // the inline icons give a one-click shortcut for repeat
-// visitors. The whole cluster disappears below the 760px
-// mobile cut; the mobile panel covers those entries on small
-// screens.
+// visitors. The whole cluster disappears on phones; the mobile
+// panel covers those entries on small screens.
 const IconLinks = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
 
-  @media (max-width: 760px) {
+  ${mobile} {
     display: none;
   }
 `

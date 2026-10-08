@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Container } from '../ui'
 import { Zer0Text } from '../brand'
 import { useLocale } from '../../context/LocaleContext'
@@ -20,7 +21,7 @@ const Section = styled.section`
   padding-inline: max(56px, calc((100% - var(--page)) / 2 + 56px));
   color: ${colors.ink};
 
-  @media (max-width: 980px) {
+  ${mobile} {
     padding: 56px 24px 48px;
   }
 `
@@ -31,7 +32,7 @@ const Row = styled.div`
   border: 3px solid ${colors.ink};
   background: ${colors.paper};
 
-  @media (max-width: 760px) {
+  ${mobile} {
     grid-template-columns: 1fr;
   }
 `
@@ -44,7 +45,7 @@ const Step = styled.div`
     border-right: 0;
   }
 
-  @media (max-width: 760px) {
+  ${mobile} {
     border-right: 0;
     border-bottom: 3px solid ${colors.ink};
 

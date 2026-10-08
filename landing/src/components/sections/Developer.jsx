@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Button } from '../ui'
 import { Logo, Zer0Text } from '../brand'
 
@@ -25,7 +26,7 @@ const Wrap = styled.section`
   background: ${(p) => (p.reversed ? colors.ticket : 'transparent')};
   color: ${colors.ink};
 
-  @media (max-width: 980px) {
+  ${mobile} {
     grid-template-columns: 1fr;
     padding: 48px 24px;
     gap: 28px;
@@ -35,7 +36,7 @@ const Wrap = styled.section`
 const Info = styled.div`
   ${(p) => (p.reversed ? 'order: 2;' : '')}
 
-  @media (max-width: 980px) {
+  ${mobile} {
     order: 0 !important;
   }
 `
@@ -63,7 +64,7 @@ const Id = styled.div`
      gets the full row width — otherwise long names like
      "PLACEHOLDER" wrap and drop their last letter onto a
      second line. Also shrink the avatar and tighten the gap. */
-  @media (max-width: 600px) {
+  ${mobile} {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -92,7 +93,7 @@ const H2 = styled.h2`
 
   /* Drop the heading size on phones so the name doesn't
      dominate the row even after the avatar stacks above. */
-  @media (max-width: 600px) {
+  ${mobile} {
     font-size: 28px;
   }
 `
@@ -144,7 +145,7 @@ const Links = styled.div`
 
   /* On phones, stack the "Visit portfolio" button on its own
      line and put GitHub + LinkedIn together on a row below. */
-  @media (max-width: 600px) {
+  ${mobile} {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
@@ -176,7 +177,7 @@ const TextLink = styled.a`
 const PreviewWrap = styled.div`
   ${(p) => (p.reversed ? 'order: 1;' : '')}
 
-  @media (max-width: 980px) {
+  ${mobile} {
     order: 0 !important;
   }
 `

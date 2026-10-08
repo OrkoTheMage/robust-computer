@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { colors } from '../../styles/colors'
+import { mobile } from '../../styles/breakpoints'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui'
 import { Zer0Text } from '../brand'
@@ -38,7 +39,7 @@ const Band = styled.section`
     max-width: 28em;
   }
 
-  @media (max-width: 980px) {
+  ${mobile} {
     flex-direction: column;
     align-items: flex-start;
     padding: 48px 24px;
