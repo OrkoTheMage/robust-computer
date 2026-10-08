@@ -160,7 +160,7 @@ yarn mail         # foreground; Ctrl+C to stop
 
 The wrapper (`scripts/mailpit.js`) probes `:1025` and short-circuits if Mailpit is already running, then resolves a binary (PATH → cached `scripts/.mailpit/` → auto-download from GitHub) and spawns it. Open `http://localhost:8025` to read captured emails.
 
-### feed ([`build-rss.mjs`](/scripts/build-rss.mjs))
+### feeds ([`build-rss.mjs`](/scripts/build-rss.mjs))
 
 Three scripts split the two concerns — write the public feed files,
 or fire the broadcast — across the local pre-commit and the
