@@ -158,8 +158,8 @@ const xmlEscape = (str) =>
 
 // Render a markdown body to plain text. Walks the same
 // `parseMarkdownBlocks` parser the React page and the full
-// feed.txt renderer use, so block boundaries agree. Code
-// blocks are dropped from the excerpt — the fence rules
+// feed.txt renderer use, so block boundaries agree.
+// Code blocks are dropped from the excerpt — the fence rules
 // and code content are pure-rendering noise for a feed
 // reader that only shows text — and each remaining block
 // is rendered through `marked.parseInline` + `DOMPurify`

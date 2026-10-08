@@ -64,14 +64,15 @@ const DEFAULT_DESCRIPTION =
   'Robust Computer is a small team of developers. We design it, build it, and stay on after launch.'
 
 // Wide banner used as the default og:image. The file lives in
-// /public so it's served as-is from the site root, and SVG is
-// accepted by the major social platforms (Twitter, Facebook,
-// LinkedIn) for og:image and twitter:image as of 2023+.
+// /public/brand/ so it's served as-is from the site root, and
+// SVG is accepted by the major social platforms (Twitter,
+// Facebook, LinkedIn) for og:image and twitter:image as of
+// 2023+.
 //
 // If a future page needs a different visual (e.g. a field-note
 // post with a per-post image), pass an absolute or root-relative
 // URL via the `image` prop and it'll override this default.
-const DEFAULT_IMAGE = `${config.landingUrl}/banner2-cut.svg`
+const DEFAULT_IMAGE = `${config.landingUrl}/brand/banner2-cut.svg`
 
 const setMeta = (selector, attr, value) => {
   let el = document.head.querySelector(selector)

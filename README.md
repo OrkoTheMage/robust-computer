@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="landing/public/banner2-cut.svg" width="560" alt="Robust Computer">
+  <img src="landing/public/brand/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
 **Version 0.12.6**
@@ -16,7 +16,7 @@ Full-stack web app for Robust Computer's Marketing Site & API
 Package manager: **Yarn**
 
 <div align="left">
-  <img src="landing/public/icon-var-unamused.svg" width="200" alt="">
+  <img src="landing/public/icons/icon-var-unamused.svg" width="200" alt="">
 </div>
 
 ## Installation
@@ -55,7 +55,7 @@ yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
 
 <div align="left">
-  <img src="landing/public/icon-var-404.svg" width="200" alt="">
+  <img src="landing/public/icons/icon-var-404.svg" width="200" alt="">
 </div>
 
 ## Project Structure
@@ -129,7 +129,7 @@ helper function, or a state mutation inside a page, move it to
 | Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
 <div align="left">
-  <img src="landing/public/icon-var-panicked.svg" width="200" alt="">
+  <img src="landing/public/icons/icon-var-panicked.svg" width="200" alt="">
 </div>
 
 ## Versioning
@@ -150,7 +150,7 @@ helper function, or a state mutation inside a page, move it to
 > FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
 
 <div align="left">
-  <img src="landing/public/icon-var-angry.svg" width="200" alt="">
+  <img src="landing/public/icons/icon-var-angry.svg" width="200" alt="">
 </div>
 
 ## Scripts
@@ -191,7 +191,7 @@ two split-concern flags `--no-write` and `--no-broadcast`. All flags
 compose.
 
 <div align="left">
-  <img src="landing/public/icon-var-happy.svg" width="200" alt="">
+  <img src="landing/public/icons/icon-var-happy.svg" width="200" alt="">
 </div>
 
 ## Deployment

@@ -193,7 +193,7 @@ const formatLogDate = (date = new Date(), timeZone = config.brand.timezone) => {
 // images — no visible wordmark, so the banner is the whole brand
 // statement up top.
 const headerHtml = () => {
-  const bannerSrc = `${config.landingUrl}/banner2-cut.png`
+  const bannerSrc = `${config.landingUrl}/brand/banner2-cut.png`
   return `
     <tr>
       <td align="center" style="padding:40px 24px 32px; border-bottom:3px solid ${COLOR.ink};">
