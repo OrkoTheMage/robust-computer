@@ -15,6 +15,10 @@ Full-stack web app for Robust Computer's Marketing Site & API
 
 Package manager: **Yarn**
 
+<div align="left">
+  <img src="landing/public/icon-var-unamused.svg" width="200" alt="">
+</div>
+
 ## Installation
 
 ```bash
@@ -49,6 +53,10 @@ The file is shared by the server and `landing/`.
 yarn dev          # default — loads .env.dev (dev DB)
 yarn dev:prod     # loads .env.prod (prod DB, prod URLs)
 ```
+
+<div align="right">
+  <img src="landing/public/icon-var-404.svg" width="200" alt="">
+</div>
 
 ## Project Structure
 
@@ -120,6 +128,10 @@ helper function, or a state mutation inside a page, move it to
 | `utils/`    | Pure helpers (formatters, validators, permission calculators) |
 | Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
+<div align="left">
+  <img src="landing/public/icon-var-panicked.svg" width="200" alt="">
+</div>
+
 ## Versioning
 
 | Branch | Purpose |
@@ -136,6 +148,10 @@ helper function, or a state mutation inside a page, move it to
 4. Delete feature branch
 
 > FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
+
+<div align="right">
+  <img src="landing/public/icon-var-angry.svg" width="200" alt="">
+</div>
 
 ## Scripts
 
@@ -173,6 +189,10 @@ format / variant / dry-run flags directly: `--xml-only`,
 `--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
 two split-concern flags `--no-write` and `--no-broadcast`. All flags
 compose.
+
+<div align="left">
+  <img src="landing/public/icon-var-happy.svg" width="200" alt="">
+</div>
 
 ## Deployment
 
