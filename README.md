@@ -2,7 +2,7 @@
   <img src="landing/public/brand/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.13.1**
+**Version 0.13.2**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -168,6 +168,15 @@ format / variant / dry-run flags directly: `--xml-only`,
 `--txt-only`, `--full-only`, `--latest-only`, `--dry-run`, plus the
 two split-concern flags `--no-write` and `--no-broadcast`. All flags
 compose.
+
+### reset-db ([`reset-db.mjs`](/scripts/reset-db.mjs))
+
+`yarn reset:db` wipes every collection in the dev MongoDB (the URI whose path is `/dev`). Loads `.env.dev` directly, refuses to run if `NODE_ENV=production` is set in the shell, and refuses to run if the loaded `MONGODB_URI` doesn't parse to `dev` — both checks fire before any connection. Foreground; prints the per-collection row counts and exits 0.
+
+```bash
+yarn reset:db             # connect, deleteMany({}) every collection, disconnect
+yarn reset:db --dry-run   # preview: connect, list collections, count rows — no deletes
+```
 
 <div align="left">
   <img src="landing/public/icons/icon-var-versioning.svg" width="200" alt="">
