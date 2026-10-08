@@ -1,7 +1,7 @@
 {
   "name": "robust-computer",
   "private": true,
-  "version": "0.12.5",
+  "version": "0.12.6",
   "description": "Robust Computer — small developer studio, public website. Monorepo root.",
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -9,9 +9,9 @@
     "dev:landing": "cd landing && yarn dev",
     "dev:server": "cd server && yarn dev",
     "mail": "node scripts/mailpit.js",
-    "feeds:build": "node scripts/build-rss.mjs",
-    "feeds:broadcast": "NODE_ENV=production node scripts/build-rss.mjs",
-    "feeds:latest": "node scripts/build-rss.mjs --latest-only",
+    "feeds:build": "node scripts/build-rss.mjs --no-broadcast",
+    "feeds:broadcast-dev": "node scripts/build-rss.mjs --no-write",
+    "feeds:broadcast": "NODE_ENV=production node scripts/build-rss.mjs --no-write",
     "install:all": "yarn install && cd landing && yarn install && cd ../server && yarn install"
   },
   "engines": {
