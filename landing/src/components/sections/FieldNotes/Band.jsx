@@ -25,6 +25,8 @@ import { useLocale } from '../../../context/LocaleContext'
  */
 
 const Band = styled.section`
+  max-width: var(--max);
+  margin-inline: auto;
   background: ${colors.ink};
   color: ${colors.paper};
   padding: 64px 56px;

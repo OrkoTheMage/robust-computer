@@ -16,6 +16,8 @@ import { useLocale } from '../context/LocaleContext'
  */
 
 const Page = styled.main`
+  max-width: var(--max);
+  margin-inline: auto;
   min-height: 100vh;
   background: ${colors.paper};
 `

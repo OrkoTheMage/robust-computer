@@ -14,6 +14,8 @@ import { useLocale } from '../../context/LocaleContext'
  */
 
 const Bar = styled.section`
+  max-width: var(--max);
+  margin-inline: auto;
   background: ${colors.ink};
   color: ${colors.paper};
   padding: 44px 56px;
