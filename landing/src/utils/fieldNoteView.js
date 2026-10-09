@@ -9,8 +9,7 @@ import { getAllByDate, getBySlug, getLatest } from '../data/fieldNotes'
  *
  * The per-post lead (the line under the post page's
  * `PageHeader` eyebrow) used to come from
- * `getChannelDescription()` here. Chunk 6 moved that string
- * to the i18n dictionaries (`fieldNotes.lead` in `i18n/en.js`
+ * `getChannelDescription()` here. (`fieldNotes.lead` in `i18n/en.js`
  * and `i18n/es.js`) so a Spanish visitor sees a Spanish
  * channel description; the per-post page now reads it
  * through `useLocale()` directly. The RSS feed still

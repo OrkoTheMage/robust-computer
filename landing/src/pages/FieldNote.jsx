@@ -49,13 +49,20 @@ import { useLocale } from '../context/LocaleContext'
  *
  * The page's `lead` (the line under the eyebrow on the
  * per-post page header) used to come from
- * `getChannelDescription()` in `data/fieldNotes.js`. Chunk 6
- * moved that string to the i18n dictionaries
+ * `getChannelDescription()` in `data/fieldNotes.js`.
  * (`fieldNotes.lead` in `i18n/en.js` / `i18n/es.js`) so a
  * Spanish visitor sees a Spanish channel description, not
  * the English one. The RSS feed still consumes the English
  * string via `CHANNEL_DESCRIPTION` (the feed is
  * English-only because the posts are English-only).
+ *
+ * The document title is built as `"Robust Computer - Issue
+ * {slug}: {title}"`. The slug segment
+ * (`issue-001`) is the URL-bound identifier, not the
+ * human-readable `issuePrefix` ("Issue 001") — the URL
+ * segment is what goes in the title so the document title
+ * tracks the URL. The "Issue 001" kicker on the page
+ * itself continues to use `item.issuePrefix`.
  */
 
 const Page = styled.main`
@@ -268,7 +275,7 @@ const FieldNote = () => {
   return (
     <Page>
       <SEO
-        title={item.title}
+        title={`Issue ${slug}: ${item.title}`}
         description={item.description}
         path={`/field-notes/${slug}`}
         type="article"

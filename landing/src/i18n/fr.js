@@ -526,7 +526,9 @@ export const unsubscribePage = {
 }
 
 export const homePage = {
+  seoTitle: 'Robust Computer - LOGICIEL SUR MESURE, CONÇU POUR DURER.',
   seoDescription: 'Logiciel sur mesure, conçu pour durer. Robust Computer est une petite équipe de développeurs. Nous concevons, construisons, et restons après le lancement.',
+  tag: 'logiciel sur mesure',
 }
 
 export const formErrors = {
