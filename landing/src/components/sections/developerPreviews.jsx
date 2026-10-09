@@ -74,7 +74,4 @@ export const developerPreviews = [
     font: 'sans',
     children: <AerynPreview />,
   },
-  { domain: 'studio.example', bg: colors.white },
-  { domain: 'name.codes', bg: colors.white },
-  { domain: 'design.work', bg: colors.white },
 ]

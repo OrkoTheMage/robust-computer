@@ -313,39 +313,15 @@ export const notFound = {
 export const developers = [
   {
     name: 'Aeryn',
-    role: 'Desarrollador/a full-stack',
+    role: 'Desarrollador/a residente',
     bio: 'Aeryn construye los dos lados de una aplicación: front-ends en React que la gente disfruta usando, y los servicios back-end de los que dependen. Cuatro años de trabajo full-stack en proyectos de cliente de todos los tamaños y sectores.',
     stack: ['JavaScript', 'Python', 'React', 'MongoDB/SQL', 'APIs'],
-    avatar: 'iconVarHappy',
+    avatar: 'iconVarDead',
     links: {
       portfolio: 'https://grue.vercel.app/',
       github: 'https://github.com/OrkoTheMage',
       linkedin: 'https://www.linkedin.com/in/aeryn-grindle-5730002b5',
     },
-  },
-  {
-    name: 'Marcador',
-    role: 'Desarrollador/a front-end',
-    bio: 'Bio corta aquí: en qué se enfoca, qué ha entregado, y qué proyectos pueden confiarle. Dos o tres frases son suficientes.',
-    stack: ['Añade', 'Su', 'Stack'],
-    avatar: 'iconVarPanicked',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Marcador',
-    role: 'Desarrollador/a back-end',
-    bio: 'Bio corta aquí: en qué se enfoca, qué ha entregado, y qué proyectos pueden confiarle. Dos o tres frases son suficientes.',
-    stack: ['Añade', 'Su', 'Stack'],
-    avatar: 'iconVarDead',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Marcador',
-    role: 'Ingeniero/a de diseño',
-    bio: 'Bio corta aquí: en qué se enfoca, qué ha entregado, y qué proyectos pueden confiarle. Dos o tres frases son suficientes.',
-    stack: ['Añade', 'Su', 'Stack'],
-    avatar: 'iconVarUnamused',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
   },
 ]
 
