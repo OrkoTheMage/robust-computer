@@ -1,7 +1,7 @@
 {
   "name": "robust-computer",
   "private": true,
-  "version": "0.13.5",
+  "version": "0.13.6",
   "description": "Robust Computer — small developer studio, public website. Monorepo root.",
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -26,6 +26,8 @@
     "esbuild": "^0.21.5",
     "jsdom": "^30.1.2",
     "mongoose": "^8.6.0",
-    "ws": "^8.22.0"
+    "puppeteer": "^25.13.0",
+    "ws": "^8.22.0",
+    "yauzl": "^3.4.0"
   }
 }

@@ -38,6 +38,16 @@ export const getIssueBySlug = (slug) => {
     pubDate: note.pubDate,
     description: note.description,
     author: note.author ?? null,
+    // Per-post social cards. Optional at the field level
+    // (see data/fieldNotes.js docstring). `FieldNote.jsx`
+    // forwards both to `<SEO image=… twitterImage=… />`;
+    // a `null` here resolves to the SEO component's
+    // platform-specific fallback (`/og-image.png` /
+    // `/twitter-card.png`) via `|| undefined` at the call
+    // site. The two fields stay independent so a post can
+    // override one without touching the other.
+    ogImage: note.ogImage ?? null,
+    twitterImage: note.twitterImage ?? null,
     to: `/field-notes/${note.slug}`,
     raw: note.body,
   }

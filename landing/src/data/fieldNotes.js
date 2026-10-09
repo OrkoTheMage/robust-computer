@@ -17,34 +17,63 @@ import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
  *
  * Each note has the shape:
  *   {
- *     slug        — URL segment, used in /field-notes/<slug> and as
- *                   the RSS <guid>
- *     title       — short post name, rendered as the page <h1>
- *                   (without the "Issue NNN - " prefix)
- *     issuePrefix — "Issue NNN" — rendered above the title on the
- *                   post page and reattached to the title in the RSS
- *                   <title> for feed-reader readability
- *     pubDate     — ISO 8601 date string ("2026-10-04"). Just the
- *                   day this post was published — no time or
- *                   timezone. Sortable as a string, parseable by
- *                   `new Date()`. Rendered as "Oct 4, 2026" by
- *                   `formatPubDate`, and converted to RFC 822
- *                   (with implicit midnight UTC) for the RSS
- *                   <pubDate> by `buildRss`
- *     description — one-sentence excerpt. Used by the Hero ticket
- *                   and the Field Notes band's "Latest issue" line
- *     body        — full post markdown. Rendered on the per-post
- *                   page (via FieldNoteBody's marked + DOMPurify
- *                   stack) and re-rendered here for the RSS — a
- *                   plain-text excerpt feeds the <description>
- *                   element and a sanitized HTML rendering feeds
- *                   <content:encoded>, so RSS readers that respect
- *                   the content module get the same structure the
- *                   in-page reader does
- *     author      — the byline. Rendered as a signed footer on the
- *                   per-post page only (omitted from the RSS feed).
- *                   Optional at the field level — when missing, the
- *                   per-post page simply doesn't render the footer
+ *     slug          — URL segment, used in /field-notes/<slug> and
+ *                     as the RSS <guid>
+ *     title         — short post name, rendered as the page <h1>
+ *                     (without the "Issue NNN - " prefix)
+ *     issuePrefix   — "Issue NNN" — rendered above the title on the
+ *                     post page and reattached to the title in the
+ *                     RSS <title> for feed-reader readability
+ *     pubDate       — ISO 8601 date string ("2026-10-04"). Just the
+ *                     day this post was published — no time or
+ *                     timezone. Sortable as a string, parseable by
+ *                     `new Date()`. Rendered as "Oct 4, 2026" by
+ *                     `formatPubDate`, converted to RFC 822 for the
+ *                     RSS <pubDate> by `buildRss`, and emitted as
+ *                     W3C-format `<lastmod>` for the sitemap
+ *                     `<url>` by `buildSitemap`
+ *     description   — one-sentence excerpt. Used by the Hero ticket
+ *                     and the Field Notes band's "Latest issue" line
+ *     body          — full post markdown. Rendered on the per-post
+ *                     page (via FieldNoteBody's marked + DOMPurify
+ *                     stack) and re-rendered here for the RSS — a
+ *                     plain-text excerpt feeds the <description>
+ *                     element and a sanitized HTML rendering feeds
+ *                     <content:encoded>, so RSS readers that respect
+ *                     the content module get the same structure the
+ *                     in-page reader does
+ *     author        — the byline. Rendered as a signed footer on the
+ *                     per-post page only (omitted from the RSS feed).
+ *                     Optional at the field level — when missing, the
+ *                     per-post page simply doesn't render the footer
+ *     ogImage       — absolute or site-rooted URL of the OG card for
+ *                     this post (forwarded to `<SEO image=… />` by
+ *                     FieldNote.jsx). Optional; the SEO component
+ *                     falls back to the site-wide `/og-image.png`
+ *                     when this is missing. The two social-card fields
+ *                     stay independent so a post can ship
+ *                     platform-specific artwork without sharing a
+ *                     one-size-fits-all compromise — see the SEO
+ *                     component docstring for the ratio mismatch.
+ *                     The convention for per-issue artwork is
+ *                     `<slug>/og.png` at 1200×630 (1.91:1),
+ *                     generated from this post's title /
+ *                     issuePrefix / pubDate / body by
+ *                     `scripts/build-issue-cards.mjs` (invoked as
+ *                     part of `yarn feeds:build`)
+ *     twitterImage  — absolute or site-rooted URL of the Twitter
+ *                     summary_large_image card for this post
+ *                     (forwarded to `<SEO twitterImage=… />`).
+ *                     Optional; the SEO component falls back to the
+ *                     site-wide `/twitter-card.png` when this is
+ *                     missing. A post can set either, both, or
+ *                     neither — the two fields fall back
+ *                     independently to their own platform-specific
+ *                     general card. The convention for per-issue
+ *                     artwork is `<slug>/twitter.png` at 1200×675
+ *                     (1.78:1), generated by the same script as
+ *                     `og.png` so the two cards stay visually
+ *                     consistent and platform-shaped
  *   }
  *
  * The `fieldNotes` array is composed from per-issue files
@@ -556,4 +585,81 @@ export const buildFeedTxt = (notes = fieldNotes) => {
   ].join('\n')
 
   return header + '\n' + blocks.join('\n') + footer
+}
+
+// ── Sitemap builder ─────────────────────────────────────────────────────────
+//
+// Committed artifact matching the rss.xml / feed.txt pattern:
+// `landing/public/sitemap.xml` is generated from the same
+// `fieldNotes` array every other public feed is generated
+// from, written by `scripts/build-rss.mjs` after every data
+// change, and committed alongside the post body so consumers
+// (Google Search Console, robots.txt autodiscoverers, manual
+// auditors) don't have to ship a build step.
+//
+// Structure (sitemap protocol 0.9):
+//   <urlset>
+//     <url>           — one per static route from App.jsx
+//       <loc>         — absolute URL under BRAND_DOMAIN
+//       <changefreq>  — hint only; major crawlers may ignore
+//       <priority>    — hint only; relative to the site root
+//     <url>           — one per field-notes post
+//       <loc>         — /field-notes/<slug>
+//       <lastmod>     — W3C date format (YYYY-MM-DD) from pubDate
+//       <changefreq>  — "monthly" — posts are short-lived once read
+//       <priority>    — below the index, above utility/legal pages
+//   </urlset>
+//
+// Static routes mirror the `<Route>` declarations in
+// `landing/src/App.jsx`. The catch-all `*` (404) is
+// deliberately excluded — sitemaps must not list non-200 URLs.
+// `priority` and `changefreq` are both optional per the
+// sitemap protocol; we emit them as sensible defaults so the
+// file reads cleanly when audited by hand. Search engines
+// may ignore them.
+
+const STATIC_ROUTES = [
+  { path: '/',             changefreq: 'weekly',  priority: '1.0' },
+  { path: '/about',        changefreq: 'monthly', priority: '0.8' },
+  { path: '/contact',      changefreq: 'monthly', priority: '0.8' },
+  { path: '/bug-report',   changefreq: 'monthly', priority: '0.6' },
+  { path: '/field-notes',  changefreq: 'weekly',  priority: '0.9' },
+  { path: '/unsubscribe',  changefreq: 'yearly',  priority: '0.3' },
+  { path: '/privacy',      changefreq: 'yearly',  priority: '0.4' },
+  { path: '/terms',        changefreq: 'yearly',  priority: '0.4' },
+]
+
+const buildStaticUrl = (path, changefreq, priority) => `  <url>
+    <loc>${siteUrl(path)}</loc>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`
+
+const buildPostUrl = (note) => {
+  // `pubDate` is already a YYYY-MM-DD string (the field
+  // shape docs it), so it doubles as the W3C `<lastmod>`
+  // format with no transformation. We re-validate rather
+  // than trust the shape — a malformed pubDate would
+  // otherwise emit an invalid sitemap and the search
+  // console would silently drop the whole file.
+  const lastmod = /^\d{4}-\d{2}-\d{2}$/.test(note.pubDate) ? note.pubDate : ''
+  return `  <url>
+    <loc>${siteUrl(`/field-notes/${note.slug}`)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+}
+
+export const buildSitemap = (notes = fieldNotes) => {
+  const sorted = sortByPubDateDesc(notes)
+  const staticUrls = STATIC_ROUTES.map((r) => buildStaticUrl(r.path, r.changefreq, r.priority)).join('\n')
+  const postUrls = sorted.map(buildPostUrl).join('\n')
+  const blocks = postUrls ? [staticUrls, postUrls] : [staticUrls]
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+${blocks.join('\n')}
+</urlset>
+`
 }

@@ -1,14 +1,20 @@
 import { useEffect } from 'react'
 import config from '../../config'
 import { useLocale } from '../../context/LocaleContext'
+import {
+  BRAND_NAME,
+  BRAND_DOMAIN,
+  BRAND_LOGO_URL,
+  BRAND_SOCIAL,
+} from '../../data/brand'
 
 /**
  * landing/src/components/seo/SEO.jsx
  *
  * Sets the document <title> and the standard social/SEO meta
  * tags (description, Open Graph, Twitter card, canonical link,
- * tag) for the lifetime of the calling page, and restores them
- * on unmount. Renders nothing.
+ * tag, JSON-LD Organization) for the lifetime of the calling
+ * page, and restores them on unmount. Renders nothing.
  *
  * Why not react-helmet-async: the page only needs to set a
  * handful of tags and we already control every page in the app.
@@ -33,12 +39,19 @@ import { useLocale } from '../../context/LocaleContext'
  *   the visible headline but leave the document title in
  *   the previous language.
  *
- * The `image` prop is optional; defaults to `/og-image.png`
- * (the site-wide social card) which is also what
- * `landing/index.html` points at as the static fallback. The
- * per-slug og:image for field-notes posts is wired up in a
- * later chunk (Chunk 3) — until then every page falls back
- * to the general social card.
+ * The `image` and `twitterImage` props are optional and
+ * fall back independently to their own platform-specific
+ * general cards (`/og-image.png` and `/twitter-card.png`
+ * respectively). The two are kept separate — not because
+ * authors will always want different artwork, but because
+ * the OG ratio (1200×630 ≈ 1.91:1) and the Twitter
+ * summary_large_image ratio (1200×675 ≈ 1.78:1) crop
+ * differently, and a post may want a different visual on
+ * each platform without sharing a one-size-fits-all
+ * compromise. The field-notes pages wire both through
+ * from the post shape (`item.ogImage`, `item.twitterImage`)
+ * with a `|| undefined` so the fallback kicks in when a
+ * post only sets one of the two.
  *
  * The `type` prop drives og:type ("website" by default, or
  * "article" for the field-notes post pages).
@@ -46,6 +59,17 @@ import { useLocale } from '../../context/LocaleContext'
  * The `path` prop is appended to `config.landingUrl` to build
  * the canonical URL. Omit it for the home page (defaults to
  * the site root).
+ *
+ * JSON-LD Organization
+ *   A single schema.org `Organization` block is injected
+ *   into <head> on every page. The block is locale-agnostic
+ *   (it's the brand entity, not page content) and is also
+ *   embedded as a static `<script type="application/ld+json">`
+ *   in `landing/index.html` so the JS-disabled first paint
+ *   matches the post-mount DOM. Identifiers and links come
+ *   from `data/brand.js` (BRAND_NAME, BRAND_DOMAIN,
+ *   BRAND_LOGO_URL, BRAND_SOCIAL) so the JSON-LD is the same
+ *   single source of truth as every other brand surface.
  */
 
 // `BASE` is the brand name. "Robust Computer" is untranslated
@@ -87,13 +111,13 @@ const DEFAULT_DESCRIPTION =
 //
 // Both files live in `landing/public/` so Vite serves them
 // from the site root. Pages that need a different visual
-// override via the `image` prop. The Twitter card
-// lives at its own URL because the OG ratio (1200×630 ≈
-// 1.91:1) and the Twitter summary_large_image ratio
-// (1200×675 ≈ 1.78:1, or 2:1) crop differently — the two
-// artifacts are designed for their target platform's
-// preview shape rather than shared as a one-size-fits-all
-// compromise.
+// override via the `image` / `twitterImage` props. The two
+// cards live at their own URLs because the OG ratio
+// (1200×630 ≈ 1.91:1) and the Twitter summary_large_image
+// ratio (1200×675 ≈ 1.78:1, or 2:1) crop differently —
+// the two artifacts are designed for their target
+// platform's preview shape rather than shared as a
+// one-size-fits-all compromise.
 //
 // The two static `landing/index.html` <head> tags point at
 // the same two files, so the JS-disabled first paint
@@ -123,7 +147,23 @@ const setLink = (rel, href) => {
   el.setAttribute('href', href)
 }
 
-const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, type = 'website' }) => {
+// Inject (or replace) a `<script type="application/ld+json">`
+// block in <head>. JSON-LD is locale-agnostic, so we re-set
+// it on every effect cycle to the same content — there's no
+// per-page branch and no per-locale branch, just one
+// Organization block on every page.
+const setJsonLd = (id, payload) => {
+  let el = document.head.querySelector(`script[type="application/ld+json"][data-ld="${id}"]`)
+  if (!el) {
+    el = document.createElement('script')
+    el.setAttribute('type', 'application/ld+json')
+    el.setAttribute('data-ld', id)
+    document.head.appendChild(el)
+  }
+  el.textContent = JSON.stringify(payload)
+}
+
+const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, twitterImage = DEFAULT_TWITTER_IMAGE, type = 'website' }) => {
   // Home page (no title prop) renders the active locale's
   // `homePage.seoTitle` instead of just BASE so the document
   // title carries the full brand line — the SEO report
@@ -133,15 +173,15 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
   const { locale, homePage } = useLocale()
   const fullTitle = title ? `${BASE}${SEP}${title}` : homePage.seoTitle
   const url = path ? `${config.landingUrl}${path}` : config.landingUrl
-  // og:image and twitter:image want absolute URLs. The
-  // `image` prop overrides the og:image target; the
-  // twitter:image falls back to its own dedicated
-  // `DEFAULT_TWITTER_IMAGE` so the two cards stay on
-  // their own platform-specific artifacts. Pages that need
-  // a per-slug Twitter card can extend the prop surface
-  // alongside the per-slug og:image work in Chunk 3.
+  // og:image and twitter:image want absolute URLs. Each prop
+  // accepts either an absolute URL or a site-rooted path;
+  // when relative, it's prepended with `config.landingUrl`.
+  // The two cards are kept on their own prop surface so a
+  // post can ship platform-specific artwork without sharing
+  // a one-size-fits-all compromise (see the docstring above
+  // for the ratio mismatch).
   const absoluteImage = image.startsWith('http') ? image : `${config.landingUrl}${image}`
-  const absoluteTwitterImage = DEFAULT_TWITTER_IMAGE
+  const absoluteTwitterImage = twitterImage.startsWith('http') ? twitterImage : `${config.landingUrl}${twitterImage}`
   // The home page's <meta name="tag"> comes from the i18n
   // dict so each locale gets a localised short keyword
   // string. The static `landing/index.html` carries the
@@ -167,12 +207,14 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
     setMeta('meta[property="og:site_name"]', 'content', BASE)
 
     // Twitter card. summary_large_image for the wide banner;
-    // pages with smaller square images can override via a prop
-    // (not wired up yet — the default banner works for all).
     // twitter:image points at its own dedicated artifact
-    // (DEFAULT_TWITTER_IMAGE) so the card stays on the
-    // 1200×675 target the file is sized for, instead of
-    // re-using the 1200×630 og-image.
+    // (DEFAULT_TWITTER_IMAGE) unless the page passes a
+    // `twitterImage` prop (field-notes posts forward
+    // `item.twitterImage` so per-slug artwork is supported).
+    // The two cards stay on their own URLs because the OG
+    // ratio (1200×630) and the Twitter ratio (1200×675) crop
+    // differently — the field-notes shape keeps them as
+    // separate optional fields for the same reason.
     setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image')
     setMeta('meta[name="twitter:title"]', 'content', fullTitle)
     setMeta('meta[name="twitter:description"]', 'content', description)
@@ -188,6 +230,19 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
     // Canonical URL (SEO best practice; prevents duplicate-content
     // issues when the same page is reachable at multiple paths)
     setLink('canonical', url)
+
+    // JSON-LD Organization. Single block on every page —
+    // locale-agnostic, so the same payload is set on every
+    // effect cycle. The static `landing/index.html` carries
+    // the same block so the JS-disabled first paint matches.
+    setJsonLd('organization', {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: BRAND_NAME,
+      url: `https://${BRAND_DOMAIN}/`,
+      logo: BRAND_LOGO_URL,
+      sameAs: BRAND_SOCIAL,
+    })
 
     return () => {
       // Restore the previous title on unmount so the next page

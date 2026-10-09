@@ -1,34 +1,3 @@
-/**
- * Field Notes — Issue 001
- *
- * Syntax checklist. This is the live test surface for the
- * Field Notes markdown pipeline — every block type and
- * every inline syntax the system supports, exercised in
- * one post. If anything below renders wrong, the syntax
- * is broken; the rendered output of this post is the
- * regression test for the parser, the React renderer,
- * and the RSS / plain-text feed builders.
- *
- * Originally the launch post (Issue 001, "New
- * Beginnings"). Replaced with this checklist so the post
- * body doubles as a living reference. The original
- * launch copy lives in the git history.
- *
- * The body is a single CommonMark-flavoured markdown
- * document. Inline backticks inside the body are escaped
- * with `\u0060` because the body is itself a template
- * literal; unescaped backticks would have terminated the
- * template and broken the file.
- *
- * Field shape: see the `fieldNotes` docstring in
- * `data/fieldNotes.js` for the contract every issue must
- * satisfy (slug, title, issuePrefix, pubDate, description,
- * body, author?). Adding FN-NNN is now:
- *   1. drop a new `00N.js` here with the same shape
- *   2. add one import + one entry in `data/fieldNotes.js`
- * Selectors and the build-rss script pick it up from there.
- */
-
 export const issue001 = {
   slug: 'issue-001',
   title: 'A New Beginning',
@@ -37,6 +6,8 @@ export const issue001 = {
   author: 'Aeryn',
   description:
     'Welcome to The First Issue of Field Notes',
+  ogImage: '/field-notes/issue-001/og.png',
+  twitterImage: '/field-notes/issue-001/twitter.png',
   body: `
 Welcome to The First Issue of Field Notes
 
