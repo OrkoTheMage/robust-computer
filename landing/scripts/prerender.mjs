@@ -36,7 +36,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  *
  * Routes
  *   The list below is the SEO-relevant subset of
- *   `landing/src/App.jsx`'s `<Route>` declarations. Skipped
+ *   `src/App.jsx`'s `<Route>` declarations. Skipped
  *   on purpose:
  *
  *     - `/unsubscribe`  — utility route, no social sharing,
@@ -51,12 +51,16 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  * Build pipeline
  *   Wired into `landing/package.json`'s `build` script:
  *
- *     "build": "vite build --mode prod && node ../scripts/prerender.mjs"
+ *     "build": "vite build --mode prod && node ./scripts/prerender.mjs"
  *
- *   Vercel invokes `yarn build` (or whatever the project
- *   setting is), runs Vite, then runs this script against
- *   the freshly-built `dist/`. The output is committed via
- *   the regular git flow — no separate deploy step.
+ *   Vercel's project is rooted at `landing/`, so its
+ *   install picks up `puppeteer` and `yauzl` from this
+ *   package's `devDependencies` — that's why those two
+ *   packages live here and not in the repo root. The
+ *   build runs Vite, then runs this script against the
+ *   freshly-built `dist/`. No separate deploy step — the
+ *   prerendered HTML files are part of the bundle Vercel
+ *   ships.
  *
  * Idempotency
  *   Puppeteer is deterministic given the same input +
@@ -68,7 +72,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
-const distDir = path.join(repoRoot, 'landing/dist')
+const distDir = path.join(repoRoot, 'dist')
 
 // ── guards ──────────────────────────────────────────────────────────────
 if (!fs.existsSync(distDir)) {
@@ -82,8 +86,8 @@ const dryRun = hasFlag('dry-run')
 
 // ── routes to prerender ─────────────────────────────────────────────────
 // Static SEO routes. Pulled from the `<Route>` declarations
-// in `landing/src/App.jsx`; see the file-level comment for
-// the rationale on which routes are skipped.
+// in `src/App.jsx`; see the file-level comment for the
+// rationale on which routes are skipped.
 const STATIC_ROUTES = [
   '/',
   '/about',
@@ -97,9 +101,11 @@ const STATIC_ROUTES = [
 // post is prerendered automatically. Importing this module
 // pulls in `marked`, `DOMPurify`, and the markdown block
 // parser via the build chain — same transitive deps the
-// RSS / feed scripts use, so it loads cleanly in raw Node.
+// repo-root `scripts/build-issue-cards.mjs` uses, so the
+// prerendered HTML always reflects the same source-of-truth
+// the live page does.
 const { fieldNotes } = await import(
-  pathToFileURL(path.join(repoRoot, 'landing/src/data/fieldNotes.js')).href
+  pathToFileURL(path.join(repoRoot, 'src/data/fieldNotes.js')).href
 )
 const postRoutes = fieldNotes.map((n) => `/field-notes/${n.slug}`)
 
@@ -143,18 +149,17 @@ const waitForUrl = async (url, { timeoutMs = 30_000 } = {}) => {
 }
 
 // ── vite preview lifecycle ─────────────────────────────────────────────
-// `vite preview` serves `landing/dist/` with SPA fallback
-// to `index.html`. We invoke it via yarn so the bin
-// resolution picks up the right copy from
-// `landing/node_modules/vite/` (Vite is a dep of the
-// landing sub-project, not of the repo root).
+// `vite preview` serves `dist/` with SPA fallback to
+// `index.html`. We invoke it via yarn so the bin resolution
+// picks up the right copy from `node_modules/vite/` (Vite
+// is a dep of this package, not of the repo root).
 const startPreviewServer = async () => {
   const port = await getFreePort()
   const child = spawn(
     'yarn',
     ['preview', '--port', String(port), '--host', '127.0.0.1'],
     {
-      cwd: path.join(repoRoot, 'landing'),
+      cwd: path.join(repoRoot),
       env: { ...process.env },
       stdio: ['ignore', 'pipe', 'pipe'],
     },
