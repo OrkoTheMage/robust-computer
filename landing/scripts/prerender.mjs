@@ -221,18 +221,46 @@ const run = async () => {
   const { child: server, port } = await startPreviewServer()
   console.log(`▸ preview ready on http://127.0.0.1:${port}`)
 
-  // Lazy-import puppeteer so this script's `--dry-run`
-  // path doesn't pay the (heavy) browser-dependency
-  // startup cost. The dep tree is the same as
-  // `scripts/build-issue-cards.mjs`; both ship under the
-  // repo-root `puppeteer` devDependency.
-  const { default: puppeteer } = await import('puppeteer')
+  // Lazy-import the headless-browser stack so the
+  // `--dry-run` path doesn't pay the (heavy)
+  // browser-dependency startup cost. We use
+  // `puppeteer-core` (no auto-downloaded Chrome) +
+  // `@sparticuz/chromium` (bundles Chrome + all required
+  // system libraries into a single executable).
+  //
+  // Why `@sparticuz/chromium`: the build machine (Vercel,
+  // and most CI containers) doesn't have the system
+  // libraries Chrome expects (`libnspr4.so`, `libnss3.so`,
+  // `libatk`, …) so the bundled Chromium fails to launch
+  // with `error while loading shared libraries`. The
+  // sparticuz Chromium is built specifically for these
+  // restricted environments — it bundles every dynamic
+  // library the binary needs into one executable, so the
+  // same script runs locally and on Vercel without any
+  // apt-get / system-package step.
+  //
+  // `chromium.executablePath()` resolves to the bundled
+  // binary inside `node_modules/@sparticuz/chromium/`;
+  // `chromium.args` are the CLI flags the binary expects
+  // on restricted environments. On a normal dev machine
+  // the same executable launches fine — the script stays
+  // identical across environments.
+  const [{ default: puppeteer }, { default: chromium }] = await Promise.all([
+    import('puppeteer-core'),
+    import('@sparticuz/chromium'),
+  ])
 
   let browser
   try {
     browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+      ],
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     })
     const page = await browser.newPage()
 
