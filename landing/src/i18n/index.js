@@ -80,9 +80,7 @@ import * as fr from './fr'
  *
  * That means a Spanish visitor on `/field-notes/issue-001`
  * reads: Spanish page chrome (eyebrow, "Publicado", "Volver
- * al inicio", etc.) + the English post body. Translating
- * posts is a content project, not an i18n plumbing project,
- * and isn't part of chunk 6.
+ * al inicio", etc.) + the English post body.
  *
  * If a future post needs a translated version, the post
  * shape in `data/issues/00N.js` will grow a per-locale

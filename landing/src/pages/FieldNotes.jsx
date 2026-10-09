@@ -25,9 +25,8 @@ import { useLocale } from '../context/LocaleContext'
  * The post list is a series of bordered cards on the
  * paper surface. The publish date is rendered inside an
  * inverted (ink) chip with `paper` foreground so the
- * date stands out from the card body — chunk 10's
- * "publish date color on /field-notes should be paper"
- * rule, applied to the index (the per-post page keeps
+ * date stands out from the card body —  
+ * applied to the index (the per-post page keeps
  * its own `paper` text on its `ink` HeaderBox).
  *
  * The "Not already Subscribed?" box reuses the
@@ -144,8 +143,7 @@ const Description = styled.p`
   max-width: 50ch;
 `
 
-// Date chip — `paper` text on `ink` background, per chunk
-// 10. Right-aligned on desktop, left-aligned (under the
+// Date chip — `paper` text on `ink` background. Right-aligned on desktop, left-aligned (under the
 // title) on mobile so the stacked card body reads
 // top-down.
 const DateChip = styled.span`

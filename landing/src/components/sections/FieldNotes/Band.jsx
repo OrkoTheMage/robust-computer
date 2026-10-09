@@ -104,7 +104,7 @@ const Row = styled.div`
   }
 `
 
-// Subscribe uses the standard <Button variant="gold"> (chunk 13).
+// Subscribe uses the standard <Button variant="gold">.
 // Earlier this section styled a `styled(Button)` override with the
 // same colors; collapsing it onto the primitive keeps the audit's
 // "no custom overrides" rule honest.

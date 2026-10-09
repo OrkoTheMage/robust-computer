@@ -6,9 +6,9 @@ import { useLocale } from '../../context/LocaleContext'
  * landing/src/components/seo/SEO.jsx
  *
  * Sets the document <title> and the standard social/SEO meta
- * tags (description, Open Graph, Twitter card, canonical link)
- * for the lifetime of the calling page, and restores them on
- * unmount. Renders nothing.
+ * tags (description, Open Graph, Twitter card, canonical link,
+ * tag) for the lifetime of the calling page, and restores them
+ * on unmount. Renders nothing.
  *
  * Why not react-helmet-async: the page only needs to set a
  * handful of tags and we already control every page in the app.
@@ -33,9 +33,12 @@ import { useLocale } from '../../context/LocaleContext'
  *   the visible headline but leave the document title in
  *   the previous language.
  *
- * The `image` prop is optional; defaults to the wide banner
- * (banner2-cut.svg) which reads well as a Twitter
- * summary_large_image card and an OG image at 1200×630.
+ * The `image` prop is optional; defaults to `/og-image.png`
+ * (the site-wide social card) which is also what
+ * `landing/index.html` points at as the static fallback. The
+ * per-slug og:image for field-notes posts is wired up in a
+ * later chunk (Chunk 3) — until then every page falls back
+ * to the general social card.
  *
  * The `type` prop drives og:type ("website" by default, or
  * "article" for the field-notes post pages).
@@ -48,9 +51,20 @@ import { useLocale } from '../../context/LocaleContext'
 // `BASE` is the brand name. "Robust Computer" is untranslated
 // across every locale (see i18n/index.js "Untranslated by
 // design") so the title prefix is the same English string in
-// every locale.
+// every locale. The full document title shown when no `title`
+// prop is passed (i.e. on the home page) is read from the
+// active locale's i18n dict (`homePage.seoTitle`); the
+// English-only value is also the static fallback in
+// `landing/index.html` <title> (which has no access to the
+// React context).
+//
+// The 0-for-O rule (see `utils/zer0.js`) is applied to the
+// tagline half in each locale — the home title is rendered
+// uppercase in the browser tab, so a visitor who recognises
+// the headline from the hero sees the same brand styling
+// there. Other pages keep the un-zer0'd title prop.
 const BASE = 'Robust Computer'
-const SEP = ' | '
+const SEP = ' - '
 
 // Default description for any page that doesn't pass one.
 // Kept short (~155 chars) so it isn't truncated by Twitter
@@ -63,16 +77,30 @@ const SEP = ' | '
 const DEFAULT_DESCRIPTION =
   'Robust Computer is a small team of developers. We design it, build it, and stay on after launch.'
 
-// Wide banner used as the default og:image. The file lives in
-// /public/brand/ so it's served as-is from the site root, and
-// SVG is accepted by the major social platforms (Twitter,
-// Facebook, LinkedIn) for og:image and twitter:image as of
-// 2023+.
+// Site-wide social card. Two artifacts live at the site
+// root and serve as the general og:image / twitter:image
+// fallback:
+//   - `/og-image.png`     — 1200×630, the OG / Facebook /
+//                           LinkedIn / Slack target
+//   - `/twitter-card.png` — 1200×600 (or 1200×675), the
+//                           Twitter summary_large_image target
 //
-// If a future page needs a different visual (e.g. a field-note
-// post with a per-post image), pass an absolute or root-relative
-// URL via the `image` prop and it'll override this default.
-const DEFAULT_IMAGE = `${config.landingUrl}/brand/banner2-cut.svg`
+// Both files live in `landing/public/` so Vite serves them
+// from the site root. Pages that need a different visual
+// override via the `image` prop. The Twitter card
+// lives at its own URL because the OG ratio (1200×630 ≈
+// 1.91:1) and the Twitter summary_large_image ratio
+// (1200×675 ≈ 1.78:1, or 2:1) crop differently — the two
+// artifacts are designed for their target platform's
+// preview shape rather than shared as a one-size-fits-all
+// compromise.
+//
+// The two static `landing/index.html` <head> tags point at
+// the same two files, so the JS-disabled first paint
+// matches the social-platform preview the SEO component
+// produces.
+const DEFAULT_IMAGE = `${config.landingUrl}/og-image.png`
+const DEFAULT_TWITTER_IMAGE = `${config.landingUrl}/twitter-card.png`
 
 const setMeta = (selector, attr, value) => {
   let el = document.head.querySelector(selector)
@@ -96,18 +124,30 @@ const setLink = (rel, href) => {
 }
 
 const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, type = 'website' }) => {
-  const fullTitle = title ? `${BASE}${SEP}${title}` : BASE
+  // Home page (no title prop) renders the active locale's
+  // `homePage.seoTitle` instead of just BASE so the document
+  // title carries the full brand line — the SEO report
+  // flagged the previous "Robust Computer" as too thin for
+  // a search snippet. Other pages prepend the brand to the
+  // page's `title` prop with the " - " separator.
+  const { locale, homePage } = useLocale()
+  const fullTitle = title ? `${BASE}${SEP}${title}` : homePage.seoTitle
   const url = path ? `${config.landingUrl}${path}` : config.landingUrl
-  // og:image and twitter:image want absolute URLs.
+  // og:image and twitter:image want absolute URLs. The
+  // `image` prop overrides the og:image target; the
+  // twitter:image falls back to its own dedicated
+  // `DEFAULT_TWITTER_IMAGE` so the two cards stay on
+  // their own platform-specific artifacts. Pages that need
+  // a per-slug Twitter card can extend the prop surface
+  // alongside the per-slug og:image work in Chunk 3.
   const absoluteImage = image.startsWith('http') ? image : `${config.landingUrl}${image}`
-  // Track the locale so the effect re-runs on language change.
-  // The page's title/description props are themselves read from
-  // the i18n dict, so when those props change the effect
-  // already re-runs; subscribing to locale is belt-and-braces
-  // for the case where a page re-uses the same prop value
-  // across a language switch (e.g. an untranslated brand
-  // label) but the user-visible body changed.
-  const { locale } = useLocale()
+  const absoluteTwitterImage = DEFAULT_TWITTER_IMAGE
+  // The home page's <meta name="tag"> comes from the i18n
+  // dict so each locale gets a localised short keyword
+  // string. The static `landing/index.html` carries the
+  // English-only fallback (same value the home page renders
+  // before React mounts).
+  const tag = homePage.tag
 
   useEffect(() => {
     const previousTitle = document.title
@@ -129,10 +169,21 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
     // Twitter card. summary_large_image for the wide banner;
     // pages with smaller square images can override via a prop
     // (not wired up yet — the default banner works for all).
+    // twitter:image points at its own dedicated artifact
+    // (DEFAULT_TWITTER_IMAGE) so the card stays on the
+    // 1200×675 target the file is sized for, instead of
+    // re-using the 1200×630 og-image.
     setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image')
     setMeta('meta[name="twitter:title"]', 'content', fullTitle)
     setMeta('meta[name="twitter:description"]', 'content', description)
-    setMeta('meta[name="twitter:image"]', 'content', absoluteImage)
+    setMeta('meta[name="twitter:image"]', 'content', absoluteTwitterImage)
+
+    // Site tag. Optional per the SEO report ("Tag is missing
+    // but optional") — the major search engines don't read
+    // it, but a handful of smaller crawlers and the
+    // semantic-web Linter tools do, so the value is a short
+    // localised keyword string pulled from `homePage.tag`.
+    setMeta('meta[name="tag"]', 'content', tag)
 
     // Canonical URL (SEO best practice; prevents duplicate-content
     // issues when the same page is reachable at multiple paths)
@@ -145,7 +196,7 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
       // don't bother restoring them individually.
       if (document.title === fullTitle) document.title = previousTitle
     }
-  }, [fullTitle, description, url, absoluteImage, type, locale])
+  }, [fullTitle, description, url, absoluteImage, absoluteTwitterImage, type, tag, locale])
 
   return null
 }

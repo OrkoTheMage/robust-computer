@@ -521,7 +521,9 @@ export const unsubscribePage = {
 }
 
 export const homePage = {
+  seoTitle: 'Robust Computer - SOFTWARE A MEDIDA, CONSTRUIDO PARA DURAR.',
   seoDescription: 'Software a medida, construido para durar. Robust Computer es un equipo pequeño de desarrolladores. Diseñamos, construimos y nos quedamos después del lanzamiento.',
+  tag: 'software a medida',
 }
 
 export const formErrors = {
