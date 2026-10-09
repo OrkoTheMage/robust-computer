@@ -13,14 +13,14 @@
  *   - "Robust Computer" stays in English everywhere. It's a
  *     brand name, not a translatable term.
  *
- *   - "Field notes" also stays in English. The product is
- *     referenced as a brand label ("Field notes — Issue 001")
+ *   - "Field Notes" also stays in English. The product is
+ *     referenced as a brand label ("Field Notes — Issue 001")
  *     throughout the site. Translating the eyebrow / index
  *     title would split the brand identity between locales.
  *
  *   - "News" (the navbar label for /field-notes) translates
  *     to "Notas" — short, fits the same visual slot, and
- *     pairs cleanly with the untranslated "Field notes"
+ *     pairs cleanly with the untranslated "Field Notes"
  *     brand reference.
  *
  *   - "Field Notes" appears once as a content title in the
@@ -155,11 +155,11 @@ export const industries = [
 
 // ── Field Notes ──────────────────────────────────────────────────────────
 export const fieldNotes = {
-  headline: 'Field notes',
-  indexTitle: 'Field notes',
+  headline: 'Field Notes',
+  indexTitle: 'Field Notes',
   lead: 'Ediciones cortas — frecuentes — sobre construir software que perdure. Prácticas, sin spam, cancela cuando quieras.',
   contactBox: {
-    header: 'Field notes',
+    header: 'Field Notes',
     sub: 'Ediciones cortas — frecuentes — sobre construir software que perdure.',
   },
   subscribeBox: {
@@ -184,7 +184,7 @@ export const navbarPages = [
   { to: '/', label: 'Inicio', hint: 'Lo que construimos', icon: 'Home' },
   { to: '/contact', label: 'Iniciar un proyecto', hint: 'Hablemos', icon: 'Send' },
   { to: '/about', label: 'Conoce al equipo', hint: 'Sobre nosotros', icon: 'Users' },
-  { to: '/field-notes', label: 'Notas', hint: 'Field notes', icon: 'Newspaper' },
+  { to: '/field-notes', label: 'Notas', hint: 'Field Notes', icon: 'Newspaper' },
 ]
 
 export const navbarConnects = [
@@ -495,7 +495,7 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  eyebrow: 'Field notes',
+  eyebrow: 'Field Notes',
   back: 'Volver al inicio',
   publishedLabel: 'Publicado',
 }

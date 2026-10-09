@@ -47,7 +47,7 @@ import * as fr from './fr'
  *   - "Robust Computer" — the company name. Brand, not a
  *     translatable term. Same value in every locale file.
  *
- *   - "Field notes" — the name of the Field Notes newsletter /
+ *   - "Field Notes" — the name of the Field Notes newsletter /
  *     post series. The eyebrow on every post page, the index
  *     page title, the NewsletterBox header on the contact
  *     sidebar, and the "Subscribe to 'Field Notes' today."

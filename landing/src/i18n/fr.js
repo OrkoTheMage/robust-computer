@@ -21,7 +21,7 @@
  *     refer to the sector in their menus. No Quebec-specific
  *     vocabulary.
  *
- *   - "Robust Computer" / "Field notes" / "News" stay in
+ *   - "Robust Computer" / "Field Notes" / "News" stay in
  *     English per the same untranslated-by-design contract
  *     documented in i18n/index.js. "News" becomes "Actu" in
  *     the inline main-bar `navChrome.news` slot, matching
@@ -160,11 +160,11 @@ export const industries = [
 
 // ── Field Notes ──────────────────────────────────────────────────────────
 export const fieldNotes = {
-  headline: 'Field notes',
-  indexTitle: 'Field notes',
+  headline: 'Field Notes',
+  indexTitle: 'Field Notes',
   lead: 'Numéros courts — fréquents — sur la création de logiciels durables. Concrets, sans spam, désabonnement en un clic.',
   contactBox: {
-    header: 'Field notes',
+    header: 'Field Notes',
     sub: 'Numéros courts — fréquents — sur la création de logiciels durables.',
   },
   subscribeBox: {
@@ -189,7 +189,7 @@ export const navbarPages = [
   { to: '/', label: 'Accueil', hint: 'Ce que nous construisons', icon: 'Home' },
   { to: '/contact', label: 'Démarrer un projet', hint: 'Contactez-nous', icon: 'Send' },
   { to: '/about', label: 'Rencontrez l\'équipe', hint: 'L\'équipe', icon: 'Users' },
-  { to: '/field-notes', label: 'Actu', hint: 'Field notes', icon: 'Newspaper' },
+  { to: '/field-notes', label: 'Actu', hint: 'Field Notes', icon: 'Newspaper' },
 ]
 
 export const navbarConnects = [
@@ -500,7 +500,7 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  eyebrow: 'Field notes',
+  eyebrow: 'Field Notes',
   back: 'Retour à l\'accueil',
   publishedLabel: 'Publié',
 }

@@ -26,7 +26,7 @@ import { Logo, Zer0Text } from '../brand'
  *
  * `kicker` is an optional small line rendered between the
  * eyebrow and the title. Used by the Field Notes post page to
- * show the "Issue 000" sort identifier under the "Field notes"
+ * show the "Issue 000" sort identifier under the "Field Notes"
  * section label. Styled as a small black-on-paper mono tag so
  * it reads as a metadata chip, not another header.
  */

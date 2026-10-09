@@ -167,7 +167,7 @@ export const industries = [
 //                     surface (Navbar main row, Navbar modal,
 //                     Footer site column).
 //
-//   - "Field notes" = the user-facing brand. Used wherever the
+//   - "Field Notes" = the user-facing brand. Used wherever the
 //                     thing is mentioned, advertised, or titled
 //                     — the home-page Band h2, the per-post
 //                     eyebrow, the NewsletterBox headers, the
@@ -182,11 +182,11 @@ export const industries = [
 // the two pages stay in sync on the only thing they
 // actually differ on.
 export const fieldNotes = {
-  headline: 'Field notes',
-  indexTitle: 'Field notes',
+  headline: 'Field Notes',
+  indexTitle: 'Field Notes',
   lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
   contactBox: {
-    header: 'Field notes',
+    header: 'Field Notes',
     sub: 'Short issues — updates frequently — on building software that lasts.',
   },
   subscribeBox: {
@@ -214,7 +214,7 @@ export const navbarPages = [
   { to: '/', label: 'Home', hint: 'What we build', icon: 'Home' },
   { to: '/contact', label: 'Start a project', hint: 'Get in touch', icon: 'Send' },
   { to: '/about', label: 'Meet the Team', hint: 'About', icon: 'Users' },
-  { to: '/field-notes', label: 'News', hint: 'Field notes', icon: 'Newspaper' },
+  { to: '/field-notes', label: 'News', hint: 'Field Notes', icon: 'Newspaper' },
 ]
 
 export const navbarConnects = [
@@ -568,7 +568,7 @@ export const fieldNotesPage = {
 }
 
 export const fieldNotePage = {
-  eyebrow: 'Field notes',
+  eyebrow: 'Field Notes',
   back: 'Back to home',
   publishedLabel: 'Published',
 }

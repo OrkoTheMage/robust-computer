@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import config from '../../config'
 import { useLocale } from '../../context/LocaleContext'
+import { normalizeTabTitle } from '../../utils/normalizeTabTitle'
 import {
   BRAND_NAME,
   BRAND_DOMAIN,
@@ -24,9 +25,51 @@ import {
  * Usage
  *   <SEO
  *     title="About"
+ *     tabTitle="About"
  *     description="Meet the team at Robust Computer."
  *     path="/about"
  *   />
+ *
+ * Tab title vs og:title
+ *   The browser tab and the social-card headline are two
+ *   different surfaces and don't have to share a string.
+ *   The tab is short and URL-shaped (so users with many
+ *   tabs open can pick out "Robust Computer | issue-001"
+ *   at a glance); the social card is descriptive and uses
+ *   the long brand line so the preview reads as a polished
+ *   slice of the page.
+ *
+ *     - `title`       → drives `og:title` and
+ *                       `twitter:title`. Becomes
+ *                       "Robust Computer — <title>" via the
+ *                       `BASE` + `SEP` (" — ") prefix.
+ *     - `tabTitle`    → drives `document.title` only.
+ *                       Optional. Falls back to the `title`
+ *                       shape (with " | " separator) when
+ *                       omitted, and to bare "Robust
+ *                       Computer" on the home page where
+ *                       `title` is also omitted.
+ *
+ *   Field-notes posts use this split: og gets
+ *   "Robust Computer — Issue 001: A New Beginning" (the
+ *   long descriptive form), the tab gets "Robust Computer
+ *   | issue-001" (the URL slug). Pages that don't need the
+ *   split can omit `tabTitle` and inherit the
+ *   `title`-shaped fallback.
+ *
+ * Tab title normalization
+ *   The candidate suffix (the bit after `BASE + TAB_SEP`)
+ *   is run through `normalizeTabTitle()` before being
+ *   stitched together. The rule fires when the input
+ *   "looks broken" — fully lowercase ("field notes") or
+ *   hyphen-shaped ("issue-001") — and applies Title Case
+ *   to the resulting tokens. Deliberate mixed-case
+ *   strings without hyphens ("Report a bug", "CUST0M
+ *   S0FTWARE") pass through untouched. og:title /
+ *   twitter:title are NOT normalized — the social-card
+ *   form is hand-reviewed and goes through the `title`
+ *   prop deliberately. See `utils/normalizeTabTitle.js`
+ *   for the exact rule.
  *
  * Locale awareness
  *   The component re-runs its effect whenever the locale
@@ -88,7 +131,15 @@ import {
 // the headline from the hero sees the same brand styling
 // there. Other pages keep the un-zer0'd title prop.
 const BASE = 'Robust Computer'
+// `SEP` (em-dash with spaces) joins the brand to the page
+// name in og:title / twitter:title. The browser tab uses
+// `TAB_SEP` (pipe with spaces) instead — the pipe keeps
+// many-open-tabs readable where an em-dash would blend
+// into the brand on the right of the tab. Two surfaces,
+// two separators; see the docstring "Tab title vs
+// og:title" above.
 const SEP = ' — '
+const TAB_SEP = ' | '
 
 // Default description for any page that doesn't pass one.
 // Kept short (~155 chars) so it isn't truncated by Twitter
@@ -163,15 +214,43 @@ const setJsonLd = (id, payload) => {
   el.textContent = JSON.stringify(payload)
 }
 
-const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, twitterImage = DEFAULT_TWITTER_IMAGE, type = 'website' }) => {
+const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, twitterImage = DEFAULT_TWITTER_IMAGE, type = 'website' }) => {
   // Home page (no title prop) renders the active locale's
-  // `homePage.seoTitle` instead of just BASE so the document
-  // title carries the full brand line — the SEO report
+  // `homePage.seoTitle` instead of just BASE so the og
+  // headline carries the full brand line — the SEO report
   // flagged the previous "Robust Computer" as too thin for
   // a search snippet. Other pages prepend the brand to the
-  // page's `title` prop with the " — " separator.
+  // page's `title` prop with the " — " separator. `fullTitle`
+  // powers og:title + twitter:title only; the browser tab
+  // is built separately as `browserTabTitle` below.
   const { locale, homePage } = useLocale()
   const fullTitle = title ? `${BASE}${SEP}${title}` : homePage.seoTitle
+
+  // `browserTabTitle` powers `document.title` only. Two
+  // surfaces, two rules:
+  //
+  //   1. `tabTitle` passed explicitly → BASE + TAB_SEP +
+  //      normalized `tabTitle`. Empty → bare BASE. Field-
+  //      notes posts pass the URL slug here and rely on
+  //      the normalization to render "Issue 001" instead
+  //      of the raw "issue-001".
+  //
+  //   2. `tabTitle` not passed → mirror the `title` shape
+  //      but switch the separator (` | ` instead of ` — `),
+  //      then run the suffix through the same normalizer.
+  //      Home (`title` also missing) → bare BASE.
+  //
+  // `normalizeTabTitle` fires when the input "looks
+  // broken" — fully lowercase, hyphen-shaped, or both —
+  // and leaves mixed-case-without-hyphen input
+  // ("Report a bug", "CUST0M S0FTWARE") untouched. See
+  // `utils/normalizeTabTitle.js` for the exact rule.
+  const tabSuffix = tabTitle !== undefined
+    ? (tabTitle ? normalizeTabTitle(tabTitle) : '')
+    : (title ? normalizeTabTitle(title) : '')
+  const browserTabTitle = tabSuffix
+    ? `${BASE}${TAB_SEP}${tabSuffix}`
+    : BASE
   const url = path ? `${config.landingUrl}${path}` : config.landingUrl
   // og:image and twitter:image want absolute URLs. Each prop
   // accepts either an absolute URL or a site-rooted path;
@@ -192,13 +271,18 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
   useEffect(() => {
     const previousTitle = document.title
 
-    // <title>
-    if (fullTitle !== previousTitle) document.title = fullTitle
+    // <title> (browser tab only). `fullTitle` (the og/
+    // twitter headline) is intentionally NOT written here —
+    // social cards and the tab don't share a string. See
+    // `browserTabTitle` above for the rules.
+    if (browserTabTitle !== previousTitle) document.title = browserTabTitle
 
     // Standard meta description
     setMeta('meta[name="description"]', 'content', description)
 
-    // Open Graph
+    // Open Graph — driven by `fullTitle`, not the tab form,
+    // so the social card stays the descriptive branded
+    // line even on pages where the tab diverges.
     setMeta('meta[property="og:title"]', 'content', fullTitle)
     setMeta('meta[property="og:description"]', 'content', description)
     setMeta('meta[property="og:image"]', 'content', absoluteImage)
@@ -248,10 +332,12 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
       // Restore the previous title on unmount so the next page
       // starts from a known state. The meta tags get overwritten
       // by the next SEO instance on the next render, so we
-      // don't bother restoring them individually.
-      if (document.title === fullTitle) document.title = previousTitle
+      // don't bother restoring them individually. Restore
+      // against the string we wrote (`browserTabTitle`), not
+      // the og headline, since the two are no longer the same.
+      if (document.title === browserTabTitle) document.title = previousTitle
     }
-  }, [fullTitle, description, url, absoluteImage, absoluteTwitterImage, type, tag, locale])
+  }, [browserTabTitle, fullTitle, description, url, absoluteImage, absoluteTwitterImage, type, tag, locale])
 
   return null
 }
