@@ -2,7 +2,7 @@
   <img src="landing/public/brand/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.13.8**
+**Version 0.13.9**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -246,3 +246,5 @@ Every variables listed below is required by the code. `NODE_ENV` and `PORT` defa
 | **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `RESEND_API_KEY`, `LANDING_URL`, `API_URL`, `PORT`, `NEWSLETTER_ADMIN_SECRET` |
 
 > NOTE: Each project owns their own `config.js` which is their own processor for envs.
+>
+> Three optional `DKIM_*` vars (`DKIM_DOMAIN`, `DKIM_KEY_SELECTOR`, `DKIM_PRIVATE_KEY`) live in `.env.example` for future use — when set, the same private key is uploaded to the Resend dashboard to enable the "Signed by: robust.computer" lock. Until then, Resend signs with `resend.dev`.
