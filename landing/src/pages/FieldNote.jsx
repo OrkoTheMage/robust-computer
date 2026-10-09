@@ -56,13 +56,17 @@ import { useLocale } from '../context/LocaleContext'
  * string via `CHANNEL_DESCRIPTION` (the feed is
  * English-only because the posts are English-only).
  *
- * The document title is built as `"Robust Computer — Issue
- * {slug}: {title}"`. The slug segment
- * (`issue-001`) is the URL-bound identifier, not the
- * human-readable `issuePrefix` ("Issue 001") — the URL
- * segment is what goes in the title so the document title
- * tracks the URL. The "Issue 001" kicker on the page
- * itself continues to use `item.issuePrefix`.
+ * The document title (browser tab) is built as
+ * `"Robust Computer | <slug>"` (e.g. `Robust Computer |
+ * issue-001`) — the URL segment is what goes in the tab so
+ * the title tracks the URL and stays short across many
+ * open tabs. The og:title / twitter:title used for social
+ * previews is built separately as `"Robust Computer —
+ * <issuePrefix>: <title>"` so the descriptive form survives
+ * in the social card; see SEO.jsx's "Tab title vs
+ * og:title" docstring for how the two are decoupled. The
+ * `<SEO title={...} tabTitle={slug} />` call below is the
+ * single point where the two surfaces are split.
  */
 
 const Page = styled.main`
@@ -276,6 +280,14 @@ const FieldNote = () => {
     <Page>
       <SEO
         title={`${item.issuePrefix}: ${item.title}`}
+        // Tab vs og split: the tab keeps just the URL slug
+        // ("issue-001") so a user with several Field Notes
+        // tabs open can pick out which is which without
+        // reading the long "Issue 001: A New Beginning"
+        // form every time. The og title keeps the descriptive
+        // form via the `title` prop above — see SEO.jsx's
+        // "Tab title vs og:title" docstring.
+        tabTitle={slug}
         description={item.description}
         path={`/field-notes/${slug}`}
         type="article"

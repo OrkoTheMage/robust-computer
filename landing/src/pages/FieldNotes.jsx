@@ -292,7 +292,7 @@ export default function FieldNotes() {
         )}
       </List>
       {pager.totalPages > 1 && (
-        <Pagination aria-label="Field notes pagination">
+        <Pagination aria-label="Field Notes pagination">
           <PageBtn
             type="button"
             onClick={pager.prev}

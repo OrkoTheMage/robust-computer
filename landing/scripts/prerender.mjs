@@ -184,19 +184,81 @@ const stopPreviewServer = (child) =>
     try { child.kill('SIGTERM') } catch {}
   })
 
+// ── critical-CSS extraction ────────────────────────────────────────────
+// Walks `document.styleSheets` in the rendered page and
+// returns every readable CSS rule as a single string.
+//
+// Why this exists
+//   The deferred stylesheet at `/assets/index-*.css` only
+//   contains the static CSS (`:root`, `@font-face`, body,
+//   highlight.js, resets) — emotion inserts the dynamic
+//   `.css-XXXX` class rules at runtime via `insertRule()`
+//   into a single `<style data-emotion>` tag in the head.
+//   In speedy mode (the default) those rules live in the
+//   CSSOM, not in the style tag's `textContent`, so the
+//   captured `page.content()` only ever contains an empty
+//   `<style data-emotion="css" data-s="">` placeholder.
+//
+//   Without inlining, the prerendered HTML serves the
+//   React tree (every `class="css-XXX"` and the body's
+//   styled wrappers) before the deferred stylesheet
+//   finishes loading. First paint falls back to the user-
+//   agent stylesheet: SVGs render at their natural 512×512
+//   size (no `img,svg { max-width: 100% }` reset), the
+//   body keeps the UA-default grey instead of `--paper`,
+//   and the flex/grid containers collapse so all the
+//   `<img>` siblings stack vertically.
+//
+//   We extract every rule from `document.styleSheets`
+//   after the page settles, concatenate them in document
+//   order, and inline the result into `<head>` of the
+//   captured HTML. The bundle ends up inlined into the
+//   rendered HTML (a few KB per route), the deferred
+//   `<link>` is removed because it would otherwise
+//   double-load the same rules, and first paint shows the
+//   styled layout immediately.
+//
+// Cross-origin sheets (none today) are skipped on
+// `SecurityError` — we only inline same-origin CSS.
+const extractCriticalCss = (page) =>
+  page.evaluate(() => {
+    let css = ''
+    for (const sheet of document.styleSheets) {
+      let rules
+      try {
+        rules = sheet.cssRules
+      } catch {
+        // CORS-blocked cross-origin sheet — skip it. The
+        // render only matters for same-origin rules the
+        // browser would have applied at first paint; cross-
+        // origin sheets arrive async and aren't part of the
+        // critical path either way.
+        continue
+      }
+      for (const rule of rules) {
+        css += rule.cssText + '\n'
+      }
+    }
+    return css
+  })
+
 // ── capture one route ───────────────────────────────────────────────────
 // Loads the URL in a headless browser, waits for React to
 // mount + the SEO component's `useEffect` to fire, then
-// captures the rendered HTML. The captured HTML includes
-// the per-page meta tags (og:*, twitter:*, title,
-// description, canonical, JSON-LD) and the React-rendered
-// body.
+// captures both the rendered HTML and the live CSS rules.
 //
 // `waitForFunction` polls the meta[property="og:title"] tag
 // for the brand-prefixed title (every page sets
 // `${BASE}BR - <title>` so the og:title always starts
 // with "Robust Computer"). When that's true, the SEO
 // component has run and the meta tags are stable.
+//
+// Returns `{ html, css }`. `css` is the concatenated
+// `cssText` of every same-origin stylesheet on the page at
+// capture time (emotion-injected rules + the contents of
+// `/assets/index-*.css`) — see `extractCriticalCss` for why
+// this is read from `document.styleSheets` rather than
+// scraped out of the existing `<style>` tags.
 const captureRoute = async (page, url) => {
   await page.goto(url, { waitUntil: 'networkidle0', timeout: 30_000 })
   await page.evaluate(() => document.fonts.ready)
@@ -212,7 +274,14 @@ const captureRoute = async (page, url) => {
   // screenshots aren't the goal here, but a few extra ms
   // keep the React tree consistent with what crawlers see.
   await new Promise((resolve) => setTimeout(resolve, 50))
-  return page.content()
+  // Capture HTML + CSS in parallel. They're independent
+  // pulls on the same page session — running them
+  // concurrently shrinks the total prerender time.
+  const [html, css] = await Promise.all([
+    page.content(),
+    extractCriticalCss(page),
+  ])
+  return { html, css }
 }
 
 // ── main flow ───────────────────────────────────────────────────────────
@@ -271,10 +340,41 @@ const run = async () => {
         : path.join(distDir, route, 'index.html')
 
       console.log(`▸ ${route}: capturing → ${path.relative(repoRoot, outPath)}`)
-      const html = await captureRoute(page, url)
+      const { html, css } = await captureRoute(page, url)
+
+      // Inline critical CSS into `<head>` so the first
+      // paint already has the styled layout. Without this,
+      // the prerendered HTML serves the React tree with
+      // `css-XXXX` classes before the deferred
+      // `/assets/index-*.css` finishes loading — a grey
+      // background, all SVGs at natural size, no flex/grid
+      // layout. See `extractCriticalCss` for the full story.
+      //
+      // The inline block is injected with a `data-` marker
+      // so future debugging / diff tools can spot the
+      // prerendered CSS in the served HTML.
+      //
+      // The deferred `<link rel="stylesheet" href="/assets/
+      // index-*.css">` is stripped at the same time because
+      // its rules are now inlined — leaving it would double-
+      // load the same bytes and waste a network round-trip
+      // on every prerendered page.
+      let out = html
+      if (css) {
+        out = out.replace(
+          /<link rel="stylesheet"[^>]*\/assets\/index-[^>]*>\n?/,
+          '',
+        )
+        out = out.replace(
+          /<\/head>/i,
+          `<style data-prerendered-critical>${css}</style></head>`,
+        )
+      }
       fs.mkdirSync(path.dirname(outPath), { recursive: true })
-      fs.writeFileSync(outPath, html)
-      console.log(`✓ Wrote ${path.relative(repoRoot, outPath)} (${html.length} bytes)`)
+      fs.writeFileSync(outPath, out)
+      console.log(
+        `✓ Wrote ${path.relative(repoRoot, outPath)} (${out.length} bytes, ${css.length} bytes inlined CSS)`,
+      )
     }
   } finally {
     if (browser) {
