@@ -88,7 +88,7 @@ import {
 // the headline from the hero sees the same brand styling
 // there. Other pages keep the un-zer0'd title prop.
 const BASE = 'Robust Computer'
-const SEP = ' - '
+const SEP = ' — '
 
 // Default description for any page that doesn't pass one.
 // Kept short (~155 chars) so it isn't truncated by Twitter
@@ -169,7 +169,7 @@ const SEO = ({ title, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_I
   // title carries the full brand line — the SEO report
   // flagged the previous "Robust Computer" as too thin for
   // a search snippet. Other pages prepend the brand to the
-  // page's `title` prop with the " - " separator.
+  // page's `title` prop with the " — " separator.
   const { locale, homePage } = useLocale()
   const fullTitle = title ? `${BASE}${SEP}${title}` : homePage.seoTitle
   const url = path ? `${config.landingUrl}${path}` : config.landingUrl
