@@ -71,6 +71,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  *   node scripts/build-rss.mjs --full-only    # skip the latest only
  *   node scripts/build-rss.mjs --latest-only  # skip the full files
  *   node scripts/build-rss.mjs --no-write     # skip file writes (feeds + cards + sitemap); broadcast only
+ *   node scripts/build-rss.mjs --no-cards     # skip the per-issue OG/Twitter card regen (feeds + sitemap only)
  *   node scripts/build-rss.mjs --no-broadcast # skip the broadcast (build only)
  *   node scripts/build-rss.mjs --dry-run      # print everything to stdout
  *
@@ -110,6 +111,7 @@ const txtOnly = args.includes('--txt-only')
 const fullOnly = args.includes('--full-only')
 const latestOnly = args.includes('--latest-only')
 const noWrite = args.includes('--no-write')
+const noCards = args.includes('--no-cards')
 const noBroadcast = args.includes('--no-broadcast')
 
 // `--xml-only` and `--txt-only` are mutually exclusive; if
@@ -241,7 +243,9 @@ if (noWrite) {
 // The `--dry-run` flag forwards to the cards script so a
 // full preview prints every artifact that *would* be
 // written without touching the filesystem.
-if (!noWrite) {
+if (noCards) {
+  console.log('⊘ Per-issue cards skipped (--no-cards)')
+} else if (!noWrite) {
   const cardsArgs = ['scripts/build-issue-cards.mjs']
   if (dryRun) cardsArgs.push('--dry-run')
   try {

@@ -1,5 +1,5 @@
 import config from '../../config.js'
-import { wrapHtml, wrapText, emailTokens } from './layout.js'
+import { wrapHtml, wrapText, emailTokens, unsubscribeUrl } from './layout.js'
 
 /**
  * server/src/utils/email/newIssueNotification.js
@@ -36,11 +36,10 @@ import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 const { COLOR, FONT, escape, zer0Html } = emailTokens
 
-const unsubscribeUrl = (email) =>
-  `${config.landingUrl}/unsubscribe?email=${encodeURIComponent(email)}`
+const bodyUnsubscribeUrl = unsubscribeUrl
 
 const buildHtml = ({ email, issue }) => {
-  const unsub = unsubscribeUrl(email)
+  const unsub = bodyUnsubscribeUrl(email)
   const read = issue.url
 
   const body = `
@@ -82,7 +81,7 @@ const buildHtml = ({ email, issue }) => {
 }
 
 const buildText = ({ email, issue }) => {
-  const unsub = unsubscribeUrl(email)
+  const unsub = bodyUnsubscribeUrl(email)
   const body = [
     'A new issue of Field Notes is out.',
     '',

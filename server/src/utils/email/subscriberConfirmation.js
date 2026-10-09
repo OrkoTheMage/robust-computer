@@ -1,5 +1,5 @@
 import config from '../../config.js'
-import { wrapHtml, wrapText, emailTokens } from './layout.js'
+import { wrapHtml, wrapText, emailTokens, unsubscribeUrl } from './layout.js'
 
 /**
  * server/src/utils/email/subscriberConfirmation.js
@@ -15,11 +15,13 @@ import { wrapHtml, wrapText, emailTokens } from './layout.js'
 
 const { COLOR, FONT, escape } = emailTokens
 
-const unsubscribeUrl = (email) =>
-  `${config.landingUrl}/unsubscribe?email=${encodeURIComponent(email)}`
+// Local alias documents the meaning ("the URL rendered into the body
+// of THIS email") and keeps the rest of the file unchanged from
+// before the helper moved to layout.js.
+const bodyUnsubscribeUrl = unsubscribeUrl
 
 const buildHtml = (email) => {
-  const unsub = unsubscribeUrl(email)
+  const unsub = bodyUnsubscribeUrl(email)
   const body = `
     <p style="margin:0 0 18px; font-family:${FONT.body}; font-size:18px; line-height:1.55; color:${COLOR.ink};">
       Thanks for subscribing to <strong>Field Notes</strong>.
@@ -51,7 +53,7 @@ const buildHtml = (email) => {
 }
 
 const buildText = (email) => {
-  const unsub = unsubscribeUrl(email)
+  const unsub = bodyUnsubscribeUrl(email)
   const body = [
     'Thanks for subscribing to Field Notes.',
     '',
