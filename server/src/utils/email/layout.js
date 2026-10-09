@@ -71,6 +71,8 @@ const plexMono700B64 = readFileSync(
   path.join(__dirname, './fonts/ibm-plex-mono-700.woff2')
 ).toString('base64')
 
+const EMAIL_AVATAR_URL = `${config.landingUrl}/favico/android-chrome-192x192.png`
+
 // ── Brand tokens (mirrored from landing/src/index.css) ──────────────────────
 const COLOR = {
   paper: '#e2dbc8',
@@ -400,6 +402,13 @@ export const wrapHtml = ({
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
   ${styleBlock}
+  <!-- Sender favicon. The few email clients that surface a
+       sender-side icon in the message header (Apple Mail
+       primarily) read this link and pull the brand mark from
+       the landing's /favico/ tree. Most clients ignore it,
+       which is fine — the visible avatar above the banner
+       carries the brand inside the body. -->
+  <link rel="icon" type="image/png" href="${escape(EMAIL_AVATAR_URL)}" />
   <title>${escape(config.brand.name)}</title>
 </head>
 <body style="margin:0; padding:0; background:${COLOR.white}; -webkit-font-smoothing:antialiased;">

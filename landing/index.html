@@ -15,7 +15,7 @@
     <meta name="twitter:title" content="Robust Computer" />
     <meta name="twitter:description" content="Robust Computer is a small team of developers. We design it, build it, and stay on after launch." />
     <meta name="twitter:image" content="/brand/banner2-cut.svg" />
-    <link rel="canonical" href="/" />
+    <link rel="canonical" href="https://www.robust.computer/" />
     <link rel="icon" type="image/x-icon" href="/favico/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favico/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favico/favicon-16x16.png" />
@@ -33,22 +33,10 @@
       title="Robust Computer — Field Notes (plain text)"
       href="/feed.txt"
     />
-    <!-- Self-hosted fonts. Preload the weights used on first paint
-         so font-display: optional resolves to the real font within
-         the 100ms block period (and we never fall back to a system
-         mono whose zero glyph doesn't have the IBM Plex slash). -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-700.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/barlow-800.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/newsreader.woff2" crossorigin />
-    <!-- Per-route navbar icons (see `usePageIcon`). Preload every
-         variant at HTML parse time so the navbar icon swap is
-         instant on navigation — same reasoning as the font
-         preloads above: the browser gets these fetches started
-         before React mounts. The JS preloader in `ImagePreloader`
-         is a redundant safety net for any variant added at
-         runtime. Type hints help the browser skip a
-         content-type round-trip. -->
     <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-about.svg" />
     <link rel="preload" as="image" type="image/svg+xml" href="/icons/icon-var-bug.svg" />
