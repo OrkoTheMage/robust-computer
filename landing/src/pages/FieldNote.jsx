@@ -279,6 +279,14 @@ const FieldNote = () => {
         description={item.description}
         path={`/field-notes/${slug}`}
         type="article"
+        // Per-post social cards. Both are optional on the
+        // post shape; passing `undefined` resolves to the SEO
+        // component's platform-specific fallback (`/og-image.png`
+        // and `/twitter-card.png` respectively) so a post can
+        // set either, both, or neither. See the SEO component
+        // docstring for why the two stay on their own prop.
+        image={item.ogImage || undefined}
+        twitterImage={item.twitterImage || undefined}
       />
       <Navbar />
       <PageHeader
