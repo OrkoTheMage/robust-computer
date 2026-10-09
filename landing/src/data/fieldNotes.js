@@ -99,7 +99,16 @@ import { parseMarkdownBlocks } from '../utils/parseMarkdownBlocks.js'
  * feed.txt string — a plain-text sibling of the RSS feed for
  * terminal-friendly consumption (curl, less, wget, finger-style
  * readers, environments where XML parsing is impractical).
- * Run the regen script after editing the array (see
+ * The plain-text body strips inline markdown (bold / italic /
+ * links / inline code) via the same `marked.parseInline` +
+ * DOMPurify pipeline the `<description>` excerpt uses, so a
+ * paragraph reads the same in both surfaces. The standard
+ * CommonMark backslash escapes (`\*`, `\[`, `` \` ``, …)
+ * survive the stripper — a post that wants raw markdown kept
+ * (e.g. an asterisk-driven obfuscation) escapes each delimiter
+ * with a backslash; see FIELD-NOTES-SYNTAX.md for the escape
+ * contract and `updates.txt` H-5 for the post-rewrite
+ * question. Run the regen script after editing the array (see
  * `scripts/build-rss.mjs`) and commit all four artifacts
  * (rss.xml, feed.txt, latest.xml, latest.txt) so feed readers,
  * autodiscoverers, and plain-text consumers don't have to ship
@@ -233,14 +242,63 @@ const decodeHtmlEntities = (str) =>
     return m
   })
 
+// An inline image — `![alt](url)` mixed with prose on the
+// same line. Standalone images (one per line) are handled at
+// the block level by `parseMarkdownBlocks` and never reach
+// this regex; this only fires when an image sits inside a
+// paragraph, heading, list item, or blockquote line. The
+// alt-capture is `[^\]]*` so a `]` inside the alt closes the
+// image prematurely — same limitation every markdown
+// renderer ships with, and a non-issue in practice (the
+// project's alt copy is short descriptive text).
+const INLINE_IMAGE = /!\[([^\]]*)\]\(\s*(\S+?)\s*(?:"([^"]+)")?\)/g
+
 // Convert a chunk of inline-markdown text (heading text,
-// list item text, paragraph text) to a flat plain-text
-// string suitable for the RSS <description> excerpt. Same
-// marked → DOMPurify → tag-strip → entity-decode pipeline
-// the paragraph branch used, just hoisted so heading and
-// list items can reuse it.
-const inlineMarkdownToText = (content) => {
-  const html = DOMPurify.sanitize(marked.parseInline(content))
+// list item text, paragraph text, blockquote line) to a
+// flat plain-text string. Shared by the RSS <description>
+// excerpt (`bodyToPlainText`) and the plain-text body
+// renderer (`renderBodyAsPlainText`) so the two surfaces
+// produce identical prose for the same source paragraph.
+//
+// The pipeline:
+//   1. Inline images are preprocessed to a `[Image: alt]`
+//      marker so the alt text survives — marked would
+//      otherwise render them as `<img>` and the next step's
+//      tag-strip would drop the alt attribute along with the
+//      tag.
+//   2. The remaining inline markdown (`**bold**`,
+//      `*italic*`, `[text](url)`, `` `code` ``) is run
+//      through `marked.parseInline`, then DOMPurified, then
+//      stripped of tags — same stack the on-page
+//      FieldNoteBody uses for the rendered HTML body.
+//   3. HTML entities are decoded back to plain text and
+//      whitespace is collapsed so the output is a single
+//      readable line per chunk.
+//
+// Code spans (text between backticks) are kept literal by
+// `marked.parseInline` — their contents are not re-processed
+// for further markdown — so the standard CommonMark
+// backslash escapes survive the stripper:
+//
+//   \*  →  *       (literal asterisk — emphasis escape)
+//   \[  →  [       (literal opening bracket)
+//   \]  →  ]       (literal closing bracket)
+//   \`  →  `       (literal backtick)
+//   \_  →  _       (literal underscore)
+//
+// Posts that want raw markdown kept verbatim — e.g. an
+// asterisk-driven obfuscation like `\*No bull\*\*\*\*\*`
+// (Issue-001's `*No bull*****`) — escape each would-be
+// emphasis delimiter with a backslash and the stripper
+// leaves the literal characters intact. See
+// FIELD-NOTES-SYNTAX.md for the escape contract and
+// `updates.txt` H-5 for the post-rewrite question.
+const stripInlineMarkdown = (content) => {
+  const withImageMarkers = String(content).replace(
+    INLINE_IMAGE,
+    (_, alt) => `[Image: ${alt}]`,
+  )
+  const html = DOMPurify.sanitize(marked.parseInline(withImageMarkers))
   const text = decodeHtmlEntities(html.replace(/<[^>]+>/g, ''))
   return text.replace(/\s+/g, ' ').trim()
 }
@@ -259,7 +317,7 @@ const bodyToPlainText = (raw, maxLen = 280) => {
       continue
     }
     if (block.type === 'heading') {
-      const text = inlineMarkdownToText(block.content)
+      const text = stripInlineMarkdown(block.content)
       if (text) parts.push(text)
       continue
     }
@@ -269,12 +327,12 @@ const bodyToPlainText = (raw, maxLen = 280) => {
       // small, but enough to signal "these are peers"
       // instead of "this is one long sentence".
       const itemTexts = block.items
-        .map(inlineMarkdownToText)
+        .map(stripInlineMarkdown)
         .filter(Boolean)
       if (itemTexts.length > 0) parts.push(itemTexts.join('; '))
       continue
     }
-    const text = inlineMarkdownToText(block.content)
+    const text = stripInlineMarkdown(block.content)
     if (text) parts.push(text)
   }
   const text = parts.join(' ').replace(/\s+/g, ' ').trim()
@@ -348,12 +406,33 @@ ${items}
 // reads cleanly at any terminal width and degrades gracefully
 // when piped through anything that flattens whitespace.
 //
-// Content is intentionally NOT markdown-rendered to plain
-// text. Inline asterisks, backticks, and links are kept
-// verbatim so the feed is byte-faithful to the source body
-// (which matters for things like `*No bull*****`, where the
-// asterisks are deliberate obfuscation, not emphasis). The
-// only structural transformations are:
+// Content is markdown-rendered to plain text via the same
+// `marked.parseInline` + DOMPurify + tag-strip + entity-decode
+// pipeline the RSS `<description>` excerpt uses, so a reader
+// that ignores inline markup (terminal, pipe to `less`, mirror
+// that strips tags) sees the same prose for the same source
+// paragraph that an RSS reader shows in the description field.
+// Bold / italic markers disappear, links collapse to their
+// visible text, inline code keeps just the code. Inline images
+// `![alt](url)` mixed with prose are preprocessed to a
+// `[Image: alt]` marker so the alt text survives — marked
+// would otherwise render them as `<img>` and the tag-strip
+// would drop the alt attribute. Standalone images are handled
+// at the block level by `parseMarkdownBlocks` and never reach
+// the stripper.
+//
+// The standard CommonMark backslash escapes survive the
+// stripper (`\*`, `\[`, `\]`, `` \` ``, `\_`, …), so a post
+// that wants raw markdown kept — e.g. an asterisk-driven
+// obfuscation like `*No bull*****` — can escape each
+// would-be emphasis delimiter with a backslash and the
+// literal characters survive. Issue-001 carries one such
+// marker today; H-5 (jokes rewrite) decides whether to keep
+// the escape chain or drop it once the copy is rewritten.
+// See FIELD-NOTES-SYNTAX.md for the escape contract.
+//
+// The structural transformations only — i.e. the parts of
+// the body that aren't already stripped markdown:
 //   - blank lines stay blank lines (paragraph breaks)
 //   - `> ...` lines are indented by two columns
 //   - ```lang ... ``` fenced blocks get a labeled rule on
@@ -401,22 +480,33 @@ const wrapText = (text, width = WRAP_WIDTH, indent = '') => {
 // shared `parseMarkdownBlocks` parser (same one the React
 // page uses), then renders each block based on its type:
 //
-//   - paragraph — word-wrapped to WRAP_WIDTH, followed by a
-//     blank line
-//   - quote     — word-wrapped to WRAP_WIDTH with a `  > `
-//     indent on every wrapped line, followed by a blank line
+//   - paragraph — inline markdown stripped, then word-wrapped
+//     to WRAP_WIDTH, followed by a blank line
+//   - quote     — inline markdown stripped, then word-wrapped
+//     to WRAP_WIDTH with a `  > ` indent on every wrapped
+//     line, followed by a blank line
 //   - code      — wrapped in a labeled rule (── lang ──)
 //     above and a closing rule below, with each line of
 //     code indented two columns. Content inside the fence
 //     is rendered verbatim — including blank lines that
-//     should not have broken the fence.
+//     should not have broken the fence. Per design (the
+//     terminal reader runs the code), inline markdown
+//     stripping is skipped here.
 //
 // Inline markdown (`**bold**`, `*italic*`, `[link](url)`,
-// `code`) is passed through verbatim. See the file-level
-// comment for the rationale.
+// `` `code` ``) is stripped on every block except code, via
+// the shared `stripInlineMarkdown` helper — same pipeline
+// the `<description>` excerpt uses, so the two plain-text
+// surfaces agree word-for-word. Code spans stay literal
+// (their contents are not re-processed), so the standard
+// CommonMark backslash escapes survive: `\*` → `*`,
+// `\[` → `[`, etc. A post that wants raw markdown kept
+// (e.g. the asterisk-driven obfuscation in Issue-001) can
+// escape each would-be emphasis delimiter — see
+// FIELD-NOTES-SYNTAX.md for the escape contract.
 //
 // Standalone images (`![alt](url)` on their own line) are
-// replaced with a single `[image: alt]` line, wrapped in a
+// replaced with a single `[Image: alt]` line, wrapped in a
 // labeled rule pair so it reads as a discrete artifact the
 // same way the code blocks do. The alt text is the
 // single source of truth for the caption — it shows up as
@@ -441,7 +531,7 @@ const renderBodyAsPlainText = (raw) => {
       continue
     }
     if (block.type === 'quote') {
-      out.push(wrapText(block.content, WRAP_WIDTH, '  > '))
+      out.push(wrapText(stripInlineMarkdown(block.content), WRAP_WIDTH, '  > '))
       out.push('')
       continue
     }
@@ -449,14 +539,16 @@ const renderBodyAsPlainText = (raw) => {
       // A literal `![alt](url)` line in the terminal would
       // be unreadable — the URL is noise and the markdown
       // syntax is meaningless to a non-rendering reader.
-      // Replace it with a single `[image: alt]` line that
+      // Replace it with a single `[Image: alt]` line that
       // names the asset the same way the on-page <figcaption>
       // and the <description> excerpt do, so all three
       // surfaces agree on the caption text. Brackets signal
-      // "this is a placeholder, not prose"; flush-left so it
-      // sits inline with the surrounding paragraphs instead
-      // of looking like a list item or a code block.
-      const label = block.alt ? `image: ${block.alt}` : 'image'
+      // "this is a placeholder, not prose"; the capital `I`
+      // distinguishes the marker from inline prose that
+      // happens to start with `[`; flush-left so it sits
+      // inline with the surrounding paragraphs instead of
+      // looking like a list item or a code block.
+      const label = block.alt ? `Image: ${block.alt}` : 'Image'
       out.push(`[${label}]`)
       out.push('')
       continue
@@ -469,11 +561,12 @@ const renderBodyAsPlainText = (raw) => {
       // get a single rule (─). Uppercased so the "section
       // label" reading lands without needing CSS
       // text-transform. Inline markdown inside the heading
-      // is kept verbatim (no markdown stripping, matching
-      // the file-level policy for feed.txt).
+      // is stripped first via the shared helper, matching
+      // the new file-level policy for feed.txt.
       const rule = block.level === 1 ? '═' : '─'
+      const stripped = stripInlineMarkdown(block.content).toUpperCase()
       out.push(repeat(rule, RULE_WIDTH))
-      out.push(`  ${block.content.toUpperCase()}`)
+      out.push(`  ${stripped}`)
       out.push(repeat(rule, RULE_WIDTH))
       out.push('')
       continue
@@ -485,11 +578,14 @@ const renderBodyAsPlainText = (raw) => {
       // "this is a structural element" reading is consistent
       // across the feed. Items are word-wrapped to
       // `WRAP_WIDTH - 2` so the indent + marker fit in the
-      // wrap budget.
+      // wrap budget. Each item is run through the shared
+      // inline-markdown stripper before the wrap, so
+      // `**bold**` becomes `bold`, `[link](url)` becomes
+      // `link`, etc.
       const itemWidth = WRAP_WIDTH - 2
       for (let j = 0; j < block.items.length; j++) {
         const marker = block.ordered ? `${j + 1}.` : '▪'
-        const item = block.items[j]
+        const item = stripInlineMarkdown(block.items[j])
         const wrapped = wrapText(item, itemWidth)
         const lines = wrapped.split('\n')
         out.push(`  ${marker} ${lines[0]}`)
@@ -500,8 +596,13 @@ const renderBodyAsPlainText = (raw) => {
       out.push('')
       continue
     }
-    // paragraph
-    out.push(wrapText(block.content))
+    // paragraph — strip inline markdown (`**bold**` →
+    // `bold`, `[link](url)` → `link`, etc.) before the
+    // word-wrap so the terminal reader doesn't see the
+    // marker syntax. Code spans (backticks) and the
+    // standard CommonMark backslash escapes are preserved
+    // by the stripper (see `stripInlineMarkdown`).
+    out.push(wrapText(stripInlineMarkdown(block.content)))
     out.push('')
   }
 
