@@ -364,39 +364,15 @@ export const notFound = {
 export const developers = [
   {
     name: 'Aeryn',
-    role: 'Full-stack developer',
+    role: 'Resident Developer',
     bio: 'Aeryn builds both sides of an application: React front ends people enjoy using, and the back-end services they depend on. Four years of full-stack work across client projects of every size and variety of industries.',
     stack: ['JavaScript', 'Python', 'React', 'MongoDB/SQL', 'APIs'],
-    avatar: 'iconVarHappy',
+    avatar: 'iconVarDead',
     links: {
       portfolio: 'https://grue.vercel.app/',
       github: 'https://github.com/OrkoTheMage',
       linkedin: 'https://www.linkedin.com/in/aeryn-grindle-5730002b5',
     },
-  },
-  {
-    name: 'Placeholder',
-    role: 'Front-end developer',
-    bio: 'Short bio goes here: what they care about, what they have shipped, and what clients can hand them with confidence. Two or three sentences is plenty.',
-    stack: ['Add', 'Their', 'Stack'],
-    avatar: 'iconVarPanicked',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Placeholder',
-    role: 'Back-end developer',
-    bio: 'Short bio goes here: what they care about, what they have shipped, and what clients can hand them with confidence. Two or three sentences is plenty.',
-    stack: ['Add', 'Their', 'Stack'],
-    avatar: 'iconVarDead',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Placeholder',
-    role: 'Design engineer',
-    bio: 'Short bio goes here: what they care about, what they have shipped, and what clients can hand them with confidence. Two or three sentences is plenty.',
-    stack: ['Add', 'Their', 'Stack'],
-    avatar: 'iconVarUnamused',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
   },
 ]
 

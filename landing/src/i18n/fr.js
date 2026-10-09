@@ -318,39 +318,15 @@ export const notFound = {
 export const developers = [
   {
     name: 'Aeryn',
-    role: 'Développeur·euse full-stack',
+    role: 'Développeur·euse résident·e',
     bio: 'Aeryn construit les deux faces d\'une application : des front-ends en React que les gens apprécient utiliser, et les services back-end sur lesquels ils s\'appuient. Quatre ans de travail full-stack sur des projets clients de toutes tailles et de tous secteurs d\'activité.',
     stack: ['JavaScript', 'Python', 'React', 'MongoDB/SQL', 'APIs'],
-    avatar: 'iconVarHappy',
+    avatar: 'iconVarDead',
     links: {
       portfolio: 'https://grue.vercel.app/',
       github: 'https://github.com/OrkoTheMage',
       linkedin: 'https://www.linkedin.com/in/aeryn-grindle-5730002b5',
     },
-  },
-  {
-    name: 'Espace réservé',
-    role: 'Développeur·euse front-end',
-    bio: 'Une courte bio ici : ce sur quoi la personne se concentre, ce qu\'elle a livré, et ce qu\'on peut lui confier en toute confiance. Deux ou trois phrases suffisent.',
-    stack: ['Ajoutez', 'Votre', 'Stack'],
-    avatar: 'iconVarPanicked',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Espace réservé',
-    role: 'Développeur·euse back-end',
-    bio: 'Une courte bio ici : ce sur quoi la personne se concentre, ce qu\'elle a livré, et ce qu\'on peut lui confier en toute confiance. Deux ou trois phrases suffisent.',
-    stack: ['Ajoutez', 'Votre', 'Stack'],
-    avatar: 'iconVarDead',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
-  },
-  {
-    name: 'Espace réservé',
-    role: 'Ingénieur·e design',
-    bio: 'Une courte bio ici : ce sur quoi la personne se concentre, ce qu\'elle a livré, et ce qu\'on peut lui confier en toute confiance. Deux ou trois phrases suffisent.',
-    stack: ['Ajoutez', 'Votre', 'Stack'],
-    avatar: 'iconVarUnamused',
-    links: { portfolio: '#', github: '#', linkedin: '#' },
   },
 ]
 
