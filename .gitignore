@@ -55,3 +55,7 @@ scripts/.mailpit/
 # ── runtime ─────────────────────────────────────────────────────────────
 *.pid
 .tmp/
+
+# ── smoke test temp files (written to landing/ at runtime, deleted in finally) ──
+landing/.smoke-entry.mjs
+landing/.smoke-bundle.mjs
