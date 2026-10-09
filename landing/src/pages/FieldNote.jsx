@@ -56,7 +56,7 @@ import { useLocale } from '../context/LocaleContext'
  * string via `CHANNEL_DESCRIPTION` (the feed is
  * English-only because the posts are English-only).
  *
- * The document title is built as `"Robust Computer - Issue
+ * The document title is built as `"Robust Computer — Issue
  * {slug}: {title}"`. The slug segment
  * (`issue-001`) is the URL-bound identifier, not the
  * human-readable `issuePrefix` ("Issue 001") — the URL
@@ -275,7 +275,7 @@ const FieldNote = () => {
   return (
     <Page>
       <SEO
-        title={`Issue ${slug}: ${item.title}`}
+        title={`${item.issuePrefix}: ${item.title}`}
         description={item.description}
         path={`/field-notes/${slug}`}
         type="article"

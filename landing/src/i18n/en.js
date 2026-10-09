@@ -598,7 +598,7 @@ export const unsubscribePage = {
 }
 
 export const homePage = {
-  seoTitle: 'Robust Computer - CUST0M S0FTWARE, BUILT T0 LAST.',
+  seoTitle: 'Robust Computer — CUST0M S0FTWARE, BUILT T0 LAST.',
   seoDescription: 'Custom software, built to last. Robust Computer is a small team of developers. We design it, build it, and stay on after launch.',
   tag: 'custom software',
 }
