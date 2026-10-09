@@ -111,6 +111,21 @@ export const escape = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
 
+// ── Unsubscribe URL builder (shared) ─────────────────────────────────────
+// Built here rather than duplicated in each template so the per-recipient
+// URL the templates render in the email body matches the
+// List-Unsubscribe header the dispatcher emits (they must be the same
+// URL — Gmail's "Show original" pulls the header, not the body link).
+// Module-load pure: reads config.landingUrl at import time and reuses
+// it for every call.
+export const unsubscribeUrl = (email) =>
+  `${config.landingUrl}/unsubscribe?email=${encodeURIComponent(email)}`
+
+// Mailto address used by the List-Unsubscribe header's mailto entry.
+// Always BRAND_EMAIL; recipients can unsubscribe by mail even when no
+// per-recipient HTTPS URL exists (team-facing emails).
+export const unsubscribeMailtoAddress = config.brand.email
+
 // Apply the brand's 0-for-O rule (mirrors landing/src/utils/zer0.js):
 // uppercase the input, then replace every O with 0. Used in the
 // wordmark so the brand mark reads the same as on the page even

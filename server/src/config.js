@@ -54,6 +54,21 @@ const required = (key) => {
   return value
 }
 
+// Builds a `{ domainName, keySelector, privateKey }` block when
+// all three DKIM env vars are present (and non-empty). Production
+// runs through Resend's HTTPS API which doesn't read these vars
+// (signing happens on Resend's end under their own dashboard), so
+// the block is optional in prod; when null, mail goes out signed
+// by `resend.dev` instead of `robust.computer`. See the comment
+// in the production email branch below for the full picture.
+const dkimFromEnv = () => {
+  const domainName = process.env.DKIM_DOMAIN
+  const keySelector = process.env.DKIM_KEY_SELECTOR
+  const privateKey = process.env.DKIM_PRIVATE_KEY
+  if (!domainName || !keySelector || !privateKey) return null
+  return Object.freeze({ domainName, keySelector, privateKey })
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Code constants
 // ═══════════════════════════════════════════════════════════════════════════
@@ -139,6 +154,18 @@ const config = Object.freeze({
     ? Object.freeze({
         from: MAIL_FROM,
         resendApiKey: required('RESEND_API_KEY'),
+        // DKIM keys are optional in production. Production sends
+        // through Resend's HTTPS API which signs with `resend.dev`
+        // by default — the env vars here mirror the same key pair
+        // the deployer uploads to the Resend dashboard under
+        // Domains → robust.computer → DKIM. When all three are
+        // set, `config.email.dkim` is populated so a future
+        // nodemailer code path (or direct SMTP fallback) would
+        // pick up the keys automatically. When null, mail still
+        // delivers, just without the `Signed by: robust.computer`
+        // lock in Gmail until someone fills these in plus the
+        // matching DNS TXT records.
+        dkim: dkimFromEnv(),
       })
     : Object.freeze({
         from: MAIL_FROM,
@@ -152,6 +179,12 @@ const config = Object.freeze({
           user: required('SMTP_USER'),
           pass: required('SMTP_PASS'),
         }),
+        // DKIM in dev is optional: mailpit skips auth entirely, so a
+        // missing DKIM private key cannot affect Gmail tests (those
+        // verify only after deploy). When the env vars are absent the
+        // nodemailer transport omits the `dkim` field and sends
+        // unsigned — useful for local smoke checks without DKIM set up.
+        dkim: dkimFromEnv(),
       }),
 })
 
