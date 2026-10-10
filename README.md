@@ -189,10 +189,12 @@ yarn smoke:server                           # dev Mongo + Mailpit captures each 
 | `main` | Production releases |
 
 ### Release Flow
-1. Create feature branch → merge to `dev`
-2. Update version controllers (`package.json` + `README.md`)
-2. Squash-merge `dev` into `main` with version tag
-3. Fast-forward `dev` to `main`
+1. Create feature branch
+2. Commit feature branch → merge to `dev`
+2. Update version controllers on dev (`package.json`s + `README.md`)
+3. Run `yarn smoke:landing` and `yarn smoke:server` to confirm stable 
+2. Commit `dev` → Squash-merge `dev` → `main` with version tag
+3. Fast-forward `dev` → `main`
 4. Delete feature branch
 
 > FORMAT: `MAJOR.MINOR.PATCH` (e.g., `v1.1.1`)
@@ -205,8 +207,8 @@ yarn smoke:server                           # dev Mongo + Mailpit captures each 
 
 | App | URL | Host |
 |-----|-----|------|
-| Landing | robust-computer.vercel.app | Vercel |
-| API     | TBD | Railway |
+| Landing | robust.computer | Vercel |
+| API     | api.robust.computer | Railway |
 
 Landing is a Vercel projects rooted at `landing/`. The API is a Railway service rooted at `server/`.
 
