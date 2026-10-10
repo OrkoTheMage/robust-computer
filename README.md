@@ -2,7 +2,7 @@
   <img src="landing/public/brand/banner2-cut.svg" width="560" alt="Robust Computer">
 </div>
 
-**Version 0.14.1**
+**Version 0.15.0**
 
 Full-stack web app for Robust Computer's Marketing Site & API
 
@@ -73,7 +73,7 @@ robust-computer/
 │   │   │   ├── seo/             # SEO
 │   │   │   └── ui/              # Generic primitives
 │   │   ├── context/             # LocaleContext
-│   │   ├── data/                # brand, fieldNotes, jokes, issues/
+│   │   ├── data/                # brand, feed, developerPreviews, issues/
 │   │   ├── hooks/               # State + effects
 │   │   ├── i18n/                # en, es, fr
 │   │   ├── pages/               # Home, About, Contact, ...
@@ -124,7 +124,7 @@ helper function, or a state mutation inside a page, move it to
 | Folder      | Purpose |
 |-------------|---------|
 | `hooks/`    | Page-level behavior (state + effects). Each page consumes a small number of focused hooks |
-| `data/`     | `copy.js` and other data sets |
+| `data/`     | brand, feed, developerPreviews, issues/ |
 | `utils/`    | Pure helpers (formatters, validators, permission calculators) |
 | Others      | `modals/` (reusable dialogs), `styles/` (design tokens), `middleware/`, etc. |
 
@@ -214,14 +214,21 @@ Landing is a Vercel projects rooted at `landing/`. The API is a Railway service 
 
 ### Environment Variables
 
-Every variables listed below is required by the code. `NODE_ENV` and `PORT` default to `'development'`/`5000` for bare-`node` startup but are set by Railway / `scripts/dev.js` in practice. The full contract lives in [`.env.example`](.env.example).
+The full contract lives in [`.env.example`](.env.example). The table below mirrors that contract per host — required vars are listed in the table; optional vars are noted in the rows after. `NODE_ENV` and `PORT` default to `'development'`/`5000` for bare-`node` startup but are set by Railway / `scripts/dev.js` in practice.
 
 
 | Project | Environment Variables |
 |---|---|
 | **Vercel — Landing** | `VITE_API_URL`, `VITE_LANDING_URL` |
-| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `RESEND_API_KEY`, `LANDING_URL`, `API_URL`, `PORT`, `NEWSLETTER_ADMIN_SECRET` |
+| **Railway (Server)** | `NODE_ENV`, `MONGODB_URI`, `LANDING_URL`, `API_URL`, `PORT`, `NEWSLETTER_ADMIN_SECRET` |
+| **Railway (Server, prod only)** | `RESEND_API_KEY` |
+| **Railway (Server, prod only, optional)** | `DKIM_DOMAIN`, `DKIM_KEY_SELECTOR`, `DKIM_PRIVATE_KEY` |
+| **Dev only** | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAILPIT_HTTP_PORT` (optional) |
 
 > NOTE: Each project owns their own `config.js` which is their own processor for envs.
 >
+> `RESEND_API_KEY` is required in production (Railway injects it; `server/src/config.js` throws at boot if it's missing). The dev branch reads the `SMTP_*` vars instead — Mailpit on `localhost:1025` by default, so `SMTP_USER=''` / `SMTP_PASS=''` is the expected value for the unauthenticated local catcher.
+>
 > Three optional `DKIM_*` vars (`DKIM_DOMAIN`, `DKIM_KEY_SELECTOR`, `DKIM_PRIVATE_KEY`) live in `.env.example` for future use — when set, the same private key is uploaded to the Resend dashboard to enable the "Signed by: robust.computer" lock. Until then, Resend signs with `resend.dev`.
+>
+> `MAILPIT_HTTP_PORT` defaults to `8025` in `scripts/mailpit.js` and `scripts/smoke-server.mjs`; `SMTP_PORT` defaults to `1025`. Override either in `.env.dev` when running Mailpit on a non-default port.

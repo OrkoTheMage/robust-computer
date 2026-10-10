@@ -5,14 +5,24 @@ import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
 import { useLocale } from '../context/LocaleContext'
+import { substituteBrand } from '../utils/substituteBrand'
 
 /**
  * Terms of Service
  *
- * Placeholder copy. Replace each section with text reviewed by a
- * lawyer before launch. Bracketed `[...]` markers flag the spots
- * that need real values (jurisdiction, governing law, etc.)
- * instead of plausible defaults.
+ * Placeholder copy. Replace each section with text reviewed
+ * by a lawyer before launch. The page body comes from the
+ * i18n dictionaries (`termsBody`); the chrome (title, lead,
+ * section titles) comes from the same `useLocale()` call.
+ * Brand name and inbox are read from `data/brand.js` and
+ * substituted at render time, so a brand reskin is a
+ * one-file edit.
+ *
+ * Bracketed `[...]` markers that aren't `[BRAND_NAME]` or
+ * `[BRAND_EMAIL]` flag the spots that still need real
+ * values (jurisdiction, governing law, etc.) instead of
+ * plausible defaults. Do not invent those here — the user
+ * still has to fill them in.
  */
 
 const Page = styled.main`
@@ -69,93 +79,51 @@ const Meta = styled.p`
 `
 
 const Terms = () => {
-  const { termsSections, termsPage } = useLocale()
+  const { termsBody, termsSections, termsPage } = useLocale()
   return (
-  <Page>
-    <SEO
-      title={termsPage.seoTitle}
-      description={termsPage.seoDescription}
-      path="/terms"
-    />
-    <Navbar />
-    <PageHeader
-      title={termsPage.title}
-      lead={termsPage.lead}
-      imageVariant="bannerAlt"
-    />
-    <Body>
-      <Meta>Effective [date to be set on launch]</Meta>
+    <Page>
+      <SEO
+        title={termsPage.seoTitle}
+        description={termsPage.seoDescription}
+        path="/terms"
+      />
+      <Navbar />
+      <PageHeader
+        title={termsPage.title}
+        lead={termsPage.lead}
+        imageVariant="bannerAlt"
+      />
+      <Body>
+        <Meta>{substituteBrand(termsBody.effective)}</Meta>
 
-      <p>
-        These Terms of Service ("Terms") govern your use of the
-        [Robust Computer] website and any services we agree to
-        provide you under a separate written agreement. By using the
-        site or contacting us through the enquiry form, you agree to
-        these Terms.
-      </p>
+        <p>{substituteBrand(termsBody.intro)}</p>
 
-      <h2>Using this site</h2>
-      <p>
-        You agree to use the site for lawful purposes only. You must
-        not attempt to disrupt the site, probe it for vulnerabilities,
-        or scrape it without our written permission.
-      </p>
+        <h2>{termsBody.usingHeading}</h2>
+        <p>{termsBody.usingBody}</p>
 
-      <h2>{termsSections[0]}</h2>
-      <p>
-        The design, copy, illustrations, code and other content on
-        this site are owned by [Robust Computer] or our licensors and
-        are protected by copyright and other applicable laws. You may
-        view and link to the site for personal or internal business
-        reference. You may not reproduce, redistribute, or create
-        derivative works without our written permission.
-      </p>
+        <h2>{termsSections[0]}</h2>
+        <p>{substituteBrand(termsBody.ipBody)}</p>
 
-      <h2>{termsSections[1]}</h2>
-      <p>
-        Any project we agree to do for you is governed by a separate
-        written agreement (a proposal, statement of work, or master
-        services agreement) that supersedes these Terms where they
-        conflict.
-      </p>
+        <h2>{termsSections[1]}</h2>
+        <p>{termsBody.workBody}</p>
 
-      <h2>Disclaimers</h2>
-      <p>
-        The site and its content are provided "as is" without
-        warranties of any kind, express or implied. We do not warrant
-        that the site will be uninterrupted, error-free, or free of
-        harmful components.
-      </p>
+        <h2>{termsBody.disclaimersHeading}</h2>
+        <p>{termsBody.disclaimersBody}</p>
 
-      <h2>{termsSections[2]}</h2>
-      <p>
-        To the maximum extent permitted by law, [Robust Computer] is
-        not liable for any indirect, incidental, special, or
-        consequential damages arising from your use of the site.
-      </p>
+        <h2>{termsSections[2]}</h2>
+        <p>{substituteBrand(termsBody.liabilityBody)}</p>
 
-      <h2>Governing law</h2>
-      <p>
-        These Terms are governed by the laws of [jurisdiction — e.g.
-        "the State of California, United States" or "England and
-        Wales"], without regard to its conflict-of-laws provisions.
-      </p>
+        <h2>{termsBody.governingHeading}</h2>
+        <p>{substituteBrand(termsBody.governingBody)}</p>
 
-      <h2>{termsSections[3]}</h2>
-      <p>
-        If we make material changes, we will post the updated Terms
-        on this page with a new effective date. Continued use of the
-        site after the effective date constitutes acceptance.
-      </p>
+        <h2>{termsSections[3]}</h2>
+        <p>{termsBody.changesOutro}</p>
 
-      <h2>Contact</h2>
-      <p>
-        Questions about these Terms can be sent to
-        [hello@robust.computer].
-      </p>
-    </Body>
-    <Footer />
-  </Page>
+        <h2>{termsBody.contactHeading}</h2>
+        <p>{substituteBrand(termsBody.contactBody)}</p>
+      </Body>
+      <Footer />
+    </Page>
   )
 }
 

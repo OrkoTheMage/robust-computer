@@ -1,17 +1,9 @@
 import styled from '@emotion/styled'
 import { Fragment } from 'react'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import python from 'highlight.js/lib/languages/python'
-import css from 'highlight.js/lib/languages/css'
-import xml from 'highlight.js/lib/languages/xml'
-import markdown from 'highlight.js/lib/languages/markdown'
-import plaintext from 'highlight.js/lib/languages/plaintext'
 import { colors } from '../../styles/colors'
 import { mobile } from '../../styles/breakpoints'
 import { parseMarkdownBlocks } from '../../utils/parseMarkdownBlocks'
+import { Code, Image, Heading, List, Inline } from './PostBody/blocks'
 import '../../styles/highlight.css'
 
 /**
@@ -28,33 +20,23 @@ import '../../styles/highlight.css'
  * The body component lives at `sections/PostBody.jsx`
  * because it's a section-level shell — owned by the page,
  * renders the post body inside the page chrome.
+ *
+ * Per the §3 page/section rule, this file contains only:
+ *   - imports
+ *   - page-specific styled components (the shells that
+ *     nothing else uses — the visual treatment of the
+ *     post body)
+ *   - the default export with the dispatch + clean JSX
+ *
+ * The helper (inline markdown) and the language registration
+ * live in `utils/inlineMarkdown.js` and
+ * `utils/highlightCode.js`; the non-styled block components
+ * (`Inline`, `Code`, `Image`, `Heading`, `List`) live in
+ * `PostBody/blocks.jsx`. The field-notes feed pipeline
+ * (RSS, plain-text) reuses the same `utils/` helpers, so
+ * the in-page render and the feeds produce the same
+ * markup.
  */
-
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('js', javascript)
-hljs.registerLanguage('jsx', javascript)
-hljs.registerLanguage('python', python)
-hljs.registerLanguage('py', python)
-hljs.registerLanguage('css', css)
-hljs.registerLanguage('html', xml)
-hljs.registerLanguage('xml', xml)
-hljs.registerLanguage('markdown', markdown)
-hljs.registerLanguage('md', markdown)
-hljs.registerLanguage('plaintext', plaintext)
-hljs.registerLanguage('text', plaintext)
-hljs.registerLanguage('txt', plaintext)
-
-const inlineMarkdown = (text) => {
-  const html = marked.parseInline(text).replace(
-    /<a /g,
-    '<a target="_blank" rel="noopener noreferrer" '
-  )
-  return DOMPurify.sanitize(html)
-}
-
-const Inline = ({ text }) => (
-  <span dangerouslySetInnerHTML={{ __html: inlineMarkdown(text) }} />
-)
 
 const Lede = styled.p`
   font-family: var(--body);
@@ -211,25 +193,6 @@ const CodeBody = styled.pre`
   }
 `
 
-const Code = ({ block }) => {
-  const requested = block.lang || 'plaintext'
-  const language = hljs.getLanguage(requested) ? requested : 'plaintext'
-  let highlighted = block.content
-  try {
-    highlighted = hljs.highlight(block.content, { language }).value
-  } catch {
-    highlighted = block.content
-  }
-  return (
-    <CodeBlock>
-      <CodeHeader>{requested}</CodeHeader>
-      <CodeBody>
-        <code dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlighted) }} />
-      </CodeBody>
-    </CodeBlock>
-  )
-}
-
 const Figure = styled.figure`
   margin: 0 0 24px;
   border: 3px solid ${colors.ink};
@@ -255,13 +218,6 @@ const Figure = styled.figure`
     text-align: center;
   }
 `
-
-const Image = ({ block }) => (
-  <Figure>
-    <img src={block.src} alt={block.alt} loading="lazy" />
-    {block.alt && <figcaption>{block.alt}</figcaption>}
-  </Figure>
-)
 
 const H1Section = styled.h1`
   font-family: var(--display);
@@ -362,13 +318,6 @@ const H4 = styled.h4`
   }
 `
 
-const Heading = ({ block }) => {
-  if (block.level === 1) return <H1Section><Inline text={block.content} /></H1Section>
-  if (block.level === 2) return <H2><Inline text={block.content} /></H2>
-  if (block.level === 3) return <H3><Inline text={block.content} /></H3>
-  return <H4><Inline text={block.content} /></H4>
-}
-
 const UlSection = styled.ul`
   margin: 0 0 20px;
   padding: 0 0 0 8px;
@@ -461,13 +410,6 @@ const OlSection = styled.ol`
   }
 `
 
-const List = ({ block }) => {
-  const items = block.items.map((content, j) => (
-    <li key={j}><Inline text={content} /></li>
-  ))
-  return block.ordered ? <OlSection>{items}</OlSection> : <UlSection>{items}</UlSection>
-}
-
 const PostBody = ({ raw }) => {
   const blocks = parseMarkdownBlocks(raw)
   if (blocks.length === 0) return null
@@ -478,18 +420,20 @@ const PostBody = ({ raw }) => {
     <>
       {lede && <Lede><Inline text={lede.content} /></Lede>}
       {bodyBlocks.map((block, i) => {
-        if (block.type === 'code') return <Fragment key={i}><Code block={block} /></Fragment>
+        if (block.type === 'code') {
+          return <Fragment key={i}><Code block={block} CodeBlock={CodeBlock} CodeHeader={CodeHeader} CodeBody={CodeBody} /></Fragment>
+        }
         if (block.type === 'quote') {
           return <QuoteSection key={i}><Inline text={block.content} /></QuoteSection>
         }
         if (block.type === 'image') {
-          return <Fragment key={i}><Image block={block} /></Fragment>
+          return <Fragment key={i}><Image block={block} Figure={Figure} /></Fragment>
         }
         if (block.type === 'heading') {
-          return <Fragment key={i}><Heading block={block} /></Fragment>
+          return <Fragment key={i}><Heading block={block} H1Section={H1Section} H2={H2} H3={H3} H4={H4} /></Fragment>
         }
         if (block.type === 'list') {
-          return <Fragment key={i}><List block={block} /></Fragment>
+          return <Fragment key={i}><List block={block} UlSection={UlSection} OlSection={OlSection} /></Fragment>
         }
         return <TextSection key={i}><Inline text={block.content} /></TextSection>
       })}

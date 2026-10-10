@@ -6,7 +6,7 @@ import Developer from '../components/sections/Developer'
 import CTABand from '../components/sections/CTABand'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
-import { developerPreviews } from '../components/sections/developerPreviews'
+import { developerPreviews } from '../data/developerPreviews.jsx'
 import { useLocale } from '../context/LocaleContext'
 
 /**

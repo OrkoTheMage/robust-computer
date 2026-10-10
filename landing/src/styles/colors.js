@@ -1,11 +1,25 @@
 /**
  * landing/src/styles/colors.js
  *
- * Single source of truth for every color in the brand. CSS does
- * as little as possible — it only handles @font-face, body/html
- * defaults, and global page behavior. Every component reads
- * colors from here via `${colors.name}` in its styled-component
- * template, so a brand reskin is a single-file edit.
+ * Single source of truth for every color in the brand. The
+ * `colors` object below is the canonical token table; every
+ * styled component reads colors from here via `${colors.name}`
+ * in its template literal.
+ *
+ * The CSS layer (`landing/src/styles/index.css` and
+ * `server/src/utils/email/layout.js`) mirrors a small subset
+ * of these tokens as CSS variables / inline-hex strings,
+ * respectively — neither layer can `import` this file, so
+ * the same hex values are duplicated there on purpose. When
+ * editing a token, update the matching CSS variable /
+ * email-palette entry at the same time. The two surfaces
+ * are kept in lockstep manually:
+ *
+ *   - `index.css` `:root` (read by body / page defaults and
+ *      the global focus outline)
+ *   - `server/src/utils/email/layout.js` `COLOR` (read by
+ *      the email templates; the server deploy is rooted at
+ *      `server/` and cannot import from `landing/`)
  *
  * Hex values are the brand samples (paper, gold, ink, tie from
  * the original badge — see WebsiteMockups.html). Lowercase hex
@@ -42,6 +56,7 @@ export const colors = Object.freeze({
   // Syntax colors that have to read on `tie`. Not brand surfaces.
   highlightString: '#a8d5a8',
   highlightNumber: '#e8c170',
+  highlightComment: '#7a7260',
 
   error: '#b00020',
 })

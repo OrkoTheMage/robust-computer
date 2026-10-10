@@ -160,8 +160,6 @@ export const getPostBySlug = (slug) => {
 export const getAllPosts = () =>
   sortByPubDateDesc(feed).map((post) => ({ ...post, to: toFor(post.slug) }))
 
-export const getChannelDescription = () => CHANNEL_DESCRIPTION
-
 // ── RSS builder ───────────────────────────────────────────────────────────
 
 const siteUrl = (path = '') => `https://${BRAND_DOMAIN}${path}`

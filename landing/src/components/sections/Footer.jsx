@@ -29,7 +29,6 @@ import { XBrand } from '../ui'
 import { useHomeLinkClick } from '../../hooks/useHomeLinkClick'
 import { useLocale } from '../../context/LocaleContext'
 
-// Map icon-name strings from the data file to Lucide components.
 const ICON_MAP = { Home, Users, Send, Github, Linkedin, Facebook, Instagram, X: XBrand, Mail, Newspaper }
 
 const Foot = styled.footer`

@@ -113,24 +113,28 @@ import {
  *   from `data/brand.js` (BRAND_NAME, BRAND_DOMAIN,
  *   BRAND_LOGO_URL, BRAND_SOCIAL) so the JSON-LD is the same
  *   single source of truth as every other brand surface.
+ *   The og:title / twitter:title `BASE` prefix is also read
+ *   from `data/brand.js` (BRAND_NAME) so the title bar and
+ *   the JSON-LD always agree on the brand name.
  */
 
-// `BASE` is the brand name. "Robust Computer" is untranslated
-// across every locale (see i18n/index.js "Untranslated by
-// design") so the title prefix is the same English string in
-// every locale. The full document title shown when no `title`
-// prop is passed (i.e. on the home page) is read from the
-// active locale's i18n dict (`homePage.seoTitle`); the
-// English-only value is also the static fallback in
-// `landing/index.html` <title> (which has no access to the
-// React context).
+// `BASE` is the brand name. Read from `data/brand.js`
+// (BRAND_NAME) so a brand reskin is a one-file edit. The
+// brand name is untranslated across every locale (see
+// i18n/index.js "Untranslated by design") so the title
+// prefix is the same English string in every locale. The
+// full document title shown when no `title` prop is passed
+// (i.e. on the home page) is read from the active locale's
+// i18n dict (`homePage.seoTitle`); the English-only value
+// is also the static fallback in `landing/index.html` <title>
+// (which has no access to the React context).
 //
 // The 0-for-O rule (see `utils/zer0.js`) is applied to the
 // tagline half in each locale — the home title is rendered
 // uppercase in the browser tab, so a visitor who recognises
 // the headline from the hero sees the same brand styling
 // there. Other pages keep the un-zer0'd title prop.
-const BASE = 'Robust Computer'
+const BASE = BRAND_NAME
 // `SEP` (em-dash with spaces) joins the brand to the page
 // name in og:title / twitter:title. The browser tab uses
 // `TAB_SEP` (pipe with spaces) instead — the pipe keeps
@@ -140,17 +144,6 @@ const BASE = 'Robust Computer'
 // og:title" above.
 const SEP = ' — '
 const TAB_SEP = ' | '
-
-// Default description for any page that doesn't pass one.
-// Kept short (~155 chars) so it isn't truncated by Twitter
-// or Facebook's preview cards. Same string in every locale
-// for the same reason as BASE: this is the rare fallback
-// path, and the English wording is the most likely to
-// render usefully in a search snippet. Pages that ship
-// translated copy override this with their i18n
-// `seoDescription` field.
-const DEFAULT_DESCRIPTION =
-  'Robust Computer is a small team of developers. We design it, build it, and stay on after launch.'
 
 // Site-wide social card. Two artifacts live at the site
 // root and serve as the general og:image / twitter:image
@@ -214,7 +207,7 @@ const setJsonLd = (id, payload) => {
   el.textContent = JSON.stringify(payload)
 }
 
-const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image = DEFAULT_IMAGE, twitterImage = DEFAULT_TWITTER_IMAGE, type = 'website' }) => {
+const SEO = ({ title, tabTitle, description, path, image = DEFAULT_IMAGE, twitterImage = DEFAULT_TWITTER_IMAGE, type = 'website' }) => {
   // Home page (no title prop) renders the active locale's
   // `homePage.seoTitle` instead of just BASE so the og
   // headline carries the full brand line — the SEO report
@@ -223,8 +216,15 @@ const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image =
   // page's `title` prop with the " — " separator. `fullTitle`
   // powers og:title + twitter:title only; the browser tab
   // is built separately as `browserTabTitle` below.
+  //
+  // The default description is the active locale's
+  // `homePage.seoDescription` so a brand / tagline update
+  // is a one-file edit. Pages that ship translated copy
+  // override it with their own i18n `seoDescription` field
+  // (passed in via the `description` prop).
   const { locale, homePage } = useLocale()
   const fullTitle = title ? `${BASE}${SEP}${title}` : homePage.seoTitle
+  const resolvedDescription = description || homePage.seoDescription
 
   // `browserTabTitle` powers `document.title` only. Two
   // surfaces, two rules:
@@ -278,13 +278,13 @@ const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image =
     if (browserTabTitle !== previousTitle) document.title = browserTabTitle
 
     // Standard meta description
-    setMeta('meta[name="description"]', 'content', description)
+    setMeta('meta[name="description"]', 'content', resolvedDescription)
 
     // Open Graph — driven by `fullTitle`, not the tab form,
     // so the social card stays the descriptive branded
     // line even on pages where the tab diverges.
     setMeta('meta[property="og:title"]', 'content', fullTitle)
-    setMeta('meta[property="og:description"]', 'content', description)
+    setMeta('meta[property="og:description"]', 'content', resolvedDescription)
     setMeta('meta[property="og:image"]', 'content', absoluteImage)
     setMeta('meta[property="og:url"]', 'content', url)
     setMeta('meta[property="og:type"]', 'content', type)
@@ -301,7 +301,7 @@ const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image =
     // separate optional fields for the same reason.
     setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image')
     setMeta('meta[name="twitter:title"]', 'content', fullTitle)
-    setMeta('meta[name="twitter:description"]', 'content', description)
+    setMeta('meta[name="twitter:description"]', 'content', resolvedDescription)
     setMeta('meta[name="twitter:image"]', 'content', absoluteTwitterImage)
 
     // Site tag. Optional per the SEO report ("Tag is missing
@@ -337,7 +337,7 @@ const SEO = ({ title, tabTitle, description = DEFAULT_DESCRIPTION, path, image =
       // the og headline, since the two are no longer the same.
       if (document.title === browserTabTitle) document.title = previousTitle
     }
-  }, [browserTabTitle, fullTitle, description, url, absoluteImage, absoluteTwitterImage, type, tag, locale])
+  }, [browserTabTitle, fullTitle, resolvedDescription, url, absoluteImage, absoluteTwitterImage, type, tag, locale])
 
   return null
 }

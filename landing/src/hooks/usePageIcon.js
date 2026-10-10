@@ -5,10 +5,9 @@ import { getPostBySlug } from '../data/feed'
  * usePageIcon
  *
  * Returns the navbar-icon src for the current route. The mapping
- * lives in one place here (a single `route → variant` map plus a
- * small prefix list for dynamic routes) so the navbar doesn't have
- * to know which icon goes with which page — adding a new "this
- * page gets this icon" rule is a one-line edit.
+ * lives in one place here (a single `route → variant` map) so the
+ * navbar doesn't have to know which icon goes with which page —
+ * adding a new "this page gets this icon" rule is a one-line edit.
  *
  * The navbar icon is the brand mark. It only swaps to a thematic
  * variant on routes that have a meaningful one (about, contact,
@@ -25,13 +24,10 @@ import { getPostBySlug } from '../data/feed'
  *      post share the rss icon. An invalid slug falls through
  *      to the brand default because the NotFound page takes
  *      over (see `pages/Post.jsx`).
- *   3. Other prefix routes (none right now; the prefix list is
- *      reserved for future dynamic routes that don't fit the
- *      exact-match map).
- *   4. Exact match against ROUTE_VARIANT for every defined
+ *   3. Exact match against ROUTE_VARIANT for every defined
  *      route. A `null` variant means "use the default brand
  *      icon" (the home route).
- *   5. Fallback — anything not matched (including the catch-all
+ *   4. Fallback — anything not matched (including the catch-all
  *      `<Route path="*">` NotFound page) returns the default
  *      brand icon.
  */
@@ -47,14 +43,6 @@ const ROUTE_VARIANT = {
   '/terms':       'legal',
   '/unsubscribe': 'unsub',
 }
-
-// Dynamic routes whose icon is shared by every URL underneath
-// the prefix. Currently empty — `/field-notes` is handled
-// inline below because it has an extra requirement (a slug
-// that doesn't resolve to a real post lands on the
-// site-wide NotFound page, which should keep the brand
-// default rather than the rss icon).
-const PREFIX_VARIANT = []
 
 // Variant key → asset src. All assets live under
 // `/public/icons/` and are referenced as absolute paths so the
@@ -97,12 +85,6 @@ export function usePageIcon() {
   if (pathname === '/field-notes' || pathname.startsWith('/field-notes/')) {
     if (params.slug && !getPostBySlug(params.slug)) return DEFAULT_SRC
     return VARIANT_SRC.rss
-  }
-
-  for (const [prefix, variant] of PREFIX_VARIANT) {
-    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
-      return VARIANT_SRC[variant]
-    }
   }
 
   if (Object.prototype.hasOwnProperty.call(ROUTE_VARIANT, pathname)) {

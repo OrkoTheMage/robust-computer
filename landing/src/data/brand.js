@@ -2,12 +2,16 @@
  * Shared brand constants.
  *
  * One source for the name, domain, inbox, timezone, logo, and
- * social profile URLs. The Landing's config, the Server's
- * config, the Field Notes feed, the JSON-LD `Organization`
- * block injected by SEO.jsx, and the build-rss script all
- * read from this module — a profile link or domain change is
- * a one-file edit. No Vite APIs — the RSS build script loads
- * it from raw Node.
+ * social profile URLs. The Landing's config, the Field Notes
+ * feed, the JSON-LD `Organization` block injected by SEO.jsx,
+ * the i18n dictionaries (which read BRAND_LINKS so hrefs
+ * aren't duplicated), and the build-rss script all read from
+ * this module — a profile link or domain change is a
+ * one-file edit. The server deploy is rooted at `server/`
+ * and mirrors a small subset of these constants locally in
+ * `server/src/config.js` because the Railway build can't
+ * import from `landing/`. The two stay in sync manually.
+ * No Vite APIs — the RSS build script loads it from raw Node.
  *
  * `BRAND_SOCIAL` is consumed by SEO.jsx as the JSON-LD
  * `sameAs` list. The same four URLs also appear in
@@ -45,3 +49,24 @@ export const BRAND_SOCIAL = [
   'https://www.facebook.com/people/Robust-Computer/61594902219428/',
   'https://www.linkedin.com/company/robust.computer',
 ]
+
+// Per-platform hrefs keyed by the icon-name strings the
+// i18n dictionaries (and JSON-LD `sameAs`) reference.
+// `email` is the only non-`https` entry — it's the
+// `mailto:` link the navbar / footer render when the user
+// wants to write to the team.
+//
+// i18n dictionaries build their `href` from this map (or
+// read the same string verbatim) so a profile or inbox
+// change is a one-file edit. The map mirrors `BRAND_SOCIAL`
+// but adds `github` (not in `BRAND_SOCIAL` because it
+// points at the org's source code, not a public profile)
+// and `email` (mailto).
+export const BRAND_LINKS = {
+  github:    'https://github.com/robust-computer/web',
+  email:     `mailto:${BRAND_EMAIL}`,
+  linkedin:  'https://www.linkedin.com/company/robust.computer',
+  x:         'https://x.com/Robust_Computer',
+  instagram: 'https://www.instagram.com/robust.computer/',
+  facebook:  'https://www.facebook.com/people/Robust-Computer/61594902219428/',
+}

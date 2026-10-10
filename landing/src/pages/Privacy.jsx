@@ -5,14 +5,24 @@ import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
 import { useLocale } from '../context/LocaleContext'
+import { substituteBrand } from '../utils/substituteBrand'
 
 /**
  * Privacy Policy
  *
- * Placeholder copy. Replace each section with text reviewed by a
- * lawyer before launch. Bracketed `[...]` markers flag the spots
- * that need real values (company name, jurisdiction, retention
- * period, etc.) instead of plausible defaults.
+ * Placeholder copy. Replace each section with text reviewed
+ * by a lawyer before launch. The page body comes from the
+ * i18n dictionaries (`privacyBody`); the chrome (title,
+ * lead, section titles) comes from the same `useLocale()`
+ * call. Brand name and inbox are read from `data/brand.js`
+ * and substituted at render time, so a brand reskin is a
+ * one-file edit.
+ *
+ * Bracketed `[...]` markers that aren't `[BRAND_NAME]` or
+ * `[BRAND_EMAIL]` flag the spots that still need real
+ * values (date, region, retention period, SMTP provider,
+ * etc.) instead of plausible defaults. Do not invent those
+ * here — the user still has to fill them in.
  */
 
 const Page = styled.main`
@@ -69,98 +79,54 @@ const Meta = styled.p`
 `
 
 const Privacy = () => {
-  const { privacySections, privacyPage } = useLocale()
+  const { privacyBody, privacySections, privacyPage } = useLocale()
   return (
-  <Page>
-    <SEO
-      title={privacyPage.seoTitle}
-      description={privacyPage.seoDescription}
-      path="/privacy"
-    />
-    <Navbar />
-    <PageHeader
-      title={privacyPage.title}
-      lead={privacyPage.lead}
-      imageVariant="bannerAlt"
-    />
-    <Body>
-      <Meta>Effective [date to be set on launch]</Meta>
+    <Page>
+      <SEO
+        title={privacyPage.seoTitle}
+        description={privacyPage.seoDescription}
+        path="/privacy"
+      />
+      <Navbar />
+      <PageHeader
+        title={privacyPage.title}
+        lead={privacyPage.lead}
+        imageVariant="bannerAlt"
+      />
+      <Body>
+        <Meta>{substituteBrand(privacyBody.effective)}</Meta>
 
-      <p>
-        This Privacy Policy explains how [Robust Computer] ("we", "us",
-        "our") collects, uses, and shares information about you when
-        you use our website or contact us through the form on the
-        Contact page.
-      </p>
+        <p>{substituteBrand(privacyBody.intro)}</p>
 
-      <h2>What we collect</h2>
-      <p>
-        When you submit the project enquiry form, we collect the
-        information you provide: your name, email address, optional
-        company or project name, what you are building, your rough
-        budget, and your message. We also record the IP address and
-        user agent string from the request, for spam prevention and
-        abuse handling.
-      </p>
+        <h2>{privacyBody.collectHeading}</h2>
+        <p>{privacyBody.collectBody}</p>
 
-      <h2>What we do with it</h2>
-      <p>
-        We use the information you submit to reply to your enquiry
-        and, if it turns into a project, to communicate with you about
-        it. We do not sell or rent your information to third parties.
-      </p>
+        <h2>{privacyBody.useHeading}</h2>
+        <p>{privacyBody.useBody}</p>
 
-      <h2>Where it is stored</h2>
-      <p>
-        Enquiries are stored in a [MongoDB] database operated by us.
-        The server that hosts this database is located in [region —
-        e.g. "the United States" or "the EU"]. Email notifications
-        about new enquiries are sent through [your SMTP provider —
-        e.g. Mailgun, Postmark, AWS SES].
-      </p>
+        <h2>{privacyBody.whereHeading}</h2>
+        <p>{substituteBrand(privacyBody.whereBody)}</p>
 
-      <h2>How long we keep it</h2>
-      <p>
-        We retain enquiry records for [retention period — e.g. "two
-        years from the date of submission"] so we can refer back to
-        them if you start a project later. You can ask us to delete
-        your record at any time.
-      </p>
+        <h2>{privacyBody.retentionHeading}</h2>
+        <p>{substituteBrand(privacyBody.retentionBody)}</p>
 
-      <h2>{privacySections[0]}</h2>
-      <p>
-        We do not currently set any tracking cookies or use
-        third-party analytics on this site. If this changes, we will
-        update this policy and ask for your consent where required.
-      </p>
+        <h2>{privacySections[0]}</h2>
+        <p>{privacyBody.cookiesBody}</p>
 
-      <h2>Your rights</h2>
-      <p>
-        Depending on where you live, you may have the right to:
-      </p>
-      <ul>
-        <li>Request a copy of the personal data we hold about you</li>
-        <li>Ask us to correct inaccurate data</li>
-        <li>Ask us to delete your data</li>
-        <li>
-          Object to or restrict certain processing (e.g. for
-          EU/UK residents under GDPR)
-        </li>
-      </ul>
-      <p>
-        To exercise any of these rights, email us at
-        [hello@robust.computer] and we will respond within
-        [30 days / the period required by your jurisdiction].
-      </p>
+        <h2>{privacyBody.rightsHeading}</h2>
+        <p>{privacyBody.rightsBody}</p>
+        <ul>
+          {privacyBody.rightsList.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <p>{substituteBrand(privacyBody.rightsOutro)}</p>
 
-      <h2>{privacySections[1]}</h2>
-      <p>
-        If we make material changes, we will post the updated policy
-        on this page with a new effective date.
-      </p>
-    </Body>
-    <Footer />
-  </Page>
+        <h2>{privacySections[1]}</h2>
+        <p>{privacyBody.changesOutro}</p>
+      </Body>
+      <Footer />
+    </Page>
   )
 }
 

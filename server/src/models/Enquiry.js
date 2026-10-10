@@ -32,7 +32,6 @@ const EnquirySchema = new mongoose.Schema(
     },
     message: { type: String, required: true, trim: true, maxlength: 5000 },
 
-    // bookkeeping
     ip: { type: String, default: '' },
     userAgent: { type: String, default: '' },
   },

@@ -83,7 +83,6 @@ const Modal = ({ open, onClose, ariaLabel, hideCloseButton, children }) => {
   const cardRef = useRef(null)
   const closeBtnRef = useRef(null)
 
-  // Escape key + body scroll lock
   useEffect(() => {
     if (!open) return
     const handleKey = (e) => {

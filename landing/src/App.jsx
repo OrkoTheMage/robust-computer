@@ -9,19 +9,31 @@ import Unsubscribe from './pages/Unsubscribe'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import NotFound from './pages/NotFound'
-import ScrollToTop from './components/ScrollToTop'
+import { useScrollToTop } from './hooks/useScrollToTop'
 
 /**
  * App
  *
  * Top-level router. Spoke routes plus a catch-all 404.
  * BrowserRouter is provided in `main.jsx`.
+ *
+ * `<ScrollToTopHost />` mounts `useScrollToTop` so the
+ * scroll-to-top effect runs once for the app lifetime. The
+ * hook lives in `hooks/` per the §4 layer rule; the host
+ * component is a thin caller so the same hook can be
+ * mounted here without smuggling a render-null component
+ * into `components/`.
  */
+
+const ScrollToTopHost = () => {
+  useScrollToTop()
+  return null
+}
 
 export default function App() {
   return (
     <>
-      <ScrollToTop />
+      <ScrollToTopHost />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
