@@ -1,71 +1,123 @@
 /*
  * landing/src/styles/highlight.css
  *
- * highlight.js theme for code blocks on the tie surface.
- * Hex lives on :root in index.css (CSS cannot import colors.js).
- * Those variables must stay in sync with colors.js.
+ * highlight.js theme for code blocks on the tie surface. The hex
+ * values live on :root in index.css (CSS cannot import colors.js);
+ * the two surfaces must stay in sync with colors.js.
+ *
+ * The schema follows a "what is this token, semantically" map,
+ * not a 1:1 mirror of highlight.js's class names — see the inline
+ * comments for the role each group plays.
  */
 
 .hljs {
   display: block;
   overflow-x: auto;
   background: transparent;
-  color: var(--paper);
+  /* Same color as punctuation, so unclassified text (the base
+     text) shares the structural color and structure fades into
+     the background — see the schema note for #d4d4d4. */
+  color: var(--hl-punct);
   font-family: var(--mono);
 }
 
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
+/* ----- Punctuation, brackets, operators, function parameters ----- */
+/* Same as the base text — structure fades into the background.
+   `hljs-code` (inline code spans inside a fenced block, e.g.
+   backticks in a markdown sample) inherits the same role so the
+   inline span reads as base text without a colour jump. */
+.hljs-punctuation,
+.hljs-operator,
+.hljs-params,
+.hljs-code {
+  color: var(--hl-punct);
+}
+
+/* ----- Functions, classes, types, namespaces, imports ----- */
+/* The brightest accent — goes on the names you navigate by. */
+.hljs-function,
+.hljs-title,
+.hljs-title.function_,
+.hljs-title.class_,
+.hljs-class,
+.hljs-type,
 .hljs-built_in,
 .hljs-builtin-name,
+.hljs-namespace,
+.hljs-meta,
+.hljs-meta-string,
+.hljs-doctag {
+  color: var(--hl-name);
+}
+
+/* ----- Variables, properties, JSON keys, HTML tags, Markdown headings ----- */
+/* A cool counterpart to the yellow, so data reads differently
+   from callable names. CSS selectors and template-substitution
+   slots fit here too — they're tag/structure-shaped. */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property,
 .hljs-tag,
-.hljs-name {
-  color: var(--gold);
+.hljs-name,
+.hljs-attr,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-section,
+.hljs-subst,
+.hljs-formula,
+.hljs-selector-tag,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-bullet {
+  color: var(--hl-var);
+}
+
+/* ----- Keywords, control flow, const/class, new/instanceof ----- */
+/* The language's grammar as a steady backbone. */
+.hljs-keyword {
+  color: var(--hl-keyword);
+}
+
+/* ----- Numbers, constants, CSS values, bold ----- */
+/* Warm color for fixed values, complementing the blue. */
+.hljs-number,
+.hljs-literal,
+.hljs-regexp,
+.hljs-strong {
+  color: var(--hl-value);
   font-weight: 700;
 }
 
+/* ----- Strings, inserted diff lines ----- */
+/* The usual "quoted text" signal. */
 .hljs-string,
 .hljs-attr-value,
-.hljs-symbol,
-.hljs-bullet,
+.hljs-link,
 .hljs-addition {
   color: var(--hl-string);
 }
 
+/* ----- Comments, block quotes ----- */
+/* Pushed back but still readable (6.3:1 on tie). Deletion lines
+   share the same "backed-off" treatment. */
 .hljs-comment,
 .hljs-quote,
-.hljs-deletion,
-.hljs-meta {
+.hljs-deletion {
   color: var(--hl-comment);
   font-style: italic;
 }
 
-.hljs-number,
-.hljs-regexp,
-.hljs-link {
-  color: var(--hl-number);
+/* ----- Invalid / broken / deprecated ----- */
+/* The loudest value, so problems stand out. */
+.hljs-invalid {
+  color: var(--hl-invalid);
 }
 
-.hljs-function,
-.hljs-title,
-.hljs-class .hljs-title,
-.hljs-attr {
-  color: var(--gold);
-}
-
-.hljs-variable,
-.hljs-template-variable,
-.hljs-type,
-.hljs-params,
-.hljs-attribute {
-  color: var(--paper);
-}
-
+/* ----- Emphasis ----- */
+/* Italic on the base text — no color shift, keeps the focus on
+   the underlying token's role. */
 .hljs-emphasis {
   font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: 700;
 }

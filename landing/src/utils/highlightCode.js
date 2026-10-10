@@ -4,6 +4,9 @@ import python from 'highlight.js/lib/languages/python'
 import css from 'highlight.js/lib/languages/css'
 import xml from 'highlight.js/lib/languages/xml'
 import markdown from 'highlight.js/lib/languages/markdown'
+import bash from 'highlight.js/lib/languages/bash'
+import json from 'highlight.js/lib/languages/json'
+import diff from 'highlight.js/lib/languages/diff'
 import plaintext from 'highlight.js/lib/languages/plaintext'
 
 /**
@@ -43,6 +46,11 @@ const registerLanguages = () => {
   hljs.registerLanguage('xml', xml)
   hljs.registerLanguage('markdown', markdown)
   hljs.registerLanguage('md', markdown)
+  hljs.registerLanguage('bash', bash)
+  hljs.registerLanguage('sh', bash)
+  hljs.registerLanguage('shell', bash)
+  hljs.registerLanguage('json', json)
+  hljs.registerLanguage('diff', diff)
   hljs.registerLanguage('plaintext', plaintext)
   hljs.registerLanguage('text', plaintext)
   hljs.registerLanguage('txt', plaintext)

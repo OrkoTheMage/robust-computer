@@ -91,9 +91,15 @@
   --tie: #14120e;
   --gold: #d0c096;
   --gold-deep: #a8935a;
-  --hl-string: #a8d5a8;
-  --hl-number: #e8c170;
-  --hl-comment: #7a7260;
+  --hl-punct: #d4d4d4;
+  --hl-name: #fff4a3;
+  --hl-var: #b3e5fc;
+  --hl-keyword: #5aa1e8;
+  --hl-value: #ffb085;
+  --hl-string: #5ebd3e;
+  --hl-comment: #a3a3a3;
+  --hl-invalid: #ffffff;
+  --hl-error: #f44747;
   /* Content stays inside --page. Outer band wrappers are capped
      at --max (3500px) so they don't stretch past ultra-wide
      displays; gutters default to paper. */
