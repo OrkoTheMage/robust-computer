@@ -54,9 +54,18 @@ export const colors = Object.freeze({
   scrimSoft: 'rgba(0, 0, 0, 0.45)',
 
   // Syntax colors that have to read on `tie`. Not brand surfaces.
-  highlightString: '#a8d5a8',
-  highlightNumber: '#e8c170',
-  highlightComment: '#7a7260',
+  // Paired with the highlight.js classes in `styles/highlight.css`;
+  // the matching CSS variables live on `:root` in `index.css` (CSS
+  // cannot import this file) and must be kept in sync.
+  highlightPunct: '#d4d4d4',     // punctuation, brackets, operators, function params (and base text)
+  highlightName: '#fff4a3',      // functions, classes, types, namespaces, imports
+  highlightVar: '#b3e5fc',       // variables, properties, JSON keys, HTML tags, Markdown headings
+  highlightKeyword: '#5aa1e8',   // keywords, control flow, const/class, new/instanceof
+  highlightValue: '#ffb085',     // numbers, constants, attribute values, CSS values, bold
+  highlightString: '#5ebd3e',    // strings, inserted diff lines
+  highlightComment: '#a3a3a3',   // comments, block quotes (italic, 6.3:1 on tie)
+  highlightInvalid: '#ffffff',   // invalid, broken or deprecated code
+  highlightError: '#f44747',     // hard errors (rarely used)
 
   error: '#b00020',
 })

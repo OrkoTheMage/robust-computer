@@ -58,7 +58,7 @@ const Lede = styled.p`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.9em;
     box-shadow: inset 0 -1px 0 ${colors.ink};
@@ -92,7 +92,7 @@ const TextSection = styled.div`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.9em;
   }
@@ -136,7 +136,7 @@ const QuoteSection = styled.div`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.9em;
   }
@@ -241,7 +241,7 @@ const H1Section = styled.h1`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.85em;
   }
@@ -267,7 +267,7 @@ const H2 = styled.h2`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.85em;
   }
@@ -289,7 +289,7 @@ const H3 = styled.h3`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 2px 6px;
     font-size: 0.85em;
   }
@@ -312,7 +312,7 @@ const H4 = styled.h4`
   code {
     font-family: var(--mono);
     background: ${colors.tie};
-    color: ${colors.paper};
+    color: var(--hl-punct);
     padding: 1px 5px;
     font-size: 0.9em;
   }
@@ -351,7 +351,7 @@ const UlSection = styled.ul`
     code {
       font-family: var(--mono);
       background: ${colors.tie};
-      color: ${colors.paper};
+      color: var(--hl-punct);
       padding: 2px 6px;
       font-size: 0.9em;
     }
@@ -399,7 +399,7 @@ const OlSection = styled.ol`
     code {
       font-family: var(--mono);
       background: ${colors.tie};
-      color: ${colors.paper};
+      color: var(--hl-punct);
       padding: 2px 6px;
       font-size: 0.9em;
     }
