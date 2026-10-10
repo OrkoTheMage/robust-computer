@@ -48,7 +48,6 @@ import { useLocale } from '../../context/LocaleContext'
 import IconLink from './IconLink'
 import LanguageButton from './LanguageButton'
 
-// Map icon-name strings from the data file to Lucide components.
 const ICON_MAP = { Github, Linkedin, Facebook, Instagram, X: XBrand, Rss, Mail, Home, Users, Send, Newspaper }
 
 const Sticky = styled.div`

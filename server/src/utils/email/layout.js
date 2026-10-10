@@ -73,7 +73,7 @@ const plexMono700B64 = readFileSync(
 
 const EMAIL_AVATAR_URL = `${config.landingUrl}/favico/android-chrome-192x192.png`
 
-// ── Brand tokens (mirrored from landing/src/index.css) ──────────────────────
+// ── Brand tokens (mirrored from landing/src/styles/colors.js) ──────────────────────
 const COLOR = {
   paper: '#e2dbc8',
   ticket: '#f1ecdd',

@@ -167,8 +167,8 @@ const ArtImg = styled(Logo)`
 
 // Ticket comes up from below the art and settles into its
 // tilted position. The `ticketIn` keyframes live in
-// `src/animations.js` so other surfaces (a future modal opener,
-// a CTA, etc.) can reuse the same entrance.
+// `src/styles/animations.js` so other surfaces (a future
+// modal opener, a CTA, etc.) can reuse the same entrance.
 //
 // 0.3s delay lets the hero settle first; the
 // `cubic-bezier(0.22, 1, 0.36, 1)` is the same ease the rest of

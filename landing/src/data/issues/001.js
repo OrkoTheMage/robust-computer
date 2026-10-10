@@ -1,3 +1,29 @@
+/**
+ * issues/001.js
+ *
+ * One Field Notes post. Exported as `issue001` (the binding
+ * name matches the filename, the natural read for a
+ * magazine-style numbered publication). The shape is the
+ * per-post record documented in `data/feed.js`:
+ *
+ *   {
+ *     slug, title, issuePrefix, pubDate, description,
+ *     body (markdown), author, ogImage, twitterImage
+ *   }
+ *
+ * Adding IssueNNN is a two-step change:
+ *   1. drop a new `issueNNN.js` next to this one, exporting
+ *      `issueNNN` with the same shape;
+ *   2. add the import + an entry in the `feed` array in
+ *      `data/feed.js`.
+ *
+ * The body is plain markdown. The on-page render path
+ * (`sections/PostBody.jsx`) and the RSS / plain-text
+ * pipeline (`scripts/build-rss.mjs`) both consume the same
+ * `body` field, so the in-page and feed readers produce
+ * the same content from the same source.
+ */
+
 export const issue001 = {
   slug: 'issue-001',
   title: 'A New Beginning',

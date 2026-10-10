@@ -7,7 +7,7 @@ import { dictionaries, languages, DEFAULT_LOCALE, STORAGE_KEY } from '../i18n'
  * Owns the current locale for the whole app. The provider
  * spreads the current locale's dictionary into the context
  * value, so a page or component reads translated strings with
- * the same shape the old `data/copy.js` import had:
+ * the same shape the old `i18n/en.js` import had:
  *
  *   const { hero, heroChrome } = useLocale()
  *   <Zer0Text>{hero.headline}</Zer0Text>
@@ -50,10 +50,6 @@ import { dictionaries, languages, DEFAULT_LOCALE, STORAGE_KEY } from '../i18n'
  * Consumers
  *   - `useLocale()` — returns the full context value
  *     (`{ locale, setLocale, languages, ...dict }`).
- *   - `useT()` — sugar for `useLocale().dict`; if you only
- *     need to read strings, destructure from `useT()`
- *     directly so the call site reads like the old static
- *     `import { ... } from '../data/copy'` pattern.
  */
 
 const LocaleContext = createContext(null)
@@ -122,24 +118,4 @@ export function useLocale() {
     )
   }
   return ctx
-}
-
-// Sugar: returns just the current dictionary, with the same
-// destructuring shape as the old static import. Useful for
-// read-only sites that don't need setLocale.
-//
-//   const { hero, heroChrome } = useT()
-//
-// Implementation: pull the spread off the context value via
-// useLocale, then strip the meta keys (`locale`, `setLocale`,
-// `languages`) so destructuring only yields dictionary entries.
-const META_KEYS = new Set(['locale', 'setLocale', 'languages'])
-
-export function useT() {
-  const ctx = useLocale()
-  const dict = {}
-  for (const key of Object.keys(ctx)) {
-    if (!META_KEYS.has(key)) dict[key] = ctx[key]
-  }
-  return dict
 }

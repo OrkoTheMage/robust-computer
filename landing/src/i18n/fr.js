@@ -42,7 +42,7 @@
  *     the same as English / Spanish.
  */
 
-import { FIELD_NOTES_LEAD } from '../data/brand.js'
+import { BRAND_LINKS } from '../data/brand.js'
 
 // ── Brand ────────────────────────────────────────────────────────────────
 export const brand = {
@@ -196,7 +196,7 @@ export const navbarPages = [
 
 export const navbarConnects = [
   {
-    href: 'https://github.com/robust-computer/web',
+    href: BRAND_LINKS.github,
     label: 'GitHub',
     hint: 'Voir le code',
     external: true,
@@ -204,7 +204,7 @@ export const navbarConnects = [
     mainBar: true,
   },
   {
-    href: 'mailto:hello@robust.computer',
+    href: BRAND_LINKS.email,
     label: 'E-mail',
     hint: 'Écrivez-nous',
     external: false,
@@ -222,28 +222,28 @@ export const navbarConnects = [
 
 export const navbarSocials = [
   {
-    href: 'https://linkedin.com/company/robust-computer',
+    href: BRAND_LINKS.linkedin,
     label: 'LinkedIn',
     hint: 'Suivre',
     external: true,
     icon: 'Linkedin',
   },
   {
-    href: 'https://x.com/Robust_Computer',
+    href: BRAND_LINKS.x,
     label: 'X',
     hint: 'Suivre',
     external: true,
     icon: 'X',
   },
   {
-    href: 'https://www.instagram.com/robust.computer/',
+    href: BRAND_LINKS.instagram,
     label: 'Instagram',
     hint: 'Suivre',
     external: true,
     icon: 'Instagram',
   },
   {
-    href: 'https://www.facebook.com/profile.php?id=61594902219428',
+    href: BRAND_LINKS.facebook,
     label: 'Facebook',
     hint: 'Suivre',
     external: true,
@@ -289,14 +289,14 @@ export const footerSections = {
     { to: '/field-notes', label: 'Actu', icon: 'Newspaper' },
   ],
   connect: [
-    { href: 'https://github.com/robust-computer/web', label: 'GitHub', icon: 'Github' },
-    { href: 'mailto:hello@robust.computer', label: 'E-mail', icon: 'Mail' },
+    { href: BRAND_LINKS.github, label: 'GitHub', icon: 'Github' },
+    { href: BRAND_LINKS.email, label: 'E-mail', icon: 'Mail' },
   ],
   elsewhere: [
-    { href: 'https://linkedin.com/company/robust-computer', label: 'LinkedIn', icon: 'Linkedin' },
-    { href: 'https://x.com/Robust_Computer', label: 'X', icon: 'X' },
-    { href: 'https://www.instagram.com/robust.computer/', label: 'Instagram', icon: 'Instagram' },
-    { href: 'https://www.facebook.com/profile.php?id=61594902219428', label: 'Facebook', icon: 'Facebook' },
+    { href: BRAND_LINKS.linkedin, label: 'LinkedIn', icon: 'Linkedin' },
+    { href: BRAND_LINKS.x, label: 'X', icon: 'X' },
+    { href: BRAND_LINKS.instagram, label: 'Instagram', icon: 'Instagram' },
+    { href: BRAND_LINKS.facebook, label: 'Facebook', icon: 'Facebook' },
   ],
 }
 
@@ -349,6 +349,36 @@ export const privacySections = [
   'Modifications de cette politique',
 ]
 
+// Privacy policy body. Same shape as `i18n/en.js` — the
+// body stays in English because the placeholder legal
+// text has not been reviewed by a lawyer in any other
+// language. The page substitutes `[BRAND_NAME]` and
+// `[BRAND_EMAIL]` from `data/brand.js` so a brand reskin
+// is a one-file edit.
+export const privacyBody = {
+  effective: 'Effective [date to be set on launch]',
+  intro: 'This Privacy Policy explains how [BRAND_NAME] ("we", "us", "our") collects, uses, and shares information about you when you use our website or contact us through the form on the Contact page.',
+  collectHeading: 'What we collect',
+  collectBody: 'When you submit the project enquiry form, we collect the information you provide: your name, email address, optional company or project name, what you are building, your rough budget, and your message. We also record the IP address and user agent string from the request, for spam prevention and abuse handling.',
+  useHeading: 'What we do with it',
+  useBody: 'We use the information you submit to reply to your enquiry and, if it turns into a project, to communicate with you about it. We do not sell or rent your information to third parties.',
+  whereHeading: 'Where it is stored',
+  whereBody: 'Enquiries are stored in a [MongoDB] database operated by us. The server that hosts this database is located in [region — e.g. "the United States" or "the EU"]. Email notifications about new enquiries are sent through [your SMTP provider — e.g. Mailgun, Postmark, AWS SES].',
+  retentionHeading: 'How long we keep it',
+  retentionBody: 'We retain enquiry records for [retention period — e.g. "two years from the date of submission"] so we can refer back to them if you start a project later. You can ask us to delete your record at any time.',
+  rightsBody: 'Depending on where you live, you may have the right to:',
+  rightsHeading: 'Your rights',
+  rightsList: [
+    'Request a copy of the personal data we hold about you',
+    'Ask us to correct inaccurate data',
+    'Ask us to delete your data',
+    'Object to or restrict certain processing (e.g. for EU/UK residents under GDPR)',
+  ],
+  rightsOutro: 'To exercise any of these rights, email us at [BRAND_EMAIL] and we will respond within [30 days / the period required by your jurisdiction].',
+  cookiesBody: 'We do not currently set any tracking cookies or use third-party analytics on this site. If this changes, we will update this policy and ask for your consent where required.',
+  changesOutro: 'If we make material changes, we will post the updated policy on this page with a new effective date.',
+}
+
 // ── Terms (section titles only) ──
 export const termsSections = [
   'Propriété intellectuelle',
@@ -356,6 +386,27 @@ export const termsSections = [
   'Limitation de responsabilité',
   'Modifications de ces Conditions',
 ]
+
+// Terms of service body. Same shape as `i18n/en.js` — the
+// body stays in English because the placeholder legal
+// text has not been reviewed by a lawyer in any other
+// language.
+export const termsBody = {
+  effective: 'Effective [date to be set on launch]',
+  intro: 'These Terms of Service ("Terms") govern your use of the [BRAND_NAME] website and any services we agree to provide you under a separate written agreement. By using the site or contacting us through the enquiry form, you agree to these Terms.',
+  usingHeading: 'Using this site',
+  usingBody: 'You agree to use the site for lawful purposes only. You must not attempt to disrupt the site, probe it for vulnerabilities, or scrape it without our written permission.',
+  ipBody: 'The design, copy, illustrations, code and other content on this site are owned by [BRAND_NAME] or our licensors and are protected by copyright and other applicable laws. You may view and link to the site for personal or internal business reference. You may not reproduce, redistribute, or create derivative works without our written permission.',
+  workBody: 'Any project we agree to do for you is governed by a separate written agreement (a proposal, statement of work, or master services agreement) that supersedes these Terms where they conflict.',
+  disclaimersHeading: 'Disclaimers',
+  disclaimersBody: 'The site and its content are provided "as is" without warranties of any kind, express or implied. We do not warrant that the site will be uninterrupted, error-free, or free of harmful components.',
+  liabilityBody: 'To the maximum extent permitted by law, [BRAND_NAME] is not liable for any indirect, incidental, special, or consequential damages arising from your use of the site.',
+  governingHeading: 'Governing law',
+  governingBody: 'These Terms are governed by the laws of [jurisdiction — e.g. "the State of California, United States" or "England and Wales"], without regard to its conflict-of-laws provisions.',
+  changesOutro: 'If we make material changes, we will post the updated Terms on this page with a new effective date. Continued use of the site after the effective date constitutes acceptance.',
+  contactHeading: 'Contact',
+  contactBody: 'Questions about these Terms can be sent to [BRAND_EMAIL].',
+}
 
 // ── TopBar ──────────────────────────────────────────────────────────────
 export const topBar = {

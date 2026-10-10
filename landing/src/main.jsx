@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { LocaleProvider } from './context/LocaleContext'
-import ImagePreloader from './components/ImagePreloader'
+import { useImagePreloader } from './hooks/useImagePreloader'
 import './styles/index.css'
 
 /**
@@ -15,11 +15,14 @@ import './styles/index.css'
  * could read the route) but outside App, so the entire page tree
  * reads the same locale.
  *
- * `<ImagePreloader />` is mounted as a sibling of `App` — it
- * doesn't need the locale or any router context, just the
- * DOM, so it sits outside both wrappers. The preloader runs
- * once at startup to warm the browser's image cache with
- * every navbar icon variant; see the component doc for why.
+ * `<ImagePreloaderHost />` is mounted as a sibling of `App` —
+ * it just calls the `useImagePreloader` hook, which only needs
+ * the DOM. The host sits inside the BrowserRouter (so React
+ * doesn't complain about context boundaries) and beside the
+ * LocaleProvider; the preloader doesn't read either context.
+ * The preloader runs once at startup to warm the browser's
+ * image cache with every navbar icon variant; see
+ * `hooks/useImagePreloader.js` for the rationale.
  *
  * `<html lang>` is managed by the provider itself — the initial
  * value in `index.html` matches `DEFAULT_LOCALE` ('en'); the
@@ -28,11 +31,16 @@ import './styles/index.css'
  * correct attribute without each page having to touch it.
  */
 
+const ImagePreloaderHost = () => {
+  useImagePreloader()
+  return null
+}
+
 const root = createRoot(document.getElementById('root'))
 root.render(
   <StrictMode>
     <BrowserRouter>
-      <ImagePreloader />
+      <ImagePreloaderHost />
       <LocaleProvider>
         <App />
       </LocaleProvider>

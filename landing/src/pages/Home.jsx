@@ -13,7 +13,7 @@ import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
-import { formatPubDate } from '../utils/formatPubDate'
+import { formatHeroTicket } from '../utils/formatHeroTicket'
 import { getLatestPost } from '../data/feed'
 import { useLocale } from '../context/LocaleContext'
 
@@ -60,9 +60,7 @@ export default function Home() {
   const chrome = useChromeHeight()
   const latest = getLatestPost()
   const { heroChrome, homePage } = useLocale()
-  const ticketBody = latest
-    ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
-    : heroChrome.emptyTicket
+  const ticketBody = formatHeroTicket(latest, heroChrome.emptyTicket)
 
   return (
     <Page>
