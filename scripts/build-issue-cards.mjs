@@ -118,14 +118,15 @@ const dryRun = hasFlag('dry-run')
 
 // ── load the issue data ─────────────────────────────────────────────────
 // Both modules load cleanly in raw Node — they have no
-// Vite-specific `import.meta.env` reads.
-const { fieldNotes } = await import(
-  pathToFileURL(path.join(repoRoot, 'landing/src/data/fieldNotes.js')).href
+// Vite-specific `import.meta.env` reads. The array is `feed`,
+// one entry per Field Notes issue / post.
+const { feed } = await import(
+  pathToFileURL(path.join(repoRoot, 'landing/src/data/feed.js')).href
 )
 
 const issues = slugFilter
-  ? fieldNotes.filter((n) => n.slug === slugFilter)
-  : fieldNotes
+  ? feed.filter((post) => post.slug === slugFilter)
+  : feed
 
 if (slugFilter && issues.length === 0) {
   console.error(`error: no issue with slug "${slugFilter}"`)
@@ -236,7 +237,7 @@ const stopDevServer = (child) =>
 //
 // The per-post HeaderBox renders a `<div>`, so the
 // `<header>` selector doesn't catch it. Same for
-// `<article>` (the Sheet). The FieldNotes index page also
+// `<article>` (the Sheet). The News archive page also
 // renders a `<nav>` for pagination, but the per-post page
 // doesn't include that block, so the index nav selector
 // is a no-op for the snapshots this script takes.

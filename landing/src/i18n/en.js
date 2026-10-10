@@ -176,15 +176,36 @@ export const industries = [
 //                     Sentence case in the UI; CSS uppercases
 //                     it via `text-transform`.
 //
-// The two `NewsletterBox` call sites share the form
+// The two `IssueSubscribe` call sites share the form
 // (email input + subscribe button + status caption) but
 // differ in framing. Both pairs of strings live here so
 // the two pages stay in sync on the only thing they
 // actually differ on.
-export const fieldNotes = {
+//
+// Naming:
+//   - `feed`           — the data source
+//   - `indexTitle`     — visible H1 on the News archive page
+//                       ("News", code-noun — not "Field Notes")
+//   - `seoDescription` — SEO <meta> description (keeps brand:
+//                       "Field Notes from Robust Computer…")
+//   - `headline`       — home-page band h2 (stays "Field Notes"
+//                       — that's where the brand stays)
+//   - `contactBox.*` / `subscribeBox.*` — copy strings on the
+//     Contact sidebar and the News archive subscribe widget
+//   - `archivesLead`     — concise sub-header for the News page
+//                       ("Field Note archives — updates frequently");
+//                       `lead` is the longer descriptive used by
+//                       the band and the per-post page chrome
+//                       (trailing "no spam, unsubscribe any time"
+//                       reassurance stripped — the per-surface
+//                       CTA lives in the band copy, not the
+//                       page chrome)
+export const feed = {
   headline: 'Field Notes',
-  indexTitle: 'Field Notes',
-  lead: 'Short issues — updates frequently — on building software that lasts. Practical, no spam, unsubscribe any time.',
+  indexTitle: 'News',
+  lead: 'Short issues — updates frequently — on building software that lasts.',
+  archivesLead: 'Field Note archives — updates frequently. Here you can see each issue, sorted, starting with the latest issue.',
+  seoDescription: 'Field Notes from Robust Computer — short issues that ship code. Updates frequently, no spam, unsubscribe any time.',
   contactBox: {
     header: 'Field Notes',
     sub: 'Short issues — updates frequently — on building software that lasts.',
@@ -322,10 +343,10 @@ export const footerSections = {
     { to: '/', label: 'Home', icon: 'Home' },
     { to: '/about', label: 'About', icon: 'Users' },
     { to: '/contact', label: 'Contact', icon: 'Send' },
-    // News goes to the Field Notes index page (not the latest
+    // News goes to the `/field-notes` archive (not the latest
     // individual issue) so the footer matches the main-nav and
     // modal entries. The per-issue deep link still works
-    // through the Hero "Shipped" stamp and the FieldNotes
+    // through the Hero "Shipped" stamp and the Issue/Highlight
     // band's "Latest issue" line.
     { to: '/field-notes', label: 'News', icon: 'Newspaper' },
   ],
@@ -533,7 +554,7 @@ export const termsPage = {
 // buttons. The "go to page N" label is built from a function
 // (called with the page number) so the string can be assembled
 // with the right number in any locale's grammar.
-export const fieldNotesPage = {
+export const newsPage = {
   empty: "No posts yet — subscribe and you'll get the first one.",
   published: 'Published',
   prev: '‹ Prev',
@@ -543,7 +564,7 @@ export const fieldNotesPage = {
   goToPage: (n) => `Go to page ${n}`,
 }
 
-export const fieldNotePage = {
+export const postPage = {
   eyebrow: 'Field Notes',
   back: 'Back to home',
   publishedLabel: 'Published',

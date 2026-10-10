@@ -1,5 +1,5 @@
 import { useLocation, useParams } from 'react-router-dom'
-import { getIssueBySlug } from '../utils/fieldNoteView'
+import { getPostBySlug } from '../data/feed'
 
 /**
  * usePageIcon
@@ -24,7 +24,7 @@ import { getIssueBySlug } from '../utils/fieldNoteView'
  *   2. Field-notes section — the index and every valid slug
  *      post share the rss icon. An invalid slug falls through
  *      to the brand default because the NotFound page takes
- *      over (see `pages/FieldNote.jsx`).
+ *      over (see `pages/Post.jsx`).
  *   3. Other prefix routes (none right now; the prefix list is
  *      reserved for future dynamic routes that don't fit the
  *      exact-match map).
@@ -91,11 +91,11 @@ export function usePageIcon() {
   // Field-notes section. The /field-notes index and every
   // valid slug post share the rss icon. A slug that doesn't
   // resolve to a real post is on the NotFound page rendered
-  // by FieldNote.jsx (which falls through to <NotFound/>
-  // when getBySlug returns null), so the navbar should stay
+  // by Post.jsx (which falls through to <NotFound/> when
+  // getPostBySlug returns null), so the navbar should stay
   // on the brand default — matching the rule for every 404.
   if (pathname === '/field-notes' || pathname.startsWith('/field-notes/')) {
-    if (params.slug && !getIssueBySlug(params.slug)) return DEFAULT_SRC
+    if (params.slug && !getPostBySlug(params.slug)) return DEFAULT_SRC
     return VARIANT_SRC.rss
   }
 

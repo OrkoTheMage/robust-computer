@@ -5,23 +5,25 @@ import { Zer0Text } from '../../brand'
 import { useLocale } from '../../../context/LocaleContext'
 
 /**
- * FieldNotes/NewsletterBox
+ * Issue/Subscribe
  *
- * Small "subscribe to Field Notes" widget. Reused on the
- * Contact page's right sidebar and on the `/field-notes`
- * index page. The form state is owned by `useNewsletterForm`;
+ * Small "subscribe" widget reused on the Contact page's
+ * right sidebar and on the News archive page. Lives at
+ * `sections/Issue/` — the multi-post UI namespace
+ * (paired with `Issue/Highlight.jsx`, the home-page
+ * band). The form state is owned by `useNewsletterForm`;
  * the box just renders the bindings.
  *
  * `header` and `sub` are required — every call site should
- * pass them from the i18n dictionary so the two boxes stay in
- * sync on the only thing they differ on (the framing).
+ * pass them from the i18n dictionary so the two boxes stay
+ * in sync on the only thing they differ on (the framing).
  * The form itself (email input + subscribe button + status
  * caption) is fixed.
  *
  * `bg` and `fg` set the surface + foreground colors so the
  * box can sit on either a gold (Contact) or a paper
- * (/field-notes) surface. Defaults match the Contact page's
- * gold card.
+ * (News archive) surface. Defaults match the Contact
+ * page's gold card.
  */
 
 const Box = styled.div`
@@ -43,7 +45,7 @@ const Box = styled.div`
   }
 `
 
-const FieldNote = styled.small`
+const Label = styled.small`
   display: block;
   margin-top: 12px;
   font-family: var(--mono);
@@ -54,7 +56,7 @@ const FieldNote = styled.small`
   color: ${(p) => p.$fg};
 `
 
-const NewsletterBox = ({
+const IssueSubscribe = ({
   header,
   sub,
   bg = colors.gold,
@@ -92,7 +94,7 @@ const NewsletterBox = ({
       >
         {submitting ? <Zer0Text>{subscribeStatus.sending}</Zer0Text> : <Zer0Text>{subscribeStatus.subscribe}</Zer0Text>}
       </Button>
-      <FieldNote $fg={fg}>
+      <Label $fg={fg}>
         {status === 'success'
           ? <Zer0Text>{subscribeStatus.success}</Zer0Text>
           : status === 'already'
@@ -100,9 +102,9 @@ const NewsletterBox = ({
           : status === 'error'
           ? <Zer0Text>{errorMessage || subscribeStatus.error}</Zer0Text>
           : <Zer0Text>{subscribeStatus.optional}</Zer0Text>}
-      </FieldNote>
+      </Label>
     </Box>
   )
 }
 
-export default NewsletterBox
+export default IssueSubscribe

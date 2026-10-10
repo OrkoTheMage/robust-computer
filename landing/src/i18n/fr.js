@@ -159,10 +159,12 @@ export const industries = [
 ]
 
 // ── Field Notes ──────────────────────────────────────────────────────────
-export const fieldNotes = {
+export const feed = {
   headline: 'Field Notes',
-  indexTitle: 'Field Notes',
-  lead: 'Numéros courts — fréquents — sur la création de logiciels durables. Concrets, sans spam, désabonnement en un clic.',
+  indexTitle: 'News',
+  lead: 'Numéros courts — fréquents — sur la création de logiciels durables.',
+  archivesLead: 'Archives de Field Note — fréquentes. Vous y trouverez chaque numéro, trié, en commençant par le plus récent.',
+  seoDescription: 'Field Notes de Robust Computer — numéros courts qui livrent du code. Fréquents, sans spam, désabonnement en un clic.',
   contactBox: {
     header: 'Field Notes',
     sub: 'Numéros courts — fréquents — sur la création de logiciels durables.',
@@ -465,7 +467,7 @@ export const termsPage = {
   lead: 'Les règles de base pour utiliser ce site et travailler avec nous.',
 }
 
-export const fieldNotesPage = {
+export const newsPage = {
   empty: 'Aucun article pour l\'instant — abonnez-vous et vous recevrez le premier.',
   published: 'Publié',
   prev: '‹ Précédent',
@@ -475,7 +477,7 @@ export const fieldNotesPage = {
   goToPage: (n) => `Aller à la page ${n}`,
 }
 
-export const fieldNotePage = {
+export const postPage = {
   eyebrow: 'Field Notes',
   back: 'Retour à l\'accueil',
   publishedLabel: 'Publié',

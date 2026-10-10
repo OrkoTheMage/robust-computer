@@ -7,21 +7,26 @@ import { Zer0Text } from '../../brand'
 import { useLocale } from '../../../context/LocaleContext'
 
 /**
- * FieldNotes/Band
+ * Issue/Highlight
  *
- * Newsletter band on the home page. Black on the left
- * (headline + one-liner), gold bordered form on the right.
- * The form is owned by a page-level hook — this section
- * just renders the bindings.
+ * Newsletter band on the home page (lives at the
+ * `sections/Issue/` directory — the multi-post UI
+ * namespace; 
+ * Black on  the left (headline + one-liner), gold bordered form
+ * on the right. The form is owned by a page-level hook —
+ * this section just renders the bindings.
  *
  * The small line under the form shows the latest issue
- * title, linked through to the post. The page passes that
- * issue in so this section does not fetch it itself.
+ * title, linked through to the post. The page passes
+ * that post in via the `latest` prop (built from
+ * `getLatestPost()` in `data/feed.js`) so this section
+ * does not fetch it itself.
  *
- * Sibling of `NewsletterBox.jsx` in this same directory —
- * the Band is the large two-column home-page module, the
- * Box is the small reusable subscribe widget used on the
- * Contact sidebar and on the new /field-notes index page.
+ * Sibling of `Issue/Subscribe.jsx` in this same directory
+ * — the Highlight is the large two-column home-page
+ * module, the Subscribe is the small reusable widget
+ * used on the Contact sidebar and on the News index
+ * archive.
  */
 
 const Band = styled.section`
@@ -77,9 +82,6 @@ const Form = styled.form`
     color: ${colors.ink};
   }
 
-  /* The "latest issue" line is a real link through to the post.
-     Keep the text-decoration on always (1px transparent) so the
-     box height doesn't shift on hover. */
   small a {
     color: inherit;
     text-decoration: underline;
@@ -104,18 +106,13 @@ const Row = styled.div`
   }
 `
 
-// Subscribe uses the standard <Button variant="gold">.
-// Earlier this section styled a `styled(Button)` override with the
-// same colors; collapsing it onto the primitive keeps the audit's
-// "no custom overrides" rule honest.
-
-const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessage, latest }) => {
-  const { fieldNotes, subscribeStatus, fields } = useLocale()
+const IssueHighlight = ({ email, onChange, onSubmit, submitting, status, errorMessage, latest }) => {
+  const { feed, subscribeStatus, fields } = useLocale()
   return (
     <Band>
       <div>
-        <h2><Zer0Text>{fieldNotes.headline}</Zer0Text></h2>
-        <p>{fieldNotes.lead}</p>
+        <h2><Zer0Text>{feed.headline}</Zer0Text></h2>
+        <p>{feed.lead}</p>
       </div>
       <Form onSubmit={onSubmit}>
         <div style={{ marginBottom: 0 }}>
@@ -160,4 +157,4 @@ const FieldNotes = ({ email, onChange, onSubmit, submitting, status, errorMessag
   )
 }
 
-export default FieldNotes
+export default IssueHighlight

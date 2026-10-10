@@ -8,7 +8,7 @@ import { Chip, Button, FieldGroup, InputControl, TextareaControl } from '../comp
 import { Zer0Text } from '../components/brand'
 import { useContactForm } from '../hooks/useContactForm'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
-import { NewsletterBox } from '../components/sections/FieldNotes'
+import { IssueSubscribe } from '../components/sections/Issue'
 import { SEO } from '../components/seo'
 import config from '../config'
 import { useLocale } from '../context/LocaleContext'
@@ -25,8 +25,8 @@ import { useLocale } from '../context/LocaleContext'
  * page chrome (`contactPage`), the chip group options
  * (`projectTypes`, `budgets`), field labels + placeholders
  * (`fields`, `placeholders`), the "what happens next" list
- * (`contactWhatHappens`), and the newsletter box framing
- * (`fieldNotes.contactBox`).
+ * (`contactWhatHappens`), and the subscribe box framing
+ * (`feed.contactBox`).
  */
 
 const Page = styled.main`
@@ -214,7 +214,7 @@ export default function Contact() {
   const {
     contactPage,
     contactWhatHappens,
-    fieldNotes,
+    feed,
     fields,
     placeholders,
     projectTypes,
@@ -341,9 +341,9 @@ export default function Contact() {
               ))}
             </ol>
           </Box>
-          <NewsletterBox
-            header={fieldNotes.contactBox.header}
-            sub={fieldNotes.contactBox.sub}
+          <IssueSubscribe
+            header={feed.contactBox.header}
+            sub={feed.contactBox.sub}
             email={newsletter.email}
             onChange={newsletter.handleChange}
             onSubmit={newsletter.handleSubmit}

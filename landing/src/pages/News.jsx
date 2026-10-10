@@ -5,38 +5,49 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/sections/Navbar'
 import PageHeader from '../components/sections/PageHeader'
 import Footer from '../components/sections/Footer'
-import { NewsletterBox } from '../components/sections/FieldNotes'
+import { IssueSubscribe } from '../components/sections/Issue'
 import { SEO } from '../components/seo'
-import { FIELD_NOTES_PAGE_SIZE } from '../data/fieldNotes'
+import { FIELD_NOTES_PAGE_SIZE } from '../data/feed'
 import { formatPubDate } from '../utils/formatPubDate'
-import { getAllByDate } from '../utils/fieldNoteView'
+import { getAllPosts } from '../data/feed'
 import { usePagination } from '../hooks/usePagination'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useLocale } from '../context/LocaleContext'
 
 /**
- * FieldNotes index page
+ * News (Field Notes archive)
  *
  * Lists every Field Notes post, newest first. The per-post
- * page handles rendering a single post; this page is the
- * "spoke" that collects them all and surfaces the
- * subscribe widget.
+ * page (`pages/Post.jsx`) handles rendering a single post;
+ * this page is the "spoke" that collects them all and
+ * surfaces the subscribe widget.
+ *
+ * Naming: `News` is the canonical code-noun for the archive
+ * page. The page lives at `pages/News.jsx` and is mounted
+ * at the URL `/field-notes` (the URL stays brand-prefixed
+ * for SEO continuity — the rename is code-side only).
+ *
+ * Per-surface rule for the visible identity:
+ *
+ *   - File name            `pages/News.jsx`     (code-noun)
+ *   - Visible H1           `News`               (code-noun)
+ *   - Browser <title>      "News | Robust Computer" (code-noun)
+ *   - SEO <description>    "Field Notes — ..."  (brand stays)
+ *   - URL                  /field-notes         (brand stays)
  *
  * The post list is a series of bordered cards on the
  * paper surface. The publish date is rendered inside an
  * inverted (ink) chip with `paper` foreground so the
- * date stands out from the card body —  
- * applied to the index (the per-post page keeps
- * its own `paper` text on its `ink` HeaderBox).
+ * date stands out from the card body.
  *
  * The "Not already Subscribed?" box reuses the
- * NewsletterBox widget from the Contact page (the only
+ * IssueSubscribe widget from the Contact page (the only
  * difference is the header/sub copy, both pulled from
  * the i18n dictionary).
  *
- * Pagination aria labels come from `fieldNotesPage` so
- * the prev/next buttons announce correctly to screen
- * readers in the active locale.
+ * Pagination aria labels come from `newsPage` so the
+ * prev/next buttons announce correctly to screen readers
+ * in the active locale.
  *
  * Route: /field-notes  (must be mounted before
  * /field-notes/:slug in App.jsx so the slug route doesn't
@@ -61,15 +72,6 @@ const List = styled.section`
   }
 `
 
-// Post card. Ticket surface, 3px black border, hard
-// offset shadow — same card language as the Contact
-// enquiry Sheet and the per-post page Sheet. The card is
-// a real <Link> to the per-post page; the entire card
-// is the click target, not just the title.
-//
-// Hover lifts the card and grows the shadow so the user
-// gets the same "press me" affordance as the other
-// neo-brutalist surfaces on the site.
 const Card = styled(Link)`
   display: grid;
   grid-template-columns: 1fr auto;
@@ -143,9 +145,6 @@ const Description = styled.p`
   max-width: 50ch;
 `
 
-// Date chip — `paper` text on `ink` background. Right-aligned on desktop, left-aligned (under the
-// title) on mobile so the stacked card body reads
-// top-down.
 const DateChip = styled.span`
   display: inline-block;
   align-self: center;
@@ -164,8 +163,6 @@ const DateChip = styled.span`
   }
 `
 
-// Subscribe section sits below the list. Same horizontal
-// padding as the list so the box aligns with the cards.
 const Subscribe = styled.section`
   width: 100%;
   max-width: var(--page);
@@ -177,11 +174,6 @@ const Subscribe = styled.section`
   }
 `
 
-// Pagination row. Sits between the list and the subscribe
-// box, so the reader's eye lands on "Page 2 of 3" before
-// the subscribe CTA. Same horizontal padding as the list
-// and the subscribe section so the three blocks stack in
-// the same column.
 const Pagination = styled.nav`
   display: flex;
   align-items: center;
@@ -198,16 +190,6 @@ const Pagination = styled.nav`
   }
 `
 
-// Compact button for the pagination row. Smaller than the
-// standard <Button> primitive (which is sized for CTAs) and
-// uses transient props (`$active`, `$disabled`) so the
-// DOM stays clean of custom attributes.
-//
-// Active state is the inverted `ink` block with `paper`
-// text and a hard offset shadow — same card language as the
-// other surfaces on the page. Inactive state is a bare
-// bordered chip so the page numbers read as a row of
-// clickable cells rather than a list of buttons.
 const PageBtn = styled.button`
   display: inline-flex;
   align-items: center;
@@ -250,43 +232,42 @@ const PageBtn = styled.button`
   }
 `
 
-// Cap the box width on the wider page so the form doesn't
-// stretch across the whole column.
 const Box = styled.div`
   max-width: 560px;
 `
 
-export default function FieldNotes() {
-  const posts = getAllByDate()
+export default function News() {
+  const posts = getAllPosts()
   const pager = usePagination(posts, FIELD_NOTES_PAGE_SIZE)
   const newsletter = useNewsletterForm()
-  const { fieldNotes, fieldNotesPage } = useLocale()
+  const { feed, newsPage } = useLocale()
 
   return (
     <Page>
       <SEO
-        title={fieldNotes.indexTitle}
-        description={fieldNotes.lead}
+        title={feed.indexTitle}
+        tabTitle={feed.indexTitle}
+        description={feed.seoDescription}
         path="/field-notes"
       />
       <Navbar />
       <PageHeader
-        title={fieldNotes.indexTitle}
-        lead={fieldNotes.lead}
+        title={feed.indexTitle}
+        lead={feed.archivesLead}
         imageVariant="bannerAlt"
       />
       <List>
         {pager.pageItems.length === 0 ? (
-          <p>{fieldNotesPage.empty}</p>
+          <p>{newsPage.empty}</p>
         ) : (
-          pager.pageItems.map((note) => (
-            <Card key={note.slug} to={`/field-notes/${note.slug}`}>
+          pager.pageItems.map((post) => (
+            <Card key={post.slug} to={post.to}>
               <Body>
-                <Eyebrow>{note.issuePrefix}</Eyebrow>
-                <Title>{note.title}</Title>
-                <Description>{note.description}</Description>
+                <Eyebrow>{post.issuePrefix}</Eyebrow>
+                <Title>{post.title}</Title>
+                <Description>{post.description}</Description>
               </Body>
-              <DateChip>{fieldNotesPage.published} {formatPubDate(note.pubDate)}</DateChip>
+              <DateChip>{newsPage.published} {formatPubDate(post.pubDate)}</DateChip>
             </Card>
           ))
         )}
@@ -297,9 +278,9 @@ export default function FieldNotes() {
             type="button"
             onClick={pager.prev}
             disabled={!pager.hasPrev}
-            aria-label={fieldNotesPage.previousPageLabel}
+            aria-label={newsPage.previousPageLabel}
           >
-            {fieldNotesPage.prev}
+            {newsPage.prev}
           </PageBtn>
           {Array.from({ length: pager.totalPages }, (_, i) => i + 1).map((p) => (
             <PageBtn
@@ -307,7 +288,7 @@ export default function FieldNotes() {
               type="button"
               onClick={() => pager.goTo(p)}
               $active={pager.page === p}
-              aria-label={fieldNotesPage.goToPage(p)}
+              aria-label={newsPage.goToPage(p)}
               aria-current={pager.page === p ? 'page' : undefined}
             >
               {p}
@@ -317,17 +298,17 @@ export default function FieldNotes() {
             type="button"
             onClick={pager.next}
             disabled={!pager.hasNext}
-            aria-label={fieldNotesPage.nextPageLabel}
+            aria-label={newsPage.nextPageLabel}
           >
-            {fieldNotesPage.next}
+            {newsPage.next}
           </PageBtn>
         </Pagination>
       )}
       <Subscribe>
         <Box>
-          <NewsletterBox
-            header={fieldNotes.subscribeBox.header}
-            sub={fieldNotes.subscribeBox.sub}
+          <IssueSubscribe
+            header={feed.subscribeBox.header}
+            sub={feed.subscribeBox.sub}
             bg={colors.gold}
             fg={colors.ink}
             email={newsletter.email}

@@ -15,13 +15,19 @@ import { parseMarkdownBlocks } from '../../utils/parseMarkdownBlocks'
 import '../../styles/highlight.css'
 
 /**
- * FieldNoteBody
+ * PostBody
  *
- * Renders one Field Notes post body. The first paragraph
- * is the lede; everything after (other paragraphs,
- * blockquotes, fenced code, and standalone images) renders
- * in source order. Links open in a new tab. highlight.js
- * output is sanitized before it is inserted.
+ * Renders one Field Notes post body (called by the
+ * `/field-notes/<slug>` page — `pages/Post.jsx`). The
+ * first paragraph is the lede; everything after (other
+ * paragraphs, blockquotes, fenced code, and standalone
+ * images) renders in source order. Links open in a new
+ * tab. highlight.js output is sanitized before it is
+ * inserted.
+ *
+ * The body component lives at `sections/PostBody.jsx`
+ * because it's a section-level shell — owned by the page,
+ * renders the post body inside the page chrome.
  */
 
 hljs.registerLanguage('javascript', javascript)
@@ -138,7 +144,7 @@ const QuoteSection = styled.div`
     pointer-events: none;
   }
   &::before { content: '\\201C'; top: 4px; left: 16px; }
-  &::after { content: '\\201D'; bottom: 4px; right: 16px; }
+  &::after { content: '\\201D'; bottom: 4px; right: 4px; }
 
   a {
     color: ${colors.ink};
@@ -224,21 +230,6 @@ const Code = ({ block }) => {
   )
 }
 
-// Figure. Same card language as the post body Sheet — 3px
-// ink border, hard offset shadow, paper background — so an
-// image reads as a physical artifact sitting inside the
-// Sheet, not a browser-default inline `<img>` floating in
-// the middle of a paragraph.
-//
-// Caption strip below the image. Inverted (ink background,
-// paper text) so it visually anchors to the bottom of the
-// card the same way the HeaderBox anchors the top of the
-// post. Caption text is the image's alt text — the same
-// source that becomes the `figcaption` in the on-page HTML
-// and the `[image: alt]` placeholder in the plain-text
-// feeds, so every surface reads the same caption. Empty
-// alt is a deliberate choice (decorative image); we hide
-// the strip rather than render a blank.
 const Figure = styled.figure`
   margin: 0 0 24px;
   border: 3px solid ${colors.ink};
@@ -272,22 +263,6 @@ const Image = ({ block }) => (
   </Figure>
 )
 
-// Heading hierarchy for the post body. The page's main
-// title already lives in the HeaderBox above the body, so
-// these are sub-section dividers. h1 in the body is the
-// "section stamp" — gold ticket with a hard offset shadow,
-// bigger font than h2 — clearly a step above the
-// sub-section h2 without competing with the page title's
-// ink-background h1. h2 is the standard section break
-// (thick bottom border, display font), h3 is a
-// sub-section (no border, smaller display), h4 is a
-// tertiary label (uppercase mono).
-//
-// Inline markdown in the heading text is rendered through
-// the same Inline component paragraphs use, so a heading
-// like `## What we **shipped**` is a single accent
-// fragment inside the bigger label rather than literal
-// asterisks.
 const H1Section = styled.h1`
   font-family: var(--display);
   font-size: clamp(28px, 4vw, 40px);
@@ -394,19 +369,6 @@ const Heading = ({ block }) => {
   return <H4><Inline text={block.content} /></H4>
 }
 
-// List styles. Custom markers (▪ for unordered, a CSS
-// counter for ordered) so the bullets read as part of the
-// brand instead of browser-default `•` discs. Items use
-// the same prose font and size as TextSection so a list
-// inside a paragraph flow doesn't feel like a different
-// type of content. Inline markdown (links, code, bold) is
-// rendered through the same Inline component paragraphs
-// use.
-//
-// Two separate styled components (rather than one with a
-// `ordered` prop) so the HTML stays semantically correct
-// (`<ul>` vs `<ol>`) and the counter is scoped to the
-// ordered list only.
 const UlSection = styled.ul`
   margin: 0 0 20px;
   padding: 0 0 0 8px;
@@ -506,13 +468,9 @@ const List = ({ block }) => {
   return block.ordered ? <OlSection>{items}</OlSection> : <UlSection>{items}</UlSection>
 }
 
-const FieldNoteBody = ({ raw }) => {
+const PostBody = ({ raw }) => {
   const blocks = parseMarkdownBlocks(raw)
   if (blocks.length === 0) return null
-  // The lede is the first block only when it is a paragraph.
-  // If the post opens with an image (or anything else), that
-  // block falls through to the body loop and the post has no
-  // lede at all.
   const [first, ...rest] = blocks
   const lede = first.type === 'paragraph' ? first : null
   const bodyBlocks = lede ? rest : [first, ...rest]
@@ -539,4 +497,4 @@ const FieldNoteBody = ({ raw }) => {
   )
 }
 
-export default FieldNoteBody
+export default PostBody
