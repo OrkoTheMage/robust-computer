@@ -113,12 +113,19 @@ const normalizedBase = baseUrl.replace(/\/+$/, '')
 // (issue-001) — a new slug needs a new route entry here. The
 // 404 path is arbitrary; React Router's catch-all matches
 // anything that isn't an earlier route.
+//
+// Note on the `/field-notes` route: the URL stays brand-prefixed
+// (`/field-notes`), but the rendered page identity is the code
+// noun — `pages/News.jsx` renders `<h1>News</h1>`. The brand
+// string "Field Notes" is in the SEO <meta name="description">
+// (which the smoke test doesn't introspect). `contains` therefore
+// matches the visible H1 ("NEWS" after Zer0Text), not the URL.
 const ROUTES = [
   { path: '/',                      contains: 'CUST0M S0FTWARE, BUILT T0 LAST.' },
   { path: '/about',                 contains: 'MEET THE TEAM' },
   { path: '/contact',               contains: 'START A PR0JECT' },
   { path: '/bug-report',            contains: 'REP0RT A BUG' },
-  { path: '/field-notes',           contains: 'FIELD N0TES' },
+  { path: '/field-notes',           contains: 'NEWS' },
   { path: '/field-notes/issue-001', contains: 'A NEW BEGINNING' },
   { path: '/unsubscribe',           contains: 'THIS LINK IS BR0KEN' },
   { path: '/privacy',               contains: 'PRIVACY P0LICY' },

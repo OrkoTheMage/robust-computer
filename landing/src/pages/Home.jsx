@@ -8,21 +8,21 @@ import Promises from '../components/sections/Promises'
 import Services from '../components/sections/Services'
 import Industries from '../components/sections/Industries'
 import Steps from '../components/sections/Steps'
-import FieldNotes from '../components/sections/FieldNotes'
+import IssueHighlight from '../components/sections/Issue'
 import Footer from '../components/sections/Footer'
 import { SEO } from '../components/seo'
 import { useNewsletterForm } from '../hooks/useNewsletterForm'
 import { useChromeHeight } from '../hooks/useChromeHeight'
 import { formatPubDate } from '../utils/formatPubDate'
-import { getLatestIssue } from '../utils/fieldNoteView'
+import { getLatestPost } from '../data/feed'
 import { useLocale } from '../context/LocaleContext'
 
 /**
  * Home page
  *
  * Composes the public home route: TopBar + Navbar + Hero + Promises
- * + Services + Industries + Steps + FieldNotes + Footer.
- * No state here — the FieldNotes section gets its bindings from
+ * + Services + Industries + Steps + Issue (highlight band) + Footer.
+ * No state here — the Issue/Highlight band gets its bindings from
  * the page-local `useNewsletterForm` hook.
  *
  * On desktop, Promises sits inside the hero's viewport (pinned to
@@ -58,7 +58,7 @@ const Opening = styled.div`
 export default function Home() {
   const newsletter = useNewsletterForm()
   const chrome = useChromeHeight()
-  const latest = getLatestIssue()
+  const latest = getLatestPost()
   const { heroChrome, homePage } = useLocale()
   const ticketBody = latest
     ? `$ curl /latest.txt\n> ${formatPubDate(latest.pubDate)}\n> ${latest.title}\n${latest.description}`
@@ -80,7 +80,7 @@ export default function Home() {
       <Industries />
       <Steps />
       <div id="newsletter">
-        <FieldNotes
+        <IssueHighlight
           email={newsletter.email}
           onChange={newsletter.handleChange}
           onSubmit={newsletter.handleSubmit}

@@ -19,7 +19,7 @@ import { useLocale } from '../../context/LocaleContext'
  *   - the right tag reads from the version in package.json
  *     ("RELEASE 0.1.0" today, "RELEASE 0.2.0" after a bump)
  *   - the body reads the most recent Field Notes post from
- *     `data/fieldNotes.js` (the single source of truth — the
+ *     `data/feed.js` (the single source of truth — the
  *     /public/rss.xml is regenerated from the same array) and
  *     renders its title, pub date, and one-sentence excerpt. If
  *     the array is empty, it shows a placeholder.

@@ -438,7 +438,7 @@ const Navbar = () => {
     toggleMobile,
     closeMobile,
   } = useNavbar()
-  const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome, fieldNotePage } = useLocale()
+  const { navbarMobilePages, navbarPages, navbarConnects, navbarSocials, navChrome, heroChrome, postPage } = useLocale()
   const { pathname } = useLocation()
   // Hide the "back to home" row when the user is already at
   // `/` — the modal's CTA + page links are the right
@@ -511,7 +511,7 @@ const Navbar = () => {
             {!isHome && (
               <PanelBackRow to="/" onClick={closeMobile}>
                 <ArrowLeft size={18} strokeWidth={2.4} aria-hidden="true" />
-                {fieldNotePage.back}
+                {postPage.back}
               </PanelBackRow>
             )}
             {navbarMobilePages.map((p) => (

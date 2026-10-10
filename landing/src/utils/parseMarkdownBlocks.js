@@ -3,8 +3,8 @@
  *
  * Parses a markdown body into a structured list of blocks. This
  * is the SHARED parser used by both the per-post React page
- * (FieldNote.jsx) and the plain-text feed.txt builder
- * (data/fieldNotes.js#renderBodyAsPlainText), so the two
+ * (pages/Post.jsx) and the plain-text feed.txt builder
+ * (data/feed.js#renderBodyAsPlainText), so the two
  * renderers always agree on block boundaries — and a blank line
  * inside a fenced code block never breaks the fence.
  *

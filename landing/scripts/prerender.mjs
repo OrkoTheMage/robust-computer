@@ -45,7 +45,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  *     - `*`             — catch-all 404, never indexed.
  *
  *   Per-post pages (`/field-notes/<slug>`) are pulled
- *   dynamically from `data/fieldNotes.js` so a new post
+ *   dynamically from `data/feed.js` so a new post
  *   is prerendered automatically once it's added there.
  *
  * Build pipeline
@@ -97,17 +97,17 @@ const STATIC_ROUTES = [
   '/field-notes',
 ]
 
-// Pull per-post routes from the field-notes data so a new
-// post is prerendered automatically. Importing this module
-// pulls in `marked`, `DOMPurify`, and the markdown block
-// parser via the build chain — same transitive deps the
-// repo-root `scripts/build-issue-cards.mjs` uses, so the
-// prerendered HTML always reflects the same source-of-truth
-// the live page does.
-const { fieldNotes } = await import(
-  pathToFileURL(path.join(repoRoot, 'src/data/fieldNotes.js')).href
+// Pull per-post routes from the `feed` data so a new post is
+// prerendered automatically. Importing this module pulls in
+// `marked`, `DOMPurify`, and the markdown block parser via
+// the build chain — same transitive deps the repo-root
+// `scripts/build-issue-cards.mjs` uses, so the prerendered
+// HTML always reflects the same source-of-truth the live
+// page does. The array is `feed`.
+const { feed } = await import(
+  pathToFileURL(path.join(repoRoot, 'src/data/feed.js')).href
 )
-const postRoutes = fieldNotes.map((n) => `/field-notes/${n.slug}`)
+const postRoutes = feed.map((post) => `/field-notes/${post.slug}`)
 
 const routes = [...STATIC_ROUTES, ...postRoutes]
 
